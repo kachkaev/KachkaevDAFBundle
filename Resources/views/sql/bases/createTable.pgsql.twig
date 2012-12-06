@@ -1,0 +1,16 @@
+CREATE TABLE {% block fullTableName %}{% block schema %}{{ schema }}{% endblock %}.{% block tableName %}{% endblock %}{% endblock %}
+(
+{% block fields %}{% endblock %}
+{% block constraints %}{% endblock %}
+)
+WITH (
+  OIDS=FALSE
+);
+
+{% block alterations %}
+{% endblock %}
+
+{% block owner %}
+ALTER TABLE {{ block('schema') }}.{{ block('tableName') }}
+  OWNER TO {{ mainDBOwner }};
+{% endblock %}

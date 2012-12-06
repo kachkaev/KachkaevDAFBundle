@@ -1,0 +1,11 @@
+{# TODO This template is a stub used for testing and should be removed #}
+CREATE TABLE {{ schema }}.{{ datasetName }}__{{ componentName }}
+(
+  id character varying NOT NULL,
+  CONSTRAINT {{ datasetName }}__{{ componentName }}_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE {{ schema }}.{{ datasetName }}__{{ componentName }}
+  OWNER TO {{ mainDBOwner }};

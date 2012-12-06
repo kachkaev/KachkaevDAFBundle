@@ -1,0 +1,3 @@
+parameters:
+    postgres_helper.env.data_dir: %kernel.root_dir%/../../../data
+    postgres_helper.env.datasets_backup_dir: %postgres_helper.env.data_dir%/backups/datasets/

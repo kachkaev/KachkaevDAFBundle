@@ -1,0 +1,23 @@
+{% block parameters %} {{ setGlobalScopeVar('parameters', {}) }} {% endblock %}
+CREATE OR REPLACE FUNCTION {% block functionName %}void{% endblock %}(
+{% for name, type in getGlobalScopeVar('parameters') -%}
+	_{{ name }} {{ type }}{% if not loop.last %}, {% endif %}
+{%- endfor %}
+)
+  RETURNS boolean AS
+$BODY$
+DECLARE
+    {% block declare %}{% endblock %}
+BEGIN
+    {% block body %}{% endblock %}
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST {% block cost %}100{% endblock %};
+
+ALTER FUNCTION {{ block('functionName') }}(
+{% for type in getGlobalScopeVar('parameters') -%}
+	{{ type }}{% if not loop.last %}, {% endif %}
+{%- endfor %}
+)
+  OWNER TO {{ mainDBOwner }};

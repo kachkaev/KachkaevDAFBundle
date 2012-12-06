@@ -1,0 +1,14 @@
+{%  extends 'KachkaevPostgresHelperBundle:sql/bases:temporaryFunction.pgsql.twig' %}
+
+{% block declare %}
+    item RECORD;
+{% endblock %}
+
+{% block body %}
+    FOR item IN SELECT * FROM pg_tables
+    WHERE tablename LIKE '{{ datasetName }}\_\_%' AND schemaname = '{{ schema }}'
+    LOOP
+        EXECUTE 'DROP TABLE {{ schema }}.' || item.tablename || ';';
+    END LOOP;
+    RETURN true;
+{% endblock %}

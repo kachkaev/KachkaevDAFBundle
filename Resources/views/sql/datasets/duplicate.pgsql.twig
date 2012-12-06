@@ -1,0 +1,23 @@
+{%  extends 'KachkaevPostgresHelperBundle:sql/bases:temporaryFunction.pgsql.twig' %}
+
+{% block declare %}
+    item RECORD;
+    duplicateName character varying;
+{% endblock %}
+
+{% block body %}
+    FOR item IN SELECT * FROM pg_tables
+    WHERE tablename LIKE '{{ datasetName }}\_\_%' AND schemaname = '{{ schema }}'
+    LOOP
+        duplicateName = replace(item.tablename, '{{ datasetName }}__', '{{ duplicateDatasetName }}__');
+        
+        -- Duplicate structure
+        EXECUTE 'CREATE TABLE {{ schema }}.' || duplicateName
+                || ' (LIKE {{ schema }}.' || item.tablename || ' INCLUDING INDEXES);';
+        -- Duplicate Content
+        EXECUTE 'INSERT INTO {{ schema }}.' || duplicateName
+                || ' SELECT * FROM {{ schema }}.' || item.tablename || ';';
+        
+    END LOOP;
+    RETURN true;
+{% endblock %}

@@ -1,0 +1,12 @@
+CREATE OR REPLACE FUNCTION tmp() RETURNS boolean AS
+$BODY$
+DECLARE
+    {% block declare %}{% endblock %}
+BEGIN
+    {% block body %}{% endblock %}
+END
+$BODY$
+LANGUAGE 'plpgsql' ;
+
+SELECT * FROM tmp();
+DROP FUNCTION tmp();

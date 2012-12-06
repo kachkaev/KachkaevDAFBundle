@@ -1,0 +1,16 @@
+{# http://www.postgresonline.com/journal/archives/74-How-to-delete-many-functions.html #}
+{%  extends 'KachkaevPostgresHelperBundle:sql/bases:temporaryFunction.pgsql.twig' %}
+
+{% block declare %}
+    stmt character varying;
+{% endblock %}
+
+{% block body %}
+    FOR stmt IN SELECT 'DROP FUNCTION ' || ns.nspname || '.' || proname || '(' || oidvectortypes(proargtypes) || ');'
+        FROM pg_proc INNER JOIN pg_namespace ns ON (pg_proc.pronamespace = ns.oid)
+        WHERE ns.nspname = '{{ schema }}' order by proname
+    LOOP
+        EXECUTE stmt;
+    END LOOP;
+    RETURN true;
+{% endblock %}

@@ -1,0 +1,15 @@
+-- Tables
+SELECT replace(tablename, '{{ datasetName }}__', '') FROM pg_tables
+WHERE
+        tablename LIKE '{{ datasetName }}\_\_%'
+    AND tablename NOT LIKE '{{ datasetName }}\_\_\_%'
+    AND tablename != '{{ datasetName }}__meta'
+    AND schemaname = '{{ schema }}'
+
+UNION
+
+-- Views
+SELECT replace(viewname, '{{ datasetName }}__', '') FROM pg_views
+WHERE
+        viewname LIKE '{{ datasetName }}\_\_%'
+    AND schemaname = '{{ schema }}';

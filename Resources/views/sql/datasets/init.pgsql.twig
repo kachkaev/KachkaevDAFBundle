@@ -1,0 +1,11 @@
+CREATE TABLE {{ schema }}.{{ datasetName }}__meta
+(
+  key character varying NOT NULL,
+  value character varying,
+  CONSTRAINT {{ datasetName }}__meta_pkey PRIMARY KEY (key)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE {{ schema }}.{{ datasetName }}__meta
+  OWNER TO {{ mainDBOwner }};

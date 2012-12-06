@@ -1,0 +1,23 @@
+{% extends 'KachkaevPostgresHelperBundle:sql/bases:temporaryFunction.pgsql.twig' %}
+
+{% block body %}
+    IF EXISTS (SELECT *
+            FROM pg_type
+            INNER JOIN pg_namespace ns
+            ON (pg_type.typnamespace = ns.oid)
+            WHERE typname = '{% block typeName %}{% endblock %}' and ns.nspname = '{% block schemaName %}{% endblock %}'
+        )
+    THEN
+        RETURN false;
+    END IF;
+
+    CREATE TYPE {{ block('schemaName') }}.{{ block('typeName') }}
+    {% block typeDefinition %}{% endblock %}
+    ;
+
+    ALTER TYPE {{ block('schemaName') }}.{{ block('typeName') }}
+      OWNER TO {{ mainDBOwner }};
+    
+    RETURN true;
+{% endblock %}
+

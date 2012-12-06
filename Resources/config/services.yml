@@ -1,0 +1,16 @@
+services:
+    postgres_helper.real_db_connection.main:
+        class:            Doctrine\DBAL\Driver\Connection
+        factory_service:  doctrine.dbal.main_connection
+        factory_method:   getWrappedConnection
+
+    postgres_helper.real_db_connection.geograph:
+        class:            Doctrine\DBAL\Driver\Connection
+        factory_service:  doctrine.dbal.geograph_connection
+        factory_method:   getWrappedConnection
+
+#    example:
+#        class: Path\To\Class
+#        arguments: [@service, %parameter%]
+#        tags:
+#            -  { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
