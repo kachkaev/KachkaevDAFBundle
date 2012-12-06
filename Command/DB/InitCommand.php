@@ -12,18 +12,14 @@ use Doctrine\DBAL\DriverManager;
 
 class InitCommand extends AbstractParameterAwareCommand
 {
-    protected $postgisTemplateName = "postgis_template";
-    
-    protected $defaultSchemas = [
-        "photosets",
-    ];
-    
     protected function configure()
     {
         $this
             ->setName('ph:db:init')
-            ->setDescription(sprintf('Initialises the database: clones %s and creates default schemas', $this->postgisTemplateName))
-        ;
+            ->setDescription('Initialises the database (can use given template)')
+            ->addArgument('template-name', InputArgument::OPTIONAL, 'Name of the postgres template to use')
+            ->addArgument('default-schemas', InputArgument::OPTIONAL, 'Names of schemas to initialise by default (comma-separated, no spaces between)')
+            ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -33,19 +29,34 @@ class InitCommand extends AbstractParameterAwareCommand
         $connection = $this->getContainer()->get('doctrine.dbal.main_connection');
         $sqlTemplateManager = $this->getContainer()->get('postgres_helper.sql_template_manager');
         
+        // XXX validate template-name
+        $templateName = $input->getArgument('template-name'); 
+        if ('null' == $templateName || !$templateName)
+            $templatename = null;
+        
+        // XXX validate default schemas
+        $defaultSchemas = $input->getArgument('default-schemas');
+        if ($defaultSchemas)
+            $defaultSchemas = explode(',', $defaultSchemas);
+        
+        
         $params = $connection->getParams();
         $name = isset($params['path']) ? $params['path'] : $params['dbname'];
         unset($params['dbname']);
         
         $tmpConnection = DriverManager::getConnection($params);
-        $output->write(sprintf('Cloning postgis template <info>%s</info> into a new database <info>%s</info>...', $this->postgisTemplateName, $name));
+        if ($templateName) {
+            $output->write(sprintf('Cloning template <info>%s</info> into a new database <info>%s</info>...', $templateName, $name));
+        } else {
+            $output->write(sprintf('Creating a new database <info>%s</info>...', $name));
+        }
 
         if (!isset($params['path'])) {
             $name = $tmpConnection->getDatabasePlatform()->quoteSingleIdentifier($name);
         }
         
         try {
-            $query = $sqlTemplateManager->render('kernel#init-db', ['database' => $name, 'template' => $this->postgisTemplateName]);
+            $query = $sqlTemplateManager->render('kernel#init-db', ['database' => $name, 'template' => $templateName]);
             $tmpConnection->getWrappedConnection()->exec($query);
             $output->writeln(' Done.');
         } catch (\Exception $e) {
@@ -53,11 +64,13 @@ class InitCommand extends AbstractParameterAwareCommand
             throw $e;
         }
         
-        $output->write(sprintf('Initialising default schemas...'));
-        $schemaManager = $this->getContainer()->get('postgres_helper.schema_manager');
-        foreach ($this->defaultSchemas as $schemaName) {
-            $schemaManager->init($schemaName);
+        if ($defaultSchemas) {
+            $output->write(sprintf('Initialising default schemas...'));
+            $schemaManager = $this->getContainer()->get('postgres_helper.schema_manager');
+            foreach ($defaultSchemas as $schemaName) {
+                $schemaManager->init($schemaName);
+            }
+            $output->writeln(" Done.");
         }
-        $output->writeln(" Done.");
     }
 }
