@@ -1,0 +1,43 @@
+{
+    "name": "kachkaev/postgres-helper-bundle",
+    "type": "symfony-bundle",
+    "description": "Simplifies processing of the datasets stored in a postgresql database",
+    "keywords": ["postgres", "postgresql", "dataset", "database"],
+    "homepage": "http://github.com/kachkaev/KachkaevPostgresHelperBundle",
+    "license": "MIT",
+
+    "authors": [
+        {
+            "name": "Alexander Kachkaev",
+            "email": "alexander@kachkaev.ru",
+            "homepage": "http://en.kachkaev.ru/"
+        },
+		{
+            "name": "Contributors",
+            "homepage": "https://github.com/kachkaev/KachkaevPostgresHelperBundle/contributors"
+        }
+    ],
+
+    "require": {
+        "php": ">=5.4.0",
+        "symfony/framework-bundle": ">=2.0,<2.3-dev",
+        "doctrine/orm": ">=2.2.3,<2.4-dev",
+        "doctrine/doctrine-bundle": "1.0.*",
+        "doctrine/doctrine-migrations-bundle": "dev-master"
+    },
+
+    "require-dev": {
+    },
+
+    "suggest": {
+        "symfony/twig-bundle": ">=2.1.0,<2.3-dev"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "Kachkaev\\PostgresHelperBundle": ""
+        }
+    },
+
+    "target-dir": "Kachkaev/PostgresHelperBundle"
+}
