@@ -79,7 +79,8 @@ class SchemaManager implements ManagerInterface
     {
         $this->sqlTemplateManager->run("kernel#schemas/init", [
                 'schema' => $schemaName
-            ]);    
+            ]);
+        $this->updateTypes($schemaName);
     }
 
     public function delete($schemaName)
@@ -125,7 +126,7 @@ class SchemaManager implements ManagerInterface
         $finder = new Finder();
         $finder
         ->files()
-        ->in(sprintf('%s/../src/Kachkaev/PR%sBundle/Resources/views/sql/schema/functions', $this->container->getParameter('kernel.root_dir'), ucfirst($schemaName)))
+        ->in(sprintf('%s/schema/functions',$this->sqlTemplateManager->getTemplateNamespacePath($schemaName)))
         ->name('*.pgsql.twig')
         ->depth(0);
     
@@ -169,7 +170,7 @@ class SchemaManager implements ManagerInterface
                 foreach ($functionsByCategory[1] as $function) {
                     $typeSpecificFunction = $function.'.'.$datasetType;
                     // Apply category 3 if type-specific function exists
-                    if (false !== array_search($typeSpecificFunction, $functionsByCategory[2])) {
+                    if (false !== array_search($typeSpecificFunction, $functionsByCategory[2], true)) {
                         $this->sqlTemplateManager->run($schemaName.'#schema/functions/'.$typeSpecificFunction, [
                                 'datasetName'=>$datasetName,
                                 ]);
@@ -184,7 +185,7 @@ class SchemaManager implements ManagerInterface
                 // Add functions from category 3 that do not have corresponding funtions in category 2
                 foreach ($functionsByCategory[2] as $typeSpecificFunction) {
                     list($function, $type) = explode('.', $typeSpecificFunction);
-                    if (false === array_search($function, $functionsByCategory[1]) && $datasetType == $type) {
+                    if (false === array_search($function, $functionsByCategory[1], true) && $datasetType == $type) {
                         $this->sqlTemplateManager->run($schemaName.'#schema/functions/'.$typeSpecificFunction, [
                                 'datasetName'=>$datasetName,
                             ]);
@@ -204,10 +205,10 @@ class SchemaManager implements ManagerInterface
         $finder = new Finder();
         $finder
         ->files()
-        ->in(sprintf('%s/../src/Kachkaev/PR%sBundle/Resources/views/sql/schema/types', $this->container->getParameter('kernel.root_dir'), ucfirst($schemaName)))
+        ->in(sprintf('%s/schema/types',$this->sqlTemplateManager->getTemplateNamespacePath($schemaName)))
         ->name('*.pgsql.twig')
         ->depth(0);
-    
+        
         // Execute all templates
         foreach ($finder as $file) {
             $templateName = $file->getBaseName('.pgsql.twig');

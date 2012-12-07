@@ -31,8 +31,9 @@ class InitCommand extends AbstractParameterAwareCommand
         
         // XXX validate template-name
         $templateName = $input->getArgument('template-name'); 
-        if ('null' == $templateName || !$templateName)
-            $templatename = null;
+        if ('null' == $templateName || !$templateName) {
+            $templateName = null;
+        }
         
         // XXX validate default schemas
         $defaultSchemas = $input->getArgument('default-schemas');
@@ -65,7 +66,7 @@ class InitCommand extends AbstractParameterAwareCommand
         }
         
         if ($defaultSchemas) {
-            $output->write(sprintf('Initialising default schemas...'));
+            $output->write(sprintf('Initialising default schema%s (<info>%s</info>)...', sizeof($defaultSchemas) > 1 ? 's':'', implode('</info>, <info>', $defaultSchemas)));
             $schemaManager = $this->getContainer()->get('postgres_helper.schema_manager');
             foreach ($defaultSchemas as $schemaName) {
                 $schemaManager->init($schemaName);

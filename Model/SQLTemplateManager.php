@@ -42,7 +42,7 @@ class SQLTemplateManager
     {
         $this->container = $container;
         $this->templating = $container->get('templating');
-        $this->queryTemplatesNamespaceLookups = $container->getParameter('postgres_helper.query_templates_namespace_lookups');
+        $this->queryTemplatesNamespaceLookup = $container->getParameter('postgres_helper.query_templates_namespace_lookups');
     }
     
     protected function initializeConnectionIfNeeded()
@@ -174,11 +174,18 @@ class SQLTemplateManager
         if ($queryTemplateParts[0] == 'kernel') {
             $queryBundle = 'KachkaevPostgresHelperBundle';
         } else {
-            $queryBundle = $this->queryTemplatesNamespaceLookup[$queryTemplateParts[0]];
+            $queryBundle = $this->queryTemplatesNamespaceLookup[$queryTemplateParts[0]]['bundle'];
         }
         $result =  $queryBundle.':'.str_lreplace('/', ':', $queryTemplateParts[1]).'.pgsql.twig';
         
         return $result;
+    }
+    
+    public function getTemplateNamespacePath($schemaName) {
+        if (!array_key_exists($schemaName, $this->queryTemplatesNamespaceLookup)) {
+            throw new \InvalidArgumentException(sprintf('SQL template namespace %s not found, please add it to postgres_helper.query_templates_namespace_lookups parameter', $schemaName));
+        }
+        return $this->queryTemplatesNamespaceLookup[$schemaName]['path'];
     }
 }
 

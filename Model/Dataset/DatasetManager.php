@@ -55,8 +55,8 @@ abstract class DatasetManager implements ManagerInterface
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->sqlTemplateManager = $container->get('pr.kernel.sql_template_manager');
-        $this->schemaManager = $container->get('pr.kernel.schema_manager');
+        $this->sqlTemplateManager = $container->get('postgres_helper.sql_template_manager');
+        $this->schemaManager = $container->get('postgres_helper.schema_manager');
         $this->nameValidator = $this->getValidator('dataset_name');
         $this->updateList();
     }
@@ -93,7 +93,7 @@ abstract class DatasetManager implements ManagerInterface
      */
     public function getName(Dataset $dataset)
     {
-        return array_search($dataset, $this->list);
+        return array_search($dataset, $this->list, true);
     }
     
     /**
@@ -346,7 +346,7 @@ abstract class DatasetManager implements ManagerInterface
     public function getValidator($validatorName)
     {
         foreach ([$this->schema, 'kernel'] as $schema) {
-            $serviceName = 'pr.kernel.validator.'.$validatorName;
+            $serviceName = 'postgres_helper.validator.'.$validatorName;
             if ($this->container->has($serviceName))
                 return $this->container->get($serviceName);
         }

@@ -17,7 +17,7 @@ class DuplicateCommand extends AbstractParameterAwareCommand
             ->setName('ph:datasets:duplicate')
             ->setDescription('Renames given dataset')
             ->makeDatasetAware()
-            ->addArgument('duplicate-dataset-name', InputArgument::REQUIRED, 'Name of a the dataset (without schema)')
+            ->addArgument('duplicate-dataset-name', InputArgument::REQUIRED, 'Name of the dataset (without schema)')
         ;
     }
 
