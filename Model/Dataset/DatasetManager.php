@@ -363,6 +363,15 @@ abstract class DatasetManager implements ManagerInterface
     }
     
     /**
+     * Returns service container
+     * @return ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+    
+    /**
      * Extracts the name of the database (needed to backup and restore)
      */
     protected function getDatabaseConnectionParams()
