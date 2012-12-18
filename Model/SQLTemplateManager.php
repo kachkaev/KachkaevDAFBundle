@@ -100,6 +100,17 @@ class SQLTemplateManager
         }
     }
 
+    public function runAndReturnStatement($queryTemplates, $templateParams = [], $queryParams = null)
+    {
+        $this->initializeConnectionIfNeeded();
+        
+        $query = $this->render($queryTemplates, $templateParams);
+        $statement = $this->connection->prepare($query);
+        $statement->execute($queryParams);
+        
+        return $statement;
+    }
+    
     public function runAndFetchAll($queryTemplates, $templateParams = [], $queryParams = null, $fetchStyle = null, $fetchColumn = null)
     {
         $this->initializeConnectionIfNeeded();
