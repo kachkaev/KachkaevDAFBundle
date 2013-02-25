@@ -22,11 +22,15 @@ class OutputFormatter
      * @param array $data An array to output (key=>value)
      * @param array $tags Styles to use during output
      */
-    public function outputArrayAsAlignedList(OutputInterface $output, $data, $tags = ['info', ''])
+    public function outputArrayAsAlignedList(OutputInterface $output, $data, $tags = ['info', ''], $fixedWidths = null, $stringSpacings = null)
     {
-        $widths = [];
+        $calculatedWidths = [];
         
         $processedData = [];
+        
+        if (!is_array($stringSpacings)) {
+            $stringSpacings = [];
+        }
         
         // Checking if array is associative
         $arrayIsAssoc = false;
@@ -54,9 +58,16 @@ class OutputFormatter
         // Calculating widths
         foreach($processedData as $currentProcessedData) {
             foreach ($currentProcessedData as $k => $v) {
-                if (!array_key_exists($k, $widths) || strlen($v) > $widths[$k]) {
-                    $widths[$k] = strlen($v);
+                if (!array_key_exists($k, $calculatedWidths) || strlen($v) > $calculatedWidths[$k]) {
+                    $calculatedWidths[$k] = strlen($v);
                 }
+            }
+        }
+        
+        // Supplementing calculated widths with fixed widths
+        if (is_array($fixedWidths)) {
+            foreach($fixedWidths as $k => $v) {
+                $calculatedWidths[$k] = $v;
             }
         }
 
@@ -65,13 +76,31 @@ class OutputFormatter
         foreach($processedData as $currentProcessedData) {
             $currentResult = '';
             foreach ($currentProcessedData as $k => $v) {
-                if ($k != null)
-                    $currentResult .= $v;
-                if ($tags[$k]) {
-                    $currentResult .= sprintf('<%s>%s</%s>', $tags[$k], $v, $tags[$k]); 
+                $calculatedWidth = $calculatedWidths[$k];
+                if ($calculatedWidth === null) {
+                    continue;
                 }
-                if ($k != sizeof($currentProcessedData) - 1)
-                    $currentResult .= str_repeat(' ', $widths[$k] - strlen($v) + $this->defaultListSpacing);
+                if (strlen($v) > $calculatedWidth) {
+                    if ($calculatedWidth > 4) {
+                        $v = substr($v, 0, $calculatedWidth - 3) . '...';
+                    } elseif ($calculatedWidth > 1) {
+                        $v = substr($v, 0, $calculatedWidth - 1) . '.';                        
+                    } else {
+                        $v = substr($v, 0, 1);                        
+                    }
+                }
+                if (array_key_exists($k, $tags) && $tags[$k]) {
+                    $currentResult .= sprintf('<%s>%s</%s>', $tags[$k], $v, $tags[$k]); 
+                } else {
+                    $currentResult .= $v;
+                }
+                if ($k != sizeof($currentProcessedData) - 1) {
+                    $stringSpacing = $this->defaultListSpacing;
+                    if (array_key_exists($k, $stringSpacings) && is_numeric($stringSpacings[$k])) {
+                        $stringSpacing = $stringSpacings[$k];
+                    }
+                    $currentResult .= str_repeat(' ', $calculatedWidth - strlen($v) + $stringSpacing);
+                }
             }
             $result []= $currentResult;
         }
