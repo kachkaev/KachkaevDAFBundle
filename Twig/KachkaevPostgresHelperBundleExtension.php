@@ -15,7 +15,7 @@ use Twig_Function_Method;
  * @DI\Service("pr.photosets.twig_extension")
  * @DI\Tag("twig.extension")
  */
-class PostgresHelperBundleExtension extends Twig_Extension
+class KachkaevPostgresHelperBundleExtension extends Twig_Extension
 {
     protected $container;
     

@@ -21,6 +21,10 @@ abstract class Dataset
     /**
      * @var ComponentManager */
     protected $componentManager;
+
+    /**
+     * @var ComponentAttributeManager */
+    protected $componentAttributeManager;
     
     /**
      * @var SQLTemplateManager */
@@ -166,13 +170,13 @@ abstract class Dataset
         // Create, update or delete the property
         if (null !== $this->getProperty($propertyName)) {
             if (null === $propertyValue) {
-                $this->sqlTemplateManager->run('kernel#datasets/properties/delete', [
+                $this->sqlTemplateManager->run('postgres_helper#datasets/properties/delete', [
                         'schema'=>$this->schema,
                         'datasetName'=>$this->name,
                     ], [$propertyName]);
                 unset ($this->properties[$propertyName]);
             } else {
-                $this->sqlTemplateManager->run('kernel#datasets/properties/update', [
+                $this->sqlTemplateManager->run('postgres_helper#datasets/properties/update', [
                         'schema'=>$this->schema,
                         'datasetName'=>$this->name,
                     ], [$propertyName, $propertyValue, $propertyName]);
@@ -181,7 +185,7 @@ abstract class Dataset
         } else {
             if (null === $propertyValue) {
             } else {
-                $this->sqlTemplateManager->run('kernel#datasets/properties/init', [
+                $this->sqlTemplateManager->run('postgres_helper#datasets/properties/init', [
                         'schema'=>$this->schema,
                         'datasetName'=>$this->name,
                     ], [$propertyName, $propertyValue]);
@@ -213,7 +217,7 @@ abstract class Dataset
      */
     public function updateProperties()
     {
-        $properties = $this->sqlTemplateManager->runAndFetchAll('kernel#datasets/properties/list', [
+        $properties = $this->sqlTemplateManager->runAndFetchAll('postgres_helper#datasets/properties/list', [
                 'schema'=>$this->schema,
                 'datasetName'=>$this->name,
                 ], null, \PDO::FETCH_KEY_PAIR);
@@ -236,6 +240,14 @@ abstract class Dataset
             $this->componentManager = new ComponentManager($this);
         
         return $this->componentManager; 
+    }
+
+    public function getComponentAttributeManager()
+    {
+        if (!$this->componentAttributeManager)
+            $this->componentAttributeManager = new ComponentAttributeManager($this);
+    
+        return $this->componentAttributeManager;
     }
     
 }

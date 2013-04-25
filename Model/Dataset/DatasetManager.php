@@ -55,8 +55,8 @@ abstract class DatasetManager implements ManagerInterface
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->sqlTemplateManager = $container->get('pr.kernel.sql_template_manager');
-        $this->schemaManager = $container->get('pr.kernel.schema_manager');
+        $this->sqlTemplateManager = $container->get('postgres_helper.sql_template_manager');
+        $this->schemaManager = $container->get('postgres_helper.schema_manager');
         $this->nameValidator = $this->getValidator('dataset_name');
         $this->updateList();
     }
@@ -66,7 +66,7 @@ abstract class DatasetManager implements ManagerInterface
      */
     public function updateList()
     {
-        $listOfExistingNames = $this->sqlTemplateManager->runAndFetchAllAsList('kernel#datasets/list', [
+        $listOfExistingNames = $this->sqlTemplateManager->runAndFetchAllAsList('postgres_helper#datasets/list', [
                 'schema'=>$this->schema
                 ]);
         
@@ -156,7 +156,7 @@ abstract class DatasetManager implements ManagerInterface
         $this->assertNotHaving($datasetName, sprintf('Cannot initialise dataset %s.%s as it already exists in the database', $this->schema, $datasetName));
         
         // Creating meta table
-        $this->sqlTemplateManager->run('kernel#datasets/init', [
+        $this->sqlTemplateManager->run('postgres_helper#datasets/init', [
                 'schema'=>$this->schema,
                 'datasetName'=>$datasetName,
                 ]);
@@ -179,7 +179,7 @@ abstract class DatasetManager implements ManagerInterface
 
         $this->assertNotHaving($newDatasetName, sprintf('Unable to rename dataset %s.%s to %s.%s as such dataset already exists', $this->schema, $datasetName, $this->schema, $newDatasetName));
         
-        $this->sqlTemplateManager->run('kernel#datasets/rename', [
+        $this->sqlTemplateManager->run('postgres_helper#datasets/rename', [
                 'schema'=>$this->schema,
                 'datasetName'=>$datasetName,
                 'newDatasetName'=>$newDatasetName,
@@ -204,7 +204,7 @@ abstract class DatasetManager implements ManagerInterface
             throw new \InvalidArgumentException(sprintf('Unable to duplicate dataset %s.%s to %s.%s as such dataset already exists', $this->schema, $datasetName, $this->schema, $newDatasetName));
         }
         
-        $this->sqlTemplateManager->run('kernel#datasets/duplicate', [
+        $this->sqlTemplateManager->run('postgres_helper#datasets/duplicate', [
                 'schema'=>$this->schema,
                 'datasetName'=>$datasetName,
                 'duplicateDatasetName'=>$newDatasetName,
@@ -329,7 +329,7 @@ abstract class DatasetManager implements ManagerInterface
         $dataset = $this->get($datasetName);
         
         // Deleting all tables starting with name__
-        $this->sqlTemplateManager->run('kernel#datasets/delete', [
+        $this->sqlTemplateManager->run('postgres_helper#datasets/delete', [
                 'schema'=>$this->schema,
                 'datasetName'=>$datasetName,
             ]);
@@ -346,7 +346,7 @@ abstract class DatasetManager implements ManagerInterface
     public function getValidator($validatorName)
     {
         foreach ([$this->schema, 'kernel'] as $schema) {
-            $serviceName = 'pr.kernel.validator.'.$validatorName;
+            $serviceName = 'postgres_helper.validator.'.$validatorName;
             if ($this->container->has($serviceName))
                 return $this->container->get($serviceName);
         }

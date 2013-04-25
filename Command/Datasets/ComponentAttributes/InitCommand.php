@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components\Columns;
+namespace Kachkaev\PostgresHelperBundle\Command\Datasets\ComponentAttributes;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,12 +13,13 @@ class InitCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:components:columns:init')
-            ->setDescription('Initialises a column in the component (table)')
+            ->setName('ph:datasets:component-attributes:init')
+            ->setDescription('Initialises an attribute in the component (column in a table)')
             ->makeDatasetAware()
+            ->markAsBroken()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')
-            ->addArgument('column-name', InputArgument::REQUIRED, 'Name of the column to initialise')
-            ->addArgument('column-definition', InputArgument::REQUIRED, 'Name of the column to initialise')
+            ->addArgument('attribute-name', InputArgument::REQUIRED, 'Name of the attribute to initialise')
+            ->addArgument('attribute-definition', InputArgument::REQUIRED, 'Definition of the attribute column')
         ;
     }
 
@@ -30,12 +31,12 @@ class InitCommand extends AbstractParameterAwareCommand
         $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
         
-        $columnName = $input->getArgument('column-name'); 
-        $columnDefinition = $input->getArgument('column-definition');
-        $output->write(sprintf('Adding column <info>%s</info> in <info>%s</info> in dataset <info>%s</info>...',  $columnName, $componentName, $dataset->getFullName()));
+        $attributeName = $input->getArgument('attribute-name'); 
+        $attributeDefinition = $input->getArgument('attribute-definition');
+        $output->write(sprintf('Adding attribute <info>%s</info> in <info>%s</info> in dataset <info>%s</info>...',  $attributeName, $componentName, $dataset->getFullName()));
         
-        $componentManager = $dataset->getComponentManager();
-        $componentManager->initColumn($componentName, $columnName, $columnDefinition);
+        $datasetComponentAttributeManager = $dataset->getComponentAttributeManager();
+        $datasetComponentAttributeManager->initAttribute($componentName, $attributeName, $attributeDefinition);
         
         $output->writeln(' Done.');
         $output->writeln('<comment>Please don\'t forget to update component initialisation template!</comment>');

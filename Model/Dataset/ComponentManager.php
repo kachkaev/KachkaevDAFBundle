@@ -56,7 +56,7 @@ class ComponentManager implements ManagerInterface
      */
     public function updateList()
     {
-        $list = $this->sqlTemplateManager->runAndFetchAll('kernel#datasets/components/list', [
+        $list = $this->sqlTemplateManager->runAndFetchAll('postgres_helper#datasets/components/list', [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
             ], null, \PDO::FETCH_COLUMN);
@@ -161,7 +161,7 @@ class ComponentManager implements ManagerInterface
         $templates = [
             "$schema#$componentName/$deleteMode.$type",
             "$schema#$componentName/$deleteMode",
-            "kernel#datasets/components/$deleteMode"
+            "postgres_helper#datasets/components/$deleteMode"
         ];
         
         // TODO replace with a real query that deletes component table and functions
@@ -187,31 +187,15 @@ class ComponentManager implements ManagerInterface
     }
     
     /**
-     * Add a column to the component table
-     */
-    public function initColumn($componentName, $columnName, $columnDefinition)
-    {
-        $list = $this->sqlTemplateManager->run('kernel#datasets/components/columns/init', [
-                'schema'=>$this->dataset->getSchema(),
-                'datasetName'=>$this->dataset->getName(),
-                'componentName'=>$componentName,
-                'columnName'=>$columnName,
-                'columnDefinition'=>$columnDefinition,
-                ]);
-    
-        $this->list = $list;
-    }
-    
-    /**
      * Runs a task-specific sql template (a shortcut)
      * By default only schema- and type-specific templates are considered: {schema}#{componentName}/{task}.{type}
      * 
      * @param string $componentName
      * @param string $task
      * @param bool $considerSchemaRelatedTemplate
-     * @param bool $considerKernelTemplate
+     * @param bool $considerPostgresHelperTemplate
      */
-    protected function runTaskSpecificSQLTemplate($componentName, $task, $considerSchemaRelatedTemplate = false, $considerKernelTemplate = false)
+    protected function runTaskSpecificSQLTemplate($componentName, $task, $considerSchemaRelatedTemplate = false, $considerPostgresHelperTemplate = false)
     {
         $schema = $this->dataset->getSchema();
         $type = $this->dataset->getProperty('type');
@@ -221,7 +205,7 @@ class ComponentManager implements ManagerInterface
         if ($considerSchemaRelatedTemplate) {
             $templates []= "$schema#$componentName/$task";
         }
-        if ($considerKernelTemplate) {
+        if ($considerPostgresHelperTemplate) {
             $templates []= "$schema#$componentName/$task";
         }
         

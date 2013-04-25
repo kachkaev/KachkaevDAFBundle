@@ -81,7 +81,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
     protected function makeSQLTemplateNameAware()
     {
         $this
-            ->addArgument('sql-template-name', InputArgument::REQUIRED, 'Name of an SQL template to render, e.g. kernel#init-db');
+            ->addArgument('sql-template-name', InputArgument::REQUIRED, 'Name of an SQL template to render, e.g. postgres_helper#init-db');
                 
         return $this;
     }
@@ -113,6 +113,8 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
     {
         $this->broken = true;
         $this->brokenFault = $fault;
+        
+        return $this;
     }
     
     public function isStub()
