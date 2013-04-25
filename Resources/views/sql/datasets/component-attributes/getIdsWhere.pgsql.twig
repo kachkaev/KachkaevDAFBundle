@@ -1,0 +1,2 @@
+SELECT id FROM {% block fullComponentName %}{{ schema }}.{{ datasetName }}__{{ componentName }}{% endblock %}
+    WHERE {{ where }};

@@ -77,38 +77,12 @@ class ComponentAttributeManager {
         
     }
     
-    /**
-     * Sets an attributes to a given value for a list of records with given ids
-     * @param Dataset $this->dataset
-     * @param string $componentName
-     * @param string $attributeName
-     * @param array|string $recordIds one or several record ids 
-     * @param boolean|null $value
-     */
-    public function setAttribute($componentName, $attributeName, $recordIds, $value)
-    {
-        // TODO look for a service that does custom flagging (not sql-based)
-        $schema = $this->dataset->getSchema();
-        $type = $this->dataset->getProperty('type');
-
-        $recordIdsAsStr = "'".implode("','", $recordIds)."'";
-    
-        $this->sqlTemplateManager->run("postgres_helper#datasets/component-attributes/set", [
-                'schema'=>$this->dataset->getSchema(),
-                'datasetName'=>$this->dataset->getName(),
-                'componentName'=>$componentName,
-                'attributeName'=>$attributeName,
-                'recordIdsAsStr'=>$recordIdsAsStr,
-                'value'=>$value,
-                ]);
-    }
-    
-    public function getAttributes($componentName, $attributeNames, $recordIds)
+    public function getAttributesByIds($componentName, $attributeNames, $recordIds)
     {
         $attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
         $recordIdsAsStr = "'".implode("','", $recordIds)."'";
         
-        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/component-attributes/get", [
+        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/component-attributes/getByIds", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -119,6 +93,34 @@ class ComponentAttributeManager {
         return $result;
     }
 
+
+    public function getAttributesWhere($componentName, $attributeNames, $where)
+    {
+        $attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
+        
+        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/component-attributes/getWhere", [
+                'schema'=>$this->dataset->getSchema(),
+                'datasetName'=>$this->dataset->getName(),
+                'componentName'=>$componentName,
+                'attributeNamesAsStr'=>$attributeNamesAsStr,
+                'where'=>$where,
+                ]);
+        
+        return $result;
+    }
+
+    public function getIdsWhere($componentName, $where)
+    {
+        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/component-attributes/getIdsWhere", [
+                'schema'=>$this->dataset->getSchema(),
+                'datasetName'=>$this->dataset->getName(),
+                'componentName'=>$componentName,
+                'where'=>$where,
+        ], null, \PDO::FETCH_COLUMN);
+        
+        return $result;
+    }
+    
     /**
      * Sets an attributes to a given value or null for all records
      * @param Dataset $this->dataset
@@ -135,5 +137,30 @@ class ComponentAttributeManager {
                 'attributeName'=>$attributeName,
                 'attributeValue'=>$value,
                 ]);
+    }
+
+    /**
+     * Sets an attributes to a given value for a list of records with given ids
+     * @param Dataset $this->dataset
+     * @param string $componentName
+     * @param string $attributeName
+     * @param array|string $recordIds one or several record ids
+     * @param boolean|null $value
+     */
+    public function setAttribute($componentName, $attributeName, $recordIds, $value)
+    {
+        // TODO look for a service that does custom flagging (not sql-based)
+        $schema = $this->dataset->getSchema();
+        $type = $this->dataset->getProperty('type');
+    
+        $recordIdsAsStr = "'".implode("','", $recordIds)."'";
+    
+        $this->sqlTemplateManager->run("postgres_helper#datasets/component-attributes/set", [
+                'schema'=>$this->dataset->getSchema(),
+                'datasetName'=>$this->dataset->getName(),
+                'componentName'=>$componentName,
+                'attributeName'=>$attributeName,
+                'recordIdsAsStr'=>$recordIdsAsStr,
+                ], ['attributeValue'=>$value]);
     }
 }
