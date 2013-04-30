@@ -214,7 +214,7 @@ class SQLTemplateManager
      * Converts short address of sql template to twig-compatable format
      * 
      * Example:
-     *     kernel#a/b/c → KachkaevPostgresHelperBundle:sql/a/b:c.pgsql.twig 
+     *     postgres_helper#a/b/c → KachkaevPostgresHelperBundle:sql/a/b:c.pgsql.twig 
      */
     protected function getQueryTemplatePath($queryTemplate)
     {
@@ -225,7 +225,7 @@ class SQLTemplateManager
         if (array_key_exists(1, $queryTemplateParts))
         $queryTemplateParts[1] = 'sql/'.$queryTemplateParts[1];
         
-        if ($queryTemplateParts[0] == 'kernel') {
+        if ($queryTemplateParts[0] == 'postgres_helper') {
             $queryBundle = 'KachkaevPostgresHelperBundle';
         } else {
             $queryBundle = $this->queryTemplatesNamespaceLookup[$queryTemplateParts[0]]['bundle'];

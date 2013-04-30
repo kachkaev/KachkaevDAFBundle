@@ -14,10 +14,6 @@ use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
  */
 class SQLTemplateBasedUpdater extends AbstractComponentAttributeUpdater
 {
-    /**
-     * (non-PHPdoc)
-     * @see \Kachkaev\PostgresHelperBundle\Model\Dataset\ComponentAttributeUpdater\ComponentAttributeUpdaterInterface::listAttributesThatCanUpdate()
-     */
     public function listAttributesThatCanUpdate(Dataset $dataset, $componentName, array $attributeNames)
     {
         $sqlTemplateManager = $dataset->getDatasetManager()->getSQLTemplatManager();
@@ -31,17 +27,13 @@ class SQLTemplateBasedUpdater extends AbstractComponentAttributeUpdater
                 "$schema#$componentName/attributes/$attributeName.$type",
                 "$schema#$componentName/attributes/$attributeName",
             ];
-            if ($this->sqlTemplateManager->existsOneOf($templates)) {
+            if ($sqlTemplateManager->existSomeOf($templates)) {
                 array_push($result, $attributeName);
             }
         }
         return $result;
     }
     
-    /**
-     * (non-PHPdoc)
-     * @see \Kachkaev\PostgresHelperBundle\Model\Dataset\ComponentAttributeUpdater\ComponentAttributeUpdaterInterface::update()
-     */
     public function update(Dataset $dataset, $componentName, array $attributeNames, array $recordIds = null)
     {
         $sqlTemplateManager = $dataset->getDatasetManager()->getSQLTemplatManager();

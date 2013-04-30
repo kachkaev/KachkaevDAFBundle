@@ -37,6 +37,7 @@ abstract class AbstractComponentAttributeUpdater
      */
     public function saveValuesToDB(SQLTemplateManager $sqlTemplateManager, array $attributeNames, array $data)
     {
-        
+        var_dump('~~~~~~HERE~~~~~~~');
+        die();
     }
 }

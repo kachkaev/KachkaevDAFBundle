@@ -198,7 +198,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
         if ($this->getContainer()->has($serviceName)) {
             return $this->getContainer()->get($serviceName);
         } else {
-            throw new \InvalidArgumentException(sprintf('Schema %s does not exist', $schema));
+            throw new \InvalidArgumentException(sprintf('Schema %s does not exist or does not have a dataset manager', $schema));
         }
     }
     

@@ -62,7 +62,7 @@ class SchemaManager implements ManagerInterface
     
     public function listNames()
     {
-        $allSchemas =  $this->sqlTemplateManager->runAndFetchAllAsList("kernel#schemas/list");
+        $allSchemas =  $this->sqlTemplateManager->runAndFetchAllAsList("postgres_helper#schemas/list");
         $filteredSchemas = array_diff($allSchemas, $this->systemSchemas);
         
         return $filteredSchemas;
@@ -77,7 +77,7 @@ class SchemaManager implements ManagerInterface
     
     public function init($schemaName)
     {
-        $this->sqlTemplateManager->run("kernel#schemas/init", [
+        $this->sqlTemplateManager->run("postgres_helper#schemas/init", [
                 'schema' => $schemaName
             ]);    
     }
@@ -88,7 +88,7 @@ class SchemaManager implements ManagerInterface
             throw new \InvalidArgumentException("You are not allowed to delete system schema $schemaName");    
         }
         
-        $this->sqlTemplateManager->run("kernel#schemas/delete", [
+        $this->sqlTemplateManager->run("postgres_helper#schemas/delete", [
                 'schema' => $schemaName
             ]);
     }
@@ -146,7 +146,7 @@ class SchemaManager implements ManagerInterface
         }
     
         // Delete all functions
-        $this->sqlTemplateManager->run('kernel#schemas/delete-all-functions', [
+        $this->sqlTemplateManager->run('postgres_helper#schemas/delete-all-functions', [
                 'schema' => $schemaName,
                 ]);
     

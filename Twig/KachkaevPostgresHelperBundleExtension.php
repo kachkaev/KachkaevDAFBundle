@@ -69,7 +69,7 @@ class KachkaevPostgresHelperBundleExtension extends Twig_Extension
 
     public function getName()
     {
-        return 'KachkaevPRKernelExtension';
+        return 'KachkaevPRPostgresHelperExtension';
     }
     
     public function setGlobalScopeVar($key, $value)

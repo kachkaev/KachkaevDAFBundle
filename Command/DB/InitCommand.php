@@ -57,7 +57,7 @@ class InitCommand extends AbstractParameterAwareCommand
         }
         
         try {
-            $query = $sqlTemplateManager->render('kernel#init-db', ['database' => $name, 'template' => $templateName]);
+            $query = $sqlTemplateManager->render('postgres_helper#init-db', ['database' => $name, 'template' => $templateName]);
             $tmpConnection->getWrappedConnection()->exec($query);
             $output->writeln(' Done.');
         } catch (\Exception $e) {

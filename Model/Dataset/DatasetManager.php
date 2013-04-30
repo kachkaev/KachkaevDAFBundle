@@ -347,7 +347,7 @@ abstract class DatasetManager implements ManagerInterface
      */
     public function getValidator($validatorName)
     {
-        foreach ([$this->schema, 'kernel'] as $schema) {
+        foreach ([$this->schema, 'postgres_helper'] as $schema) {
             $serviceName = 'postgres_helper.validator.'.$validatorName;
             if ($this->container->has($serviceName))
                 return $this->container->get($serviceName);

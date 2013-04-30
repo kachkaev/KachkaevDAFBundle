@@ -46,7 +46,7 @@ class UpdateCommand extends AbstractParameterAwareCommand
             $ids = explode(',',$input->getOption('ids'));
         } else if ($input->getOption('filter')) {
             // From the filter
-            $ids = $datasetComponentAttributeManager->getIdsWhere('items', $input->getOption('filter'));
+            $ids = $attributeManager->getIdsWhere('items', $input->getOption('filter'));
         } else {
             throw new \InvalidArgumentException("Either option ids or filter must be defined.");
         }

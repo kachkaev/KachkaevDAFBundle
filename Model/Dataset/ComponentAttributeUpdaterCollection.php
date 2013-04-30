@@ -1,6 +1,7 @@
 <?php
 namespace Kachkaev\PostgresHelperBundle\Model\Dataset;
 
+use Kachkaev\PostgresHelperBundle\Model\Dataset\ComponentAttributeUpdater\AbstractComponentAttributeUpdater;
 use Kachkaev\PostgresHelperBundle\Model\Dataset\ComponentAttributeUpdater\ComponentAttributeUpdaterInterface;
 
 use Kachkaev\PostgresHelperBundle\Model\Dataset\Dataset;
@@ -16,7 +17,7 @@ class ComponentAttributeUpdaterCollection
 {
     protected $componentAttributeUpdaters = [];
     
-    public function add(ComponentAttributeUpdaterInterface $componentAttributeUpdater)
+    public function add(AbstractComponentAttributeUpdater $componentAttributeUpdater)
     {
         array_push($this->componentAttributeUpdaters, $componentAttributeUpdater);
     }
