@@ -383,13 +383,7 @@ abstract class DatasetManager implements ManagerInterface
      */
     public function getComponentAttributeUpdaters()
     {
-        if ($this->componentAttributeUpdaters !== null) {
-            $this->componentAttributeUpdaters = [];
-            foreach ($container->findTaggedServiceIds('postgres_helper.component_attribute_updater') as $id => $attributes) {
-                array_push($this->componentAttributeUpdaters, $this->container->get($id));
-            }
-        }
-        return $this->componentAttributeUpdaters;
+        return $this->container->get('postgres_helper.component_attribute_updaters')->getAll();
     }
     
 }

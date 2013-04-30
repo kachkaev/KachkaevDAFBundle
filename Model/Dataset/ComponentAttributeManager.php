@@ -170,9 +170,11 @@ class ComponentAttributeManager {
         
         // Looking for appropriate attribute updaters
         // and adding them into the queue
-        while (size($attributeNamesToUpdate)) {
+        while (count($attributeNamesToUpdate)) {
+            $prevNumAttributesToUpdate = count($attributeNamesToUpdate);
+            
             foreach($this->datasetManager->getComponentAttributeUpdaters() as $componentAttributeUpdater) {
-                $whatThisComponentAttributeUpdaterCanUpdate = $componentAttributeUpdater->listAttributesThatCanUpdate($dataset, $componentName, $attributeNamesToUpdate);
+                $whatThisComponentAttributeUpdaterCanUpdate = $componentAttributeUpdater->listAttributesThatCanUpdate($this->dataset, $componentName, $attributeNamesToUpdate);
                 if ($whatThisComponentAttributeUpdaterCanUpdate) {
                     array_push($updateQueue,
                             [
@@ -181,15 +183,17 @@ class ComponentAttributeManager {
                             ]
                         );
                     $attributeNamesToUpdate = array_diff($attributeNamesToUpdate, $whatThisComponentAttributeUpdaterCanUpdate);
-                    continue;
+                    break;
                 }
             }
-            throw new \RuntimeException(sprintf('Could not find an updater for %s', implode(', ', $attributeNamesToUpdate)));
+            if (count($attributeNamesToUpdate) == $prevNumAttributesToUpdate) {
+                throw new \RuntimeException(sprintf('Could not find an updater for %s', implode(', ', $attributeNamesToUpdate)));
+            }
         }
         
         // Actual updating using assigned updaters
         foreach ($updateQueue as $queueElement) {
-            $queueElement['updater']->update($dataset, $componentName, $queueElement['attributes'], $recordIds);
+            $queueElement['updater']->update($this->dataset, $componentName, $queueElement['attributes'], $recordIds);
         }
     }
 }

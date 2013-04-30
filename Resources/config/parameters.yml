@@ -3,3 +3,5 @@ parameters:
     postgres_helper.env.datasets_backup_dir: %postgres_helper.env.data_dir%/backups/datasets/
     
     postgres_helper.conventional_null: -2,147,483,642 # not -2,147,483,648
+
+    postgres_helper.batch_chunk_size: 10

@@ -1,27 +1,30 @@
 <?php
 namespace Kachkaev\PostgresHelperBundle\Model\Dataset\ComponentAttributeUpdater;
 
+use JMS\DiExtraBundle\Annotation as DI;
+
 use Kachkaev\PostgresHelperBundle\Model\Dataset\Dataset;
 use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
 
-class SQLTemplateBasedUpdater implements ComponentAttributeUpdaterInterface
+/**
+ * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
+ *
+ * @DI\Service()
+ * @DI\Tag("postgres_helper.component_attribute_updater")
+ */
+class SQLTemplateBasedUpdater extends AbstractComponentAttributeUpdater
 {
-    /**
-     * @var SQLTemplateManager
-     */
-    protected $sqlTemplateManager;
-    
-    public function __construct()
-    {
-        $this->sqlTemplateManager = $dataset->getDatasetManager()->getSQLTemplatManager();
-    }
-    
     /**
      * (non-PHPdoc)
      * @see \Kachkaev\PostgresHelperBundle\Model\Dataset\ComponentAttributeUpdater\ComponentAttributeUpdaterInterface::listAttributesThatCanUpdate()
      */
-    public function listAttributesThatCanUpdate(Dataset $dataset, $componentName, $attributeNames)
+    public function listAttributesThatCanUpdate(Dataset $dataset, $componentName, array $attributeNames)
     {
+        $sqlTemplateManager = $dataset->getDatasetManager()->getSQLTemplatManager();
+        $schema = $dataset->getSchema();
+        $type = $dataset->getProperty('type');
+        //var_dump($dataset, $componentName);
+        
         $result = [];
         foreach ($attributeNames as $attributeName) {
             $templates = [
@@ -41,7 +44,7 @@ class SQLTemplateBasedUpdater implements ComponentAttributeUpdaterInterface
      */
     public function update(Dataset $dataset, $componentName, array $attributeNames, array $recordIds = null)
     {
-        $templateManager = $dataset->getDatasetManager()->getSQLTemplatManager();
+        $sqlTemplateManager = $dataset->getDatasetManager()->getSQLTemplatManager();
 
         if ($recordIds !== null) {
             $recordIdsAsStr = implode(',', $recordIds);
@@ -55,7 +58,7 @@ class SQLTemplateBasedUpdater implements ComponentAttributeUpdaterInterface
             "$schema#$componentName/attributes/$attributeName",
             ];
             
-            $this->sqlTemplateManager->run($templates, [
+            $sqlTemplateManager->run($templates, [
                     'schema'=>$dataset->getSchema(),
                     'datasetName'=>$dataset->getName(),
                     'componentName'=>$componentName,
