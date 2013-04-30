@@ -95,7 +95,7 @@ abstract class DatasetManager implements ManagerInterface
      */
     public function getName(Dataset $dataset)
     {
-        return array_search($dataset, $this->list);
+        return array_search($dataset, $this->list, true);
     }
     
     /**
@@ -362,6 +362,15 @@ abstract class DatasetManager implements ManagerInterface
     public function getSQLTemplatManager()
     {
         return $this->sqlTemplateManager;
+    }
+    
+    /**
+     * Returns service container
+     * @return ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->container;
     }
     
     /**

@@ -1,5 +1,9 @@
 {% extends 'KachkaevPostgresHelperBundle:sql/bases:temporaryFunction.pgsql.twig' %}
 
+{% block declare %}
+    item RECORD;
+{% endblock %}
+
 {% block body %}
     IF EXISTS (SELECT *
             FROM pg_type
@@ -8,11 +12,39 @@
             WHERE typname = '{% block typeName %}{% endblock %}' and ns.nspname = '{% block schemaName %}{% endblock %}'
         )
     THEN
+        BEGIN
+        
+        -- 1. create new type
+        CREATE TYPE {{ block('schemaName') }}.{{ block('typeName') }}_NEW
+        {% block typeDefinition %}{% endblock %}
+        ;
+        
+        -- 2. select all columns that have that type
+        FOR item IN SELECT table_schema, table_name, column_name, udt_schema, udt_name FROM information_schema.columns
+        WHERE
+                table_schema = 'model_datasets'
+            AND udt_schema   = '{{ block('schemaName') }}'
+            AND udt_name     = '{{ block('typeName') }}'
+        LOOP
+            EXECUTE
+            'ALTER TABLE ' || item.table_schema || '.' || item.table_name
+            || ' ALTER COLUMN ' || item.column_name
+            || ' TYPE {{ block('schemaName') }}.{{ block('typeName') }}_NEW'
+            || ' USING ' || item.column_name || '::text::{{ block('schemaName') }}.{{ block('typeName') }}_NEW;';
+        END LOOP;
+        
+        DROP TYPE {{ block('schemaName') }}.{{ block('typeName') }};
+        
+        ALTER TYPE {{ block('schemaName') }}.{{ block('typeName') }}_NEW
+            RENAME TO {{ block('typeName') }};
+        
+        END;
         RETURN false;
+
     END IF;
 
     CREATE TYPE {{ block('schemaName') }}.{{ block('typeName') }}
-    {% block typeDefinition %}{% endblock %}
+    {{ block('typeDefinition') }}
     ;
 
     ALTER TYPE {{ block('schemaName') }}.{{ block('typeName') }}

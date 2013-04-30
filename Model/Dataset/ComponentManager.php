@@ -81,7 +81,7 @@ class ComponentManager implements ManagerInterface
             $this->updateList();
         }
         
-        return array_search($componentName, $this->list) !== false;
+        return array_search($componentName, $this->list, true) !== false;
     }
     
     /**

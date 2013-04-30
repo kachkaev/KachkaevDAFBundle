@@ -134,7 +134,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
             $input->setOption('area', explode(',', $input->getOption('area')));
 
         // Parse argument 'dataset-full-name'
-        $fullnameRegexp = '/^([a-z]+)\.([a-z_0-9]+)$/';
+        $fullnameRegexp = '/^([a-z]+(_[a-z]+)*)\.([a-z_0-9]+)$/';
         if ($input->hasArgument('dataset-full-name') && !is_null($input->getArgument('dataset-full-name'))) {
             $fullName = $input->getArgument('dataset-full-name');
             
@@ -144,7 +144,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
             }
             
             $schema = $matches[1];
-            $name = $matches[2];
+            $name = $matches[3];
             
             $extractedArguments['dataset-full-name'] = $schema.'.'.$name;
             $extractedArguments['dataset-schema'] = $schema;
@@ -194,7 +194,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
         
         $this->getContainer()->get('postgres_helper.validator.schema_name')->assertValid($schema);
         
-        $serviceName = sprintf('pr.%s.manager', $schema);
+        $serviceName = sprintf('ph.dataset_manager.%s', $schema);
         if ($this->getContainer()->has($serviceName)) {
             return $this->getContainer()->get($serviceName);
         } else {

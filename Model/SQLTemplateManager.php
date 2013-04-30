@@ -31,6 +31,8 @@ class SQLTemplateManager
      *  @var EngineInterface */
     protected $templating;
 
+    protected $queryTemplatesNamespaceLookup;
+    
     /**
      * @DI\InjectParams({
      *     "container" = @DI\Inject("service_container"),
@@ -40,6 +42,7 @@ class SQLTemplateManager
     {
         $this->container = $container;
         $this->templating = $container->get('templating');
+        $this->queryTemplatesNamespaceLookup = $container->getParameter('postgres_helper.query_templates_namespace_lookups');
     }
     
     protected function initializeConnectionIfNeeded()
@@ -140,6 +143,17 @@ class SQLTemplateManager
         }
     }
 
+    public function runAndReturnStatement($queryTemplates, $templateParams = [], $queryParams = null)
+    {
+        $this->initializeConnectionIfNeeded();
+        
+        $query = $this->render($queryTemplates, $templateParams);
+        $statement = $this->connection->prepare($query);
+        $statement->execute($queryParams);
+        
+        return $statement;
+    }
+    
     public function runAndFetchAll($queryTemplates, $templateParams = [], $queryParams = null, $fetchStyle = null, $fetchColumn = null)
     {
         $this->initializeConnectionIfNeeded();
@@ -200,7 +214,7 @@ class SQLTemplateManager
      * Converts short address of sql template to twig-compatable format
      * 
      * Example:
-     *     postgres_helper#a/b/c → KachkaevPostgresHelperBundle:sql/a/b:c.pgsql.twig 
+     *     kernel#a/b/c → KachkaevPostgresHelperBundle:sql/a/b:c.pgsql.twig 
      */
     protected function getQueryTemplatePath($queryTemplate)
     {
@@ -210,13 +224,34 @@ class SQLTemplateManager
         $queryTemplateParts = explode("#", $queryTemplate);
         if (array_key_exists(1, $queryTemplateParts))
         $queryTemplateParts[1] = 'sql/'.$queryTemplateParts[1];
-        if ($queryTemplateParts[0] == 'postgres_helper') {
-            $bundle = 'KachkaevPostgresHelperBundle';
+        
+        if ($queryTemplateParts[0] == 'kernel') {
+            $queryBundle = 'KachkaevPostgresHelperBundle';
         } else {
-            $bundle = 'KachkaevPR'.ucfirst($queryTemplateParts[0]).'Bundle';
+            $queryBundle = $this->queryTemplatesNamespaceLookup[$queryTemplateParts[0]]['bundle'];
         }
-        $result =  $bundle.':'.str_lreplace('/', ':', $queryTemplateParts[1]).'.pgsql.twig';
+        $result =  $queryBundle.':'.str_lreplace('/', ':', $queryTemplateParts[1]).'.pgsql.twig';
         
         return $result;
     }
+    
+    public function getTemplateNamespacePath($schemaName) {
+        if (!array_key_exists($schemaName, $this->queryTemplatesNamespaceLookup)) {
+            throw new \InvalidArgumentException(sprintf('SQL template namespace %s not found, please add it to postgres_helper.query_templates_namespace_lookups parameter', $schemaName));
+        }
+        return $this->queryTemplatesNamespaceLookup[$schemaName]['path'];
+    }
+}
+
+// See http://stackoverflow.com/questions/3835636/php-replace-last-occurence-of-a-string-in-a-string
+function str_lreplace($search, $replace, $subject)
+{
+    $pos = strrpos($subject, $search);
+
+    if($pos !== false)
+    {
+        $subject = substr_replace($subject, $replace, $pos, strlen($search));
+    }
+
+    return $subject;
 }

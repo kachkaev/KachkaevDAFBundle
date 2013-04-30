@@ -120,6 +120,36 @@ abstract class Dataset
     }
     
     /**
+     * Does nothing if given property exists, throws an exception otherwise
+     * @throws \LogicException if given property does not exist
+     */
+    public function assertHavingProperty($propertyName, $errorMessage = null)
+    {
+        if (!$errorMessage) {
+            $errorMessage = sprintf('The dataset must have %s property defined', $propertyName);
+        }
+        
+        if (!$this->hasProperty($propertyName)) {
+            throw new \LogicException($errorMessage);
+        }
+    }
+    
+    /**
+     * Does nothing if given property does not exist, throws an exception otherwise
+     * @throws \LogicException if given property exists
+     */
+    public function assertNotHavingProperty($propertyName, $errorMessage = null)
+    {
+        if (!$errorMessage) {
+            $errorMessage = sprintf('The dataset must not have %s property defined', $propertyName);
+        }
+        
+        if ($this->hasProperty($propertyName)) {
+            throw new \LogicException($errorMessage);
+        }
+    }
+    
+    /**
      * Gets the value of the given property.
      * If the property does not exist, null is returned
      * @param string $propertyName

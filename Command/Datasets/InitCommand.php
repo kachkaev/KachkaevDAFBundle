@@ -5,7 +5,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-use Kachkaev\PRDatasetsBundle\Model\Dataset;
+use Kachkaev\PostgresHelperBundle\Model\Dataset;
 use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
 
 class InitCommand extends AbstractParameterAwareCommand
