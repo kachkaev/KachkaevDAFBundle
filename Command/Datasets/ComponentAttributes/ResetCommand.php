@@ -17,7 +17,7 @@ class ResetCommand extends AbstractParameterAwareCommand
             ->setDescription('Resets an attribute of the given dataset component')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')
-            ->addArgument('attribute-name', InputArgument::REQUIRED, 'Name of the attribute to reset')
+            ->addArgument('attribute-names', InputArgument::REQUIRED, 'Comma-separated names of the attributes to reset')
             ->addArgument('attribute-value', InputArgument::OPTIONAL, 'Value (null by default)', null)
         ;
     }
@@ -30,12 +30,12 @@ class ResetCommand extends AbstractParameterAwareCommand
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
         
         $componentName = $input->getArgument('component-name');
-        $attributeName = $input->getArgument('attribute-name'); 
+        $attributeNames = explode(',', $input->getArgument('attribute-names')); 
         $attributeValue = $input->getArgument('attribute-value');
-        $output->write(sprintf('Resetting attribute <info>%s</info> in <info>%s</info> in dataset <info>%s</info> to <info>%s</info>...',  $attributeName, $componentName, $dataset->getFullName(), $attributeValue));
+        $output->write(sprintf('Resetting attribute(s) <info>%s</info> in <info>%s</info> in dataset <info>%s</info> to <info>%s</info>...',  implode(', ',$attributeNames), $componentName, $dataset->getFullName(), var_export($attributeValue, true)));
         
         $datasetComponentAttributeManager = $dataset->getComponentAttributeManager();
-        $datasetComponentAttributeManager->resetAttribute($componentName, $attributeName, $attributeValue);
+        $datasetComponentAttributeManager->resetAttributes($componentName, $attributeNames, $attributeValue);
         
         $output->writeln(' Done.');
     }

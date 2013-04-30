@@ -44,37 +44,23 @@ class ComponentAttributeManager {
     }
         
     /**
-     * Add a column to the component table
+     * Add one or several columns to the component table
      */
-    public function initAttribute($componentName, $attributeName, $attributeColumnDefinition)
+    public function initAttributes($componentName, $attributeNames, $attributeColumnDefinition)
     {
+        if (is_string($attributeNames)) {
+            $attributeNamesAsArray = [$attributeNames];
+        } else {
+            $attributeNamesAsArray = $attributeNames;
+        }
+        
         $this->sqlTemplateManager->run('postgres_helper#datasets/component-attributes/init', [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
-                'attributeName'=>$attributeName,
+                'attributeNames'=>$attributeNames,
                 'attributeColumnDefinition'=>$attributeColumnDefinition,
                 ]);
-    }
-    
-    public function calculateAttribute($componentName, $attributeName)
-    {
-        $schema = $this->dataset->getSchema();
-        $type = $this->dataset->getProperty('type');
-        
-        // TODO look for a service that does custom flagging (not sql-based)
-
-        $templates = [
-                "$schema#$componentName/attributes/$attributeName.$type",
-                "$schema#$componentName/attributes/$attributeName",
-            ];
-        
-        $this->sqlTemplateManager->run($templates, [
-                'schema'=>$this->dataset->getSchema(),
-                'datasetName'=>$this->dataset->getName(),
-                'componentName'=>$componentName,
-                ]);
-        
     }
     
     public function getAttributesByIds($componentName, $attributeNames, $recordIds)
@@ -125,42 +111,85 @@ class ComponentAttributeManager {
      * Sets an attributes to a given value or null for all records
      * @param Dataset $this->dataset
      * @param string $componentName
-     * @param string $attributeName
-     * @param boolean|null $value
+     * @param string|array $attributeNames
+     * @param any $value
      */
-    public function resetAttribute($componentName, $attributeName, $value = null)
+    public function resetAttributes($componentName, $attributeNames, $value = null)
     {
+        if (is_string($attributeNames)) {
+            $attributeNamesAsArray = [$attributeNames];
+        } else {
+            $attributeNamesAsArray = $attributeNames;
+        }
         $this->sqlTemplateManager->run("postgres_helper#datasets/component-attributes/reset", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
-                'attributeName'=>$attributeName,
-                'attributeValue'=>$value,
-                ]);
+                'attributeNames'=>$attributeNamesAsArray,
+                ], ['attributeValue'=>$value]);
     }
 
     /**
-     * Sets an attributes to a given value for a list of records with given ids
+     * Sets an attributes to a specific value for a list of records with given ids
      * @param Dataset $this->dataset
      * @param string $componentName
      * @param string $attributeName
      * @param array|string $recordIds one or several record ids
      * @param boolean|null $value
      */
-    public function setAttribute($componentName, $attributeName, $recordIds, $value)
+    public function setAttributes($componentName, $attributeNames, $recordIds, $value)
     {
-        // TODO look for a service that does custom flagging (not sql-based)
-        $schema = $this->dataset->getSchema();
-        $type = $this->dataset->getProperty('type');
-    
+        if (is_string($attributeNames)) {
+            $attributeNamesAsArray = [$attributeNames];
+        } else {
+            $attributeNamesAsArray = $attributeNames;
+        }
+        
         $recordIdsAsStr = "'".implode("','", $recordIds)."'";
     
         $this->sqlTemplateManager->run("postgres_helper#datasets/component-attributes/set", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
-                'attributeName'=>$attributeName,
+                'attributeNames'=>$attributeNamesAsArray,
                 'recordIdsAsStr'=>$recordIdsAsStr,
                 ], ['attributeValue'=>$value]);
+    }
+    
+    public function updateAttributes($componentName, $attributeNames, $recordIds)
+    {
+        if (is_string($attributeNames)) {
+            $attributeNamesAsArray = [$attributeNames];
+        } else {
+            $attributeNamesAsArray = $attributeNames;
+        }
+        
+        $attributeNamesToUpdate = $attributeNamesAsArray;
+
+        $updateQueue = [];
+        
+        // Looking for appropriate attribute updaters
+        // and adding them into the queue
+        while (size($attributeNamesToUpdate)) {
+            foreach($this->datasetManager->getComponentAttributeUpdaters() as $componentAttributeUpdater) {
+                $whatThisComponentAttributeUpdaterCanUpdate = $componentAttributeUpdater->listAttributesThatCanUpdate($dataset, $componentName, $attributeNamesToUpdate);
+                if ($whatThisComponentAttributeUpdaterCanUpdate) {
+                    array_push($updateQueue,
+                            [
+                                'updater' => $componentAttributeUpdater,
+                                'attributes' => $whatThisComponentAttributeUpdaterCanUpdate,
+                            ]
+                        );
+                    $attributeNamesToUpdate = array_diff($attributeNamesToUpdate, $whatThisComponentAttributeUpdaterCanUpdate);
+                    continue;
+                }
+            }
+            throw new \RuntimeException(sprintf('Could not find an updater for %s', implode(', ', $attributeNamesToUpdate)));
+        }
+        
+        // Actual updating using assigned updaters
+        foreach ($updateQueue as $queueElement) {
+            $queueElement['updater']->update($dataset, $componentName, $queueElement['attributes'], $recordIds);
+        }
     }
 }

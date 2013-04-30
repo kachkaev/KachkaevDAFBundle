@@ -53,6 +53,13 @@ class KachkaevPostgresHelperBundleExtension extends Twig_Extension
         return $functions;
     }
     
+     public function getFilters() {
+        return array(
+            'repeat'   => new \Twig_Filter_Function('str_repeat'),
+            'to_array'   => new \Twig_Filter_Method($this, 'toArray'),
+        );
+    }
+        
     public function getGlobals()
     {
         return [
@@ -73,5 +80,10 @@ class KachkaevPostgresHelperBundleExtension extends Twig_Extension
     public function getGlobalScopeVar($key)
     {
         return $this->globalScopeVars[$key];
+    }
+    
+    public function toArray($arrayElement, $count)
+    {
+        return array_fill(0, $count, $arrayElement);
     }
 }

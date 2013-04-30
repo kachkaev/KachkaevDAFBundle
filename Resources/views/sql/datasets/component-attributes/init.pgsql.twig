@@ -1,1 +1,5 @@
-ALTER TABLE {{ schema }}.{{ datasetName }}__{{ componentName }} ADD COLUMN {{ attributeName }} {{ attributeColumnDefinition }}
+ALTER TABLE {{ schema }}.{{ datasetName }}__{{ componentName }}
+{% for attributeName in attributeNames %}
+    ADD COLUMN {{ attributeName }} {{ attributeColumnDefinition -}}
+    {% if not loop.last %},{% endif %}
+{% endfor %}

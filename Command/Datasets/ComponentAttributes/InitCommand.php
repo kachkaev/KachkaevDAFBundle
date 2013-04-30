@@ -14,12 +14,12 @@ class InitCommand extends AbstractParameterAwareCommand
     {
         $this
             ->setName('ph:datasets:component-attributes:init')
-            ->setDescription('Initialises an attribute in the component (column in a table)')
+            ->setDescription('Initialises one or several similar attribute in the component')
             ->makeDatasetAware()
             ->markAsBroken()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')
-            ->addArgument('attribute-name', InputArgument::REQUIRED, 'Name of the attribute to initialise')
-            ->addArgument('attribute-definition', InputArgument::REQUIRED, 'Definition of the attribute column')
+            ->addArgument('attribute-names', InputArgument::REQUIRED, 'Comma-separated names of the attributes to create')
+            ->addArgument('attribute-definition', InputArgument::REQUIRED, 'Definition of all created attribute columns')
         ;
     }
 
@@ -31,12 +31,12 @@ class InitCommand extends AbstractParameterAwareCommand
         $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
         
-        $attributeName = $input->getArgument('attribute-name'); 
+        $attributeNames = explode(',', $input->getArgument('attribute-names')); 
         $attributeDefinition = $input->getArgument('attribute-definition');
-        $output->write(sprintf('Adding attribute <info>%s</info> in <info>%s</info> in dataset <info>%s</info>...',  $attributeName, $componentName, $dataset->getFullName()));
+        $output->write(sprintf('Adding attribute(s) <info>%s</info> in <info>%s</info> in dataset <info>%s</info>...',  implode(', ', $attributeNames), $componentName, $dataset->getFullName()));
         
         $datasetComponentAttributeManager = $dataset->getComponentAttributeManager();
-        $datasetComponentAttributeManager->initAttribute($componentName, $attributeName, $attributeDefinition);
+        $datasetComponentAttributeManager->initAttributes($componentName, $attributeNames, $attributeDefinition);
         
         $output->writeln(' Done.');
         $output->writeln('<comment>Please don\'t forget to update component initialisation template!</comment>');

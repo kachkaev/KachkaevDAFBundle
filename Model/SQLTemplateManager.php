@@ -51,6 +51,49 @@ class SQLTemplateManager
     }
     
     /**
+     * Checks whether the given templates exists
+     * @param string $queryTemplates
+     * @return boolean
+     */
+    public function exists($queryTemplate)
+    {
+        $queryTemplatePath = $this->getQueryTemplatePath($queryTemplate);
+        return $this->templating->exists($queryTemplatePath);
+    }
+    
+    /**
+     * Checks whether at least of given sql templates exist
+     * @param array $queryTemplates
+     * @return boolean
+     */
+    public function existSomeOf(array $queryTemplates)
+    {
+        foreach ($queryTemplates as $queryTemplate) {
+            $queryTemplatePath = $this->getQueryTemplatePath($queryTemplate);
+            if ($this->templating->exists($queryTemplatePath)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Checks whether all of given sql templates exists
+     * @param array $queryTemplates
+     * @return boolean
+     */
+    public function existAllOf(array $queryTemplates)
+    {
+        foreach ($queryTemplates as $queryTemplate) {
+            $queryTemplatePath = $this->getQueryTemplatePath($queryTemplate);
+            if (!$this->templating->exists($queryTemplatePath)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
      * Renders the first template found in the list of $queryTemplates
      * @param array|string $queryTemplates one or several query templates to look for
      * @param array $templateParams

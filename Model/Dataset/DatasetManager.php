@@ -40,6 +40,8 @@ abstract class DatasetManager implements ManagerInterface
      */
     protected $nameValidator;
     
+    protected $componentAttributeUpdaters;
+    
     protected $schema = 'public';
     
     protected $class;
@@ -374,4 +376,20 @@ abstract class DatasetManager implements ManagerInterface
     {
         $this->schemaManager->updateFunctions($this->schema);
     }
+    
+    /**
+     * Returns all registered component attribute updaters
+     * (services tagged with postgres_helper.component_attribute_updater)
+     */
+    public function getComponentAttributeUpdaters()
+    {
+        if ($this->componentAttributeUpdaters !== null) {
+            $this->componentAttributeUpdaters = [];
+            foreach ($container->findTaggedServiceIds('postgres_helper.component_attribute_updater') as $id => $attributes) {
+                array_push($this->componentAttributeUpdaters, $this->container->get($id));
+            }
+        }
+        return $this->componentAttributeUpdaters;
+    }
+    
 }

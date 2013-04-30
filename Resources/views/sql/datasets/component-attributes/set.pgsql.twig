@@ -1,2 +1,4 @@
 UPDATE {% block fullComponentName %}{{ schema }}.{{ datasetName }}__{{ componentName }}{% endblock %}
-    SET {{ attributeName }} = :attributeValue WHERE id IN ({{recordIdsAsStr}})-- AND {{ attributeName }} <> :attributeValue;
+    SET ({{ attributeNames | join(',')) }}) = {{ ':attributeValue' | repeat(attributeNames | length) | join(','))}}
+    WHERE id IN ({{recordIdsAsStr}})
+    {# -- AND ({{ attributeName }} <> :attributeValue); #}
