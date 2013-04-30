@@ -1,4 +1,8 @@
 UPDATE {% block fullComponentName %}{{ schema }}.{{ datasetName }}__{{ componentName }}{% endblock %}
-    SET ({{ attributeNames | join(',')) }}) = {{ ':attributeValue' | repeat(attributeNames | length) | join(','))}}
-    WHERE id IN ({{recordIdsAsStr}})
+    SET ({{ attributeNames | join(',') }}) = ({{ (':attributeValue' | to_array(attributeNames | length)) | join(',') }})
+    WHERE id {% if recordIdsAsStr is defined %}
+        IN ({{ recordIdsAsStr }})
+    {% else %}
+        = {{ recordIdAsStr }}
+    {% endif %}
     {# -- AND ({{ attributeName }} <> :attributeValue); #}

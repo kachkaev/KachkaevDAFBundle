@@ -19,7 +19,6 @@ class SQLTemplateBasedUpdater extends AbstractComponentAttributeUpdater
         $sqlTemplateManager = $dataset->getDatasetManager()->getSQLTemplatManager();
         $schema = $dataset->getSchema();
         $type = $dataset->getProperty('type');
-        //var_dump($dataset, $componentName);
         
         $result = [];
         foreach ($attributeNames as $attributeName) {

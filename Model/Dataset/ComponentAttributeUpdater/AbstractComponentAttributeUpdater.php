@@ -28,16 +28,4 @@ abstract class AbstractComponentAttributeUpdater
      * @return undefined
      */
     abstract public function update(Dataset $dataset, $componentName, array $attributeNames, array $recordIds = null);
-    
-    /**
-     * Saves all data to the db
-     * @param SQLTemplateManager $sqlTemplateManager
-     * @param array $attributeNames [name1, name2, ...]
-     * @param array $data [id1 => [attr1, attr2, ...], id2 => ..., ....]
-     */
-    public function saveValuesToDB(SQLTemplateManager $sqlTemplateManager, array $attributeNames, array $data)
-    {
-        var_dump('~~~~~~HERE~~~~~~~');
-        die();
-    }
 }

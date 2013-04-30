@@ -130,10 +130,10 @@ class ComponentAttributeManager {
     }
 
     /**
-     * Sets an attributes to a specific value for a list of records with given ids
+     * Sets attributes to a specific value for a list of records with given ids
      * @param Dataset $this->dataset
      * @param string $componentName
-     * @param string $attributeName
+     * @param string $attributeNames
      * @param array|string $recordIds one or several record ids
      * @param boolean|null $value
      */
@@ -154,6 +154,36 @@ class ComponentAttributeManager {
                 'attributeNames'=>$attributeNamesAsArray,
                 'recordIdsAsStr'=>$recordIdsAsStr,
                 ], ['attributeValue'=>$value]);
+    }
+    
+    /**
+     * Saves given data to the table
+     * @param Dataset $this->dataset
+     * @param string $componentName
+     * @param string $attributeNames
+     * @param array $data id => [attr1Value, attr2Value, ...]
+     */
+    public function setData($componentName, $attributeNames, $data)
+    {
+        if (is_string($attributeNames)) {
+            $attributeNamesAsArray = [$attributeNames];
+        } else {
+            $attributeNamesAsArray = $attributeNames;
+        }
+        
+        for ($i = 0; $i < count($attributeNames); ++$i) {
+            $attributeName = $attributeNames[$i];
+            foreach ($data as $id => $attributeValues) {
+                $attributeValue = $attributeValues[$i];
+                $this->sqlTemplateManager->run("postgres_helper#datasets/component-attributes/set", [
+                        'schema'=>$this->dataset->getSchema(),
+                        'datasetName'=>$this->dataset->getName(),
+                        'componentName'=>$componentName,
+                        'attributeNames'=>[$attributeName],
+                        'recordIdAsStr'=>'\''.$id.'\'',
+                        ], ['attributeValue'=>$attributeValue]);
+            }
+        }
     }
     
     public function updateAttributes($componentName, $attributeNames, $recordIds)
