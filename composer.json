@@ -29,7 +29,7 @@
     },
 
     "suggest": {
-        "symfony/twig-bundle": ">=2.1.0,<2.3-dev"
+        "symfony/twig-bundle": ">=2.1.0,<3.0-dev"
     },
 
     "autoload": {
