@@ -1,0 +1,6 @@
+SELECT {{ functionName }}(
+{% for argument in arguments %}
+"{{ argument }}"
+{% if not loop.last %},{%  %}
+{% endfor %}
+);

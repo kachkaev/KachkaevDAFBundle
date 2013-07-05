@@ -135,7 +135,6 @@ class SchemaManager implements ManagerInterface
         foreach ($finder as $file) {
             $functionName = $file->getBaseName('.pgsql.twig');
             preg_match('/^(dataset__)?([^\.]*)(\.(.+))?$/', $functionName, $matches);
-    
             if (!$matches[1]) {
                 $functionsByCategory[0] []= $functionName;
             } else if (!array_key_exists(3, $matches)) {
@@ -156,7 +155,7 @@ class SchemaManager implements ManagerInterface
         };
     
         // Get corresponding DatasetManager
-        $serviceName = sprintf('pr.%s.manager', $schemaName);
+        $serviceName = sprintf('ph.dataset_manager.%s', $schemaName);
         if ($this->container->has($serviceName)) {
             $datasetManager = $this->container->get($serviceName);
             

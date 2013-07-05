@@ -35,6 +35,8 @@ class SQLTemplateBasedUpdater extends AbstractComponentAttributeUpdater
     
     public function update(Dataset $dataset, $componentName, array $attributeNames, array $recordIds = null)
     {
+        $this->validateAttributes($dataset, $componentName, $attributeNames);
+        
         $sqlTemplateManager = $dataset->getDatasetManager()->getSQLTemplatManager();
 
         if ($recordIds !== null) {

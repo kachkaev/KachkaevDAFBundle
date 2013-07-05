@@ -28,4 +28,13 @@ abstract class AbstractComponentAttributeUpdater
      * @return undefined
      */
     abstract public function update(Dataset $dataset, $componentName, array $attributeNames, array $recordIds = null);
+    
+    protected function validateAttributes(Dataset $dataset, $componentName, array $attributeNames, array $recordIds = null)
+    {
+        $list = $this->listAttributesThatCanUpdate($dataset, $componentName, $attributeNames);
+
+        if (count($list) != count($attributeNames)) {
+            throw new InvalidArgumentException(sprintf('Component attribute updater cannot work with the given data: dataset - %s, component - , attributes - ', $dataset->getFullName(), $componentName, implode(' ', $attributeNames)));
+        }
+    }
 }

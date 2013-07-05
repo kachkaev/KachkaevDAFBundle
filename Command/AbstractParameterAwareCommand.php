@@ -1,6 +1,8 @@
 <?php
 
 namespace Kachkaev\PostgresHelperBundle\Command;
+use Kachkaev\PostgresHelperBundle\Model\Dataset\DatasetManager;
+
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -41,7 +43,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
         } else {
             $this
             ->addArgument('dataset-name', InputArgument::REQUIRED,
-                    sprintf('Full name of the dataset within schema %s to work with)', $datasetSchema));
+                    sprintf('Full name of the dataset within schema %s to work with', $datasetSchema));
         }
         
         return $this;
@@ -190,6 +192,9 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
         return $result;
     }
     
+    /**
+     * @return DatasetManager
+     */
     public function getDatasetManager($schema) {
         
         $this->getContainer()->get('postgres_helper.validator.schema_name')->assertValid($schema);
