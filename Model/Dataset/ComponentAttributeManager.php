@@ -65,7 +65,10 @@ class ComponentAttributeManager {
     
     public function getAttributesByIds($componentName, $attributeNames, $recordIds)
     {
-        $attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
+        // Qutes are removed tom make it possible to typecast attributes
+        //$attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
+        $attributeNamesAsStr = ''.implode(',', $attributeNames).'';
+        
         $recordIdsAsStr = "'".implode("','", $recordIds)."'";
         
         $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/component-attributes/getByIds", [
@@ -79,10 +82,11 @@ class ComponentAttributeManager {
         return $result;
     }
 
-
     public function getAttributesWhere($componentName, $attributeNames, $where)
     {
-        $attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
+        // Qutes are removed tom make it possible to typecast attributes
+        //$attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
+        $attributeNamesAsStr = ''.implode(',', $attributeNames).'';
         
         $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/component-attributes/getWhere", [
                 'schema'=>$this->dataset->getSchema(),
@@ -158,6 +162,7 @@ class ComponentAttributeManager {
     
     /**
      * Saves given data to the table
+     * 
      * @param Dataset $this->dataset
      * @param string $componentName
      * @param string $attributeNames
@@ -171,21 +176,26 @@ class ComponentAttributeManager {
             $attributeNamesAsArray = $attributeNames;
         }
         
-        for ($i = 0; $i < count($attributeNames); ++$i) {
-            $attributeName = $attributeNames[$i];
-            foreach ($data as $id => $attributeValues) {
-                $attributeValue = $attributeValues[$i];
-                $this->sqlTemplateManager->run("postgres_helper#datasets/component-attributes/set", [
-                        'schema'=>$this->dataset->getSchema(),
-                        'datasetName'=>$this->dataset->getName(),
-                        'componentName'=>$componentName,
-                        'attributeNames'=>[$attributeName],
-                        'recordIdAsStr'=>'\''.$id.'\'',
-                        ], ['attributeValue'=>$attributeValue]);
-            }
+        $attributeCount = count($attributeNames);
+        foreach ($data as $id => $attributeValues) {
+            $this->sqlTemplateManager->run("postgres_helper#datasets/component-attributes/set", [
+                    'schema'=>$this->dataset->getSchema(),
+                    'datasetName'=>$this->dataset->getName(),
+                    'componentName'=>$componentName,
+                    'attributeNames'=>$attributeNames,
+                    'recordIdAsStr'=>'\''.$id.'\'',
+                    ], $attributeValues);
         }
     }
     
+    /**
+     * Updates attributes in the selected dataset component. Invokes corresponding attribute updaters
+     *  
+     * @param string $componentName
+     * @param string|array $attributeNames
+     * @param array $recordIds
+     * @throws \RuntimeException
+     */
     public function updateAttributes($componentName, $attributeNames, $recordIds)
     {
         if (is_string($attributeNames)) {

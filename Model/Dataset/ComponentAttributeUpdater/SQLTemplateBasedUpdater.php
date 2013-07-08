@@ -14,6 +14,8 @@ use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
  */
 class SQLTemplateBasedUpdater extends AbstractComponentAttributeUpdater
 {
+    protected $supportsNullForRecordIds = true;
+    
     public function listAttributesThatCanUpdate(Dataset $dataset, $componentName, array $attributeNames)
     {
         $sqlTemplateManager = $dataset->getDatasetManager()->getSQLTemplatManager();
@@ -33,7 +35,7 @@ class SQLTemplateBasedUpdater extends AbstractComponentAttributeUpdater
         return $result;
     }
     
-    public function update(Dataset $dataset, $componentName, array $attributeNames, array $recordIds = null)
+    public function doUpdate(Dataset $dataset, $componentName, array $attributeNames, array $recordIds = null)
     {
         $this->validateAttributes($dataset, $componentName, $attributeNames);
         
@@ -59,5 +61,4 @@ class SQLTemplateBasedUpdater extends AbstractComponentAttributeUpdater
                     ]);
         }
     }
-
 }
