@@ -205,9 +205,9 @@ class ComponentManager implements ManagerInterface
         if ($considerSchemaRelatedTemplate) {
             $templates []= "$schema#$componentName/$task";
         }
-        if ($considerPostgresHelperTemplate) {
-            $templates []= "$schema#$componentName/$task";
-        }
+//         if ($considerPostgresHelperTemplate) {
+//             $templates []= "$schema#$componentName/$task";
+//         }
         
         $this->sqlTemplateManager->run($templates, [
                 'schema'=>$this->dataset->getSchema(),

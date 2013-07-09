@@ -1,0 +1,2 @@
+SELECT COUNT(*) FROM {{ schema }}.{{ datasetName }}__{{ componentName }}
+{% if filter %} WHERE {{ filter }} {% endif %}

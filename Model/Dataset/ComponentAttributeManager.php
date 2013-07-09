@@ -1,8 +1,6 @@
 <?php
 namespace Kachkaev\PostgresHelperBundle\Model\Dataset;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Kachkaev\PostgresHelperBundle\Model\Dataset\Dataset;
 use JMS\DiExtraBundle\Annotation as DI;
 

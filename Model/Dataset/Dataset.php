@@ -27,6 +27,11 @@ abstract class Dataset
     protected $componentAttributeManager;
     
     /**
+     * @var ComponentRecordManager */
+    protected $componentRecordManager;
+    
+    
+    /**
      * @var SQLTemplateManager */
     protected $sqlTemplateManager;
     
@@ -259,11 +264,18 @@ abstract class Dataset
     // Dependency Injection
     // ========================================================================
     
+    /**
+     * @return DatasetManager
+     */
     public function getDatasetManager()
     {
         return $this->datasetManager;
     }
     
+    /**
+     * 
+     * @return ComponentManager
+     */
     public function getComponentManager()
     {
         if (!$this->componentManager)
@@ -272,12 +284,27 @@ abstract class Dataset
         return $this->componentManager; 
     }
 
+    /**
+     * 
+     * @return ComponentAttributeManager
+     */
     public function getComponentAttributeManager()
     {
         if (!$this->componentAttributeManager)
             $this->componentAttributeManager = new ComponentAttributeManager($this);
     
         return $this->componentAttributeManager;
+    }
+
+    /**
+     * @return ComponentRecordManager
+     */
+    public function getComponentRecordManager()
+    {
+        if (!$this->componentRecordManager)
+            $this->componentRecordManager = new ComponentRecordManager($this);
+    
+        return $this->componentRecordManager;
     }
     
 }

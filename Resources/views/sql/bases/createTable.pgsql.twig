@@ -14,3 +14,18 @@ WITH (
 ALTER TABLE {{ block('schema') }}.{{ block('tableName') }}
   OWNER TO {{ mainDBOwner }};
 {% endblock %}
+
+{{ setGlobalScopeVar('tableComment', {}) }}
+{{ setGlobalScopeVar('attributeComments', {}) }}
+{% block comments %}
+{% endblock %}
+
+{% if (getGlobalScopeVar('tableComment')) %}
+COMMENT ON TABLE "{{ block('schema') }}"."{{ block('tableName') }}" IS '{{ getGlobalScopeVar('tableComment') }}';
+{% endif %}
+
+{% if (getGlobalScopeVar('attributeComments')) %}
+{% for columnName, attributeComment in getGlobalScopeVar('attributeComments') %}
+COMMENT ON COLUMN "{{ block('schema') }}"."{{ block('tableName') }}"."{{ columnName }}" IS '{{ attributeComment }}';
+{% endfor %}
+{% endif %}
