@@ -33,10 +33,10 @@ class CountCommand extends AbstractParameterAwareCommand
     
         $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
-        $componentDataManager = $dataset->getComponentRecordManager();
+        $componentRecordManager = $dataset->getComponentRecordManager();
     
         // Counting records to clean
-        $recordCount = $componentDataManager->count($componentName, $filter);
+        $recordCount = $componentRecordManager->count($componentName, $filter);
         $output->writeln(sprintf('<info>%d</info>', $recordCount));
     }
     

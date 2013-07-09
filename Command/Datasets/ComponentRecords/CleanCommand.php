@@ -34,16 +34,16 @@ class CleanCommand extends AbstractParameterAwareCommand
     
         $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
-        $componentDataManager = $dataset->getComponentRecordManager();
+        $componentRecordManager = $dataset->getComponentRecordManager();
     
         // Counting records to clean
-        $recordCount = $componentDataManager->count($componentName, $filter);
+        $recordCount = $componentRecordManager->count($componentName, $filter);
         if ($recordCount > 0) {
             if ($this->forceNotUsed($input, $output, sprintf('%d records in component %s of the dataset %s will be lost!', $recordCount, $componentName, $dataset->getFullName()))) {
                 return 1;
             } else {
                 $output->write(sprintf('Deleting %d records in component %s of the dataset %s...', $recordCount, $componentName, $dataset->getFullName()));
-                $componentDataManager->clean($componentName, $filter);
+                $componentRecordManager->clean($componentName, $filter);
                 $output->writeln(' Done.');
             }
         } else {

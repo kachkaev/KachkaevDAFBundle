@@ -27,8 +27,8 @@ class PopulateCommand extends AbstractParameterAwareCommand
         
         $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
-        $componentDataManager = $dataset->getComponentRecordManager();
+        $componentRecordManager = $dataset->getComponentRecordManager();
         
-        $componentDataManager->populate($input->getArgument('component-name'), [], $output);
+        $componentRecordManager->populate($input->getArgument('component-name'), [], $output);
     }
 }
