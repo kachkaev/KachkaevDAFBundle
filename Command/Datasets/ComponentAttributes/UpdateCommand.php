@@ -26,6 +26,9 @@ class UpdateCommand extends AbstractParameterAwareCommand
             ->addOption('filter', null, InputOption::VALUE_REQUIRED,
                     'sql WHERE to filter records and get their ids',
                     null)
+            ->addOption('chunk-size', null, InputOption::VALUE_REQUIRED,
+                    sprintf('number of records in a batch'),
+                    null)
             ;
     }
 
@@ -46,7 +49,7 @@ class UpdateCommand extends AbstractParameterAwareCommand
             $ids = explode(',',$input->getOption('ids'));
         } else if ($input->getOption('filter')) {
             // From the filter
-            $ids = $attributeManager->getIdsWhere('items', $input->getOption('filter'));
+            $ids = $attributeManager->getIdsWhere($componentName, $input->getOption('filter'));
         } else {
             throw new \InvalidArgumentException("Either option ids or filter must be defined.");
         }
@@ -56,12 +59,12 @@ class UpdateCommand extends AbstractParameterAwareCommand
             return;
         }
         
-        $output->writeln(sprintf('Updating attributes for %s records...', count($ids)));
+        $output->writeln(sprintf('Updating attributes for %s records...', number_format(count($ids))));
         $progress = $this->getHelper('progress');
         $progress->start($output, count($ids));
         
         // Update records by chunks
-        $chunkSize = $this->getContainer()->getParameter('postgres_helper.batch_chunk_size');
+        $chunkSize = $input->getOption('chunk-size') ? : $this->getContainer()->getParameter('postgres_helper.batch_chunk_size');
         $idChunks = array_chunk($ids, $chunkSize);
         
         foreach ($idChunks as $idChunk) {
