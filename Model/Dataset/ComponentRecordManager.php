@@ -196,6 +196,23 @@ class ComponentRecordManager {
         $attributesDestinationNotSource = array_diff_assoc($destinationAttributes, $sourceAttributes);
         $attributesInBoth = array_intersect_assoc($sourceAttributes, $destinationAttributes);
         
+        // Check mappings a::type->b
+        foreach ($attributeMappings as $attributeAndTypeFrom => $attributeTo) {
+            $attributeFrom = $attributeAndTypeFrom;
+            if (strpos($attributeFrom, ':') !== false) {
+                $attributeFrom = substr($attributeFrom, 0, strpos($attributeFrom, ':'));
+            }
+            
+            if (!array_key_exists($attributeFrom, $sourceAttributes)) {
+                throw new \InvalidArgumentException(sprintf('Cannot find attribute %s in the source component among %s', $attributeFrom, implode(', ', array_keys($sourceAttributes))));
+            }
+            if (!array_key_exists($attributeTo, $destinationAttributes)) {
+                throw new \InvalidArgumentException(sprintf('Cannot find attribute %s in the destination component among %s', $attributeTo, implode(', ', array_keys($destinationAttributes))));
+            }
+            unset ($attributesSourceNotDestination[$attributeFrom]);
+            unset ($attributesDestinationNotSource[$attributeTo]);
+        }
+        
         if ((count($attributesSourceNotDestination) || count($attributesDestinationNotSource)) && !$ignoreAttributeMismatch) {
             throw new \RuntimeException(sprintf("Attributes in source and destination mismatch!\nExist in source only: %s,\nExist in destination only: %s.", var_export($attributesSourceNotDestination, true), var_export($attributesDestinationNotSource, true)));
         }

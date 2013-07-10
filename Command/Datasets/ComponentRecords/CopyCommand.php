@@ -44,7 +44,7 @@ class CopyCommand extends AbstractParameterAwareCommand
         if ($attributeMappingsAsStr) {
             $attributeMappingsAsRawArray = explode(',', $attributeMappingsAsStr);
             foreach($attributeMappingsAsRawArray as $am) {
-                if (!preg_match('/^\s*([a-z_0-9\:]+)\s*->\s*([a-z_0-9]+)\s*$/i', $am, $matches)) {
+                if (!preg_match('/^\s*([a-z_0-9\:\s]+)\s*->\s*([a-z_0-9]+)\s*$/i', $am, $matches)) {
                     throw new \InvalidArgumentException(sprintf('Could not parse attribute-mappings option, please check its format'));
                 }
                 $attributeMappings[$matches[1]] = $matches[2];
@@ -53,7 +53,6 @@ class CopyCommand extends AbstractParameterAwareCommand
 
         $totalIdCount = $sourceDataset->getComponentRecordManager()->count($componentName, $filter);
         $intersectingIdCount = $destinationDataset->getComponentRecordManager()->countIntersectingIds($componentName, $sourceDataset, $filter);
-        var_dump($totalIdCount, $intersectingIdCount);
         $addingIdCount = $input->getOption('existing-only') ? 0 : $totalIdCount - $intersectingIdCount;
 
         if ($this->forceNotUsed($input, $output, sprintf('%s recrods will be replaced and %s added.', number_format($intersectingIdCount), number_format($addingIdCount)))) {
