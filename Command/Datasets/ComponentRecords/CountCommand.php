@@ -37,7 +37,7 @@ class CountCommand extends AbstractParameterAwareCommand
     
         // Counting records to clean
         $recordCount = $componentRecordManager->count($componentName, $filter);
-        $output->writeln(sprintf('<info>%d</info>', $recordCount));
+        $output->writeln(sprintf('The component contains %s records</info>', number_format($recordCount)));
     }
     
 }

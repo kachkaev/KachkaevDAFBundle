@@ -1,0 +1,7 @@
+SELECT id
+    FROM {{ schema }}.{{ datasetName }}__{{ componentName }}
+    WHERE EXISTS
+    (
+        SELECT 1 FROM {{ schema }}.{{ dataset2Name }}__{{ componentName }} WHERE id = {{ schema }}.{{ datasetName }}__{{ componentName }}.id
+        {% if filterForDataset2 %} AND {{ filterForDataset2 }} {% endif %}
+    );

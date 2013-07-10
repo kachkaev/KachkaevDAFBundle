@@ -39,10 +39,10 @@ class CleanCommand extends AbstractParameterAwareCommand
         // Counting records to clean
         $recordCount = $componentRecordManager->count($componentName, $filter);
         if ($recordCount > 0) {
-            if ($this->forceNotUsed($input, $output, sprintf('%d records in component %s of the dataset %s will be lost!', $recordCount, $componentName, $dataset->getFullName()))) {
+            if ($this->forceNotUsed($input, $output, sprintf('%s records in component %s of the dataset %s will be lost!', number_format($recordCount), $componentName, $dataset->getFullName()))) {
                 return 1;
             } else {
-                $output->write(sprintf('Deleting %d records in component %s of the dataset %s...', $recordCount, $componentName, $dataset->getFullName()));
+                $output->write(sprintf('Deleting %s records in component %s of the dataset %s...', number_format($recordCount), $componentName, $dataset->getFullName()));
                 $componentRecordManager->clean($componentName, $filter);
                 $output->writeln(' Done.');
             }

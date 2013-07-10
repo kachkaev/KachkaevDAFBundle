@@ -19,13 +19,13 @@ class CopyCommand extends AbstractParameterAwareCommand
             ->setName('ph:datasets:component-records:copy')
             ->setDescription('Copies records into the component from another dataset')
             ->makeDatasetAware()
+            ->makeForceAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')
             ->addArgument('origin-dataset-name', InputArgument::REQUIRED, 'Name of the dataset within the same schema to copy data from')
             ->addOption('filter', null, InputOption::VALUE_REQUIRED, 'Filter (WHERE statement) to select what records to copy')
             ->addOption('existing-only', null, InputOption::VALUE_NONE, 'Only update attribute values of the records that already exist in the destination dataset component')
-            ->addOption('ignore-structure-difference', null, InputOption::VALUE_NONE, 'Does not throw an error when there are mismatches in attributes (columns) between the datasets')
-            ->addOption('attribute-mappings', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Comma-separated array of attribute (column) names that need to be renamed / casted, e.g. "myfield->myfield_with_new_name,myotherfield::int=>myotherfield_of_new_type"')
-            ->markAsStub()
+            ->addOption('ignore-attribute-mismatch', null, InputOption::VALUE_NONE, 'Does not throw an error when there are mismatches in attributes (columns) between the datasets')
+            ->addOption('attribute-mappings', null, InputOption::VALUE_REQUIRED, 'Comma-separated array of attribute (column) names that need to be renamed / casted, e.g. "myfield->myfield_with_new_name,myotherfield::int->myotherfield_of_new_type"')
             ;
     }
 
@@ -36,19 +36,33 @@ class CopyCommand extends AbstractParameterAwareCommand
         $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
         $destinationDataset = $datasetManager->get($extractedArguments['dataset-name']);
         $sourceDataset = $datasetManager->get($input->getArgument('origin-dataset-name'));
-        $attributeMappingsAsStr = $datasetManager->get($input->getArgument('attribute-mappings'));
+        $componentName = $input->getArgument('component-name');
+        $filter = $input->getOption('filter');
+        $attributeMappingsAsStr = $input->getOption('attribute-mappings');
 
-        //!!!CONTINUE
         $attributeMappings = [];
         if ($attributeMappingsAsStr) {
             $attributeMappingsAsRawArray = explode(',', $attributeMappingsAsStr);
             foreach($attributeMappingsAsRawArray as $am) {
-                //preg_match('^/.*');
-                //$attributeMappings
+                if (!preg_match('/^\s*([a-z_0-9\:]+)\s*->\s*([a-z_0-9]+)\s*$/i', $am, $matches)) {
+                    throw new \InvalidArgumentException(sprintf('Could not parse attribute-mappings option, please check its format'));
+                }
+                $attributeMappings[$matches[1]] = $matches[2];
             }
         }
-        
-        $componentRecordManager = $destinationDataset->getComponentRecordManager();
-        $componentRecordManager->copy($input->getArgument('component-name'), $sourceDataset, $input->getOption('filter'), $input->getOption('existing-only'), $input->getOption('ignore-structure-difference'), $output);
+
+        $totalIdCount = $sourceDataset->getComponentRecordManager()->count($componentName, $filter);
+        $intersectingIdCount = $destinationDataset->getComponentRecordManager()->countIntersectingIds($componentName, $sourceDataset, $filter);
+        var_dump($totalIdCount, $intersectingIdCount);
+        $addingIdCount = $input->getOption('existing-only') ? 0 : $totalIdCount - $intersectingIdCount;
+
+        if ($this->forceNotUsed($input, $output, sprintf('%s recrods will be replaced and %s added.', number_format($intersectingIdCount), number_format($addingIdCount)))) {
+            return;
+        }
+
+        // Do the action
+        $output->write(sprintf('Replacing %s records and adding %s...', number_format($intersectingIdCount), number_format($addingIdCount)));
+        $destinationDataset->getComponentRecordManager()->copy($componentName, $sourceDataset, $filter, $input->getOption('existing-only'), $input->getOption('ignore-attribute-mismatch'), $attributeMappings, $output);
+        $output->writeln('Done.');
     }
 }
