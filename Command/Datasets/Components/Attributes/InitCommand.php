@@ -27,12 +27,13 @@ class InitCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output, $extractedArguments);
         
-        $componentName = $input->getArgument('component-name');
         $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
         
+        $componentName = $input->getArgument('component-name');
         $attributeNames = explode(',', $input->getArgument('attribute-names')); 
         $attributeDefinition = $input->getArgument('attribute-definition');
+
         $output->write(sprintf('Adding attribute(s) <info>%s</info> in <info>%s</info> in dataset <info>%s</info>...',  implode(', ', $attributeNames), $componentName, $dataset->getFullName()));
         
         $datasetComponentAttributeManager = $dataset->getComponentAttributeManager();

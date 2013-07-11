@@ -67,20 +67,36 @@ class ComponentAttributeManager {
      */
     public function listAttributeNames($componentName)
     {
-        return array_keys($this->listAttributeNames($componentName));
+        return array_keys($this->listAttributeNamesAndTypes($componentName));
     }
     
     /**
      * Returns an array of attribute name / type pairs [name1 => postgres type1, name2 => postgres type 2]
      * @param string $componentName
      */
-    public function listAttrtibuteNamesAndTypes($componentName)
+    public function listAttributeNamesAndTypes($componentName)
     {
         return $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/list", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 ], null, \PDO::FETCH_KEY_PAIR);
+    }
+    
+    /**
+     * 
+     * @param array $attributeNames
+     * @param string $errorMessage
+     */
+    public function assertHavingAttributes($componentName, $attributeNames, $errorMessage = null)
+    {
+        $missingAttributes = array_diff($attributeNames, $this->listAttributeNames($componentName));
+        if (count($missingAttributes)) {
+            if (!$errorMessage) {
+                $errorMessage = sprintf(count($missingAttributes) == 1 ? 'Attribute %s in component %s does not exist' : 'Attributes %s in component %s do not exist', implode(', ', $missingAttributes), $componentName);
+            }
+            throw new \LogicException($errorMessage);
+        }
     }
     
     public function getAttributesByIds($componentName, $attributeNames, $recordIds)
@@ -257,4 +273,35 @@ class ComponentAttributeManager {
             $queueElement['updater']->update($this->dataset, $componentName, $queueElement['attributes'], $recordIds);
         }
     }
+    
+
+    public function renameAttribute($componentName, $attributeName, $newAttributeName)
+    {
+        
+    }
+    
+    /**
+     * Deletes the given list of attributes (drops columns) 
+     * 
+     * @param string $componentName
+     * @param array|string $attributeNames
+     */
+    public function deleteAttributes($componentName, $attributeNames)
+    {
+        if (is_string($attributeNames)) {
+            $attributeNamesAsArray = [$attributeNames];
+        } else {
+            $attributeNamesAsArray = $attributeNames;
+        }
+    
+        $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/delete", [
+                'schema'=>$this->dataset->getSchema(),
+                'datasetName'=>$this->dataset->getName(),
+                'componentName'=>$componentName,
+                'attributeNames'=>$attributeNamesAsArray,
+            ]);
+    }
+    
+    
+    
 }

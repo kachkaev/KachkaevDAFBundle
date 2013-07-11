@@ -33,7 +33,7 @@ class ListCommand extends AbstractParameterAwareCommand
         
         $outputFormatter = $this->getContainer()->get('pr.helper.output_formatter');
         
-        $list = $componentAttributeManager->listAttrtibuteNamesAndTypes($componentName);
+        $list = $componentAttributeManager->listAttributeNamesAndTypes($componentName);
         if (sizeof($list)) {
             $output->writeln(sprintf('<comment>List of attributes in component <info>%s</info> of dataset <info>%s</info>:</comment>', $componentName, $dataset->getFullName()));
             $outputFormatter->outputArrayAsAlignedList($output, $list);

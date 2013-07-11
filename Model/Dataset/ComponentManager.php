@@ -89,8 +89,12 @@ class ComponentManager implements ManagerInterface
      * @throws \LogicException if given component does not exist
      * @throws \InvalidArgumentException if the name of given component is invalid
      */
-    public function assertHaving($componentName, $errorMessage)
+    public function assertHaving($componentName, $errorMessage = null)
     {
+        if (!$errorMessage) {
+            $errorMessage = sprintf('Component %s in dataset %s does not exist', $componentName, $this->dataset->getFullName());
+        }
+        
         if (!$this->has($componentName)) {
             throw new \LogicException($errorMessage);
         }

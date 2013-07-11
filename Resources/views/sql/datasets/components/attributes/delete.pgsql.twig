@@ -1,0 +1,5 @@
+ALTER TABLE {{ schema }}.{{ datasetName }}__{{ componentName }}
+{% for attributeName in attributeNames %}
+    DROP COLUMN {{ attributeName -}}
+    {% if not loop.last %},{% endif %}
+{% endfor %}
