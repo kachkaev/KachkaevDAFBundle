@@ -99,21 +99,27 @@ class ComponentAttributeManager {
         }
     }
     
-    public function getAttributesByIds($componentName, $attributeNames, $recordIds)
+    public function getAttributesByIds($componentName, array $attributeNames, array $recordIds)
     {
         // Qutes are removed tom make it possible to typecast attributes
         //$attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
+        $attributeNames []= 'id';
         $attributeNamesAsStr = ''.implode(',', $attributeNames).'';
         
         $recordIdsAsStr = "'".implode("','", $recordIds)."'";
         
-        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/getByIds", [
+        $plainResult = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/getByIds", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 'attributeNamesAsStr'=>$attributeNamesAsStr,
                 'recordIdsAsStr'=>$recordIdsAsStr,
                 ]);
+        
+        $result = [];
+        foreach ($plainResult as $record) {
+            $result[$record['id']] = $record;
+        }
         
         return $result;
     }
@@ -252,6 +258,8 @@ class ComponentAttributeManager {
 
         $updateQueue = [];
         
+        $sourceAttributes = ['id'];
+        
         // Looking for appropriate attribute updaters
         // and adding them into the queue
         while (count($attributeNamesToUpdate)) {
@@ -260,13 +268,16 @@ class ComponentAttributeManager {
             foreach($this->datasetManager->getComponentAttributeUpdaters() as $componentAttributeUpdater) {
                 $whatThisComponentAttributeUpdaterCanUpdate = $componentAttributeUpdater->listAttributesThatCanUpdate($this->dataset, $componentName, $attributeNamesToUpdate);
                 if ($whatThisComponentAttributeUpdaterCanUpdate) {
+                    $currentSourceAttributes = $componentAttributeUpdater->listSourceAttributes($this->dataset, $componentName, $whatThisComponentAttributeUpdaterCanUpdate);
                     array_push($updateQueue,
                             [
                                 'updater' => $componentAttributeUpdater,
-                                'attributes' => $whatThisComponentAttributeUpdaterCanUpdate,
+                                'updatableAttributes' => $whatThisComponentAttributeUpdaterCanUpdate,
+                                'sourceAttributes' => $currentSourceAttributes
                             ]
                         );
                     $attributeNamesToUpdate = array_diff($attributeNamesToUpdate, $whatThisComponentAttributeUpdaterCanUpdate);
+                    $sourceAttributes = array_merge($sourceAttributes, $currentSourceAttributes);
                     break;
                 }
             }
@@ -275,10 +286,26 @@ class ComponentAttributeManager {
             }
         }
         
+        $sourceAttributes = array_unique(array_merge($sourceAttributes, $attributeNames));
+        
+        $data = $this->getAttributesByIds($componentName, $sourceAttributes, $recordIds);
+        
         // Actual updating using assigned updaters
         foreach ($updateQueue as $queueElement) {
-            $queueElement['updater']->update($this->dataset, $componentName, $queueElement['attributes'], $recordIds);
+            $queueElement['updater']->update($this->dataset, $componentName, $queueElement['updatableAttributes'], $data);
         }
+        
+        $dataToWrite = [];
+        foreach ($data as $id => &$record) {
+            $currentDataToWrite = [];
+            foreach ($attributeNamesAsArray as &$attributeName) {
+                //var_dump($record);
+                $currentDataToWrite[] = $record[$attributeName];
+            }
+            $dataToWrite[$id] = $currentDataToWrite;
+        }
+        
+        $this->setData($componentName, $attributeNamesAsArray, $dataToWrite);
     }
 
     /**

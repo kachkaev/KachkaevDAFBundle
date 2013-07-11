@@ -20,29 +20,35 @@ abstract class AbstractComponentAttributeUpdater
     abstract public function listAttributesThatCanUpdate(Dataset $dataset, $componentName, array $attributeNames);
 
     /**
-     * Updates attributes in all/selected records according to the built-in rules
+     * Returns names of source component attributes that are needed by this updater
+     * E.g. if attrA = attrB + attrC, and this attributeUpdater works with attrA,
+     * then the method returns [attrB, attrC]
      * 
      * @param Dataset $dataset
      * @param string $componentName
      * @param array $attributeNames
-     * @param array|null $recordIds can be null only if protected $supportsNullForRecordIds = true
      */
-    public function update(Dataset $dataset, $componentName, array $attributeNames, array $recordIds = null)
+    public function listSourceAttributes(Dataset $dataset, $componentName, array $attributeNames)
+    {
+        return [];
+    }
+    
+    /**
+     * Updates attributes in all/selected data records according to the built-in rules
+     * Does not write to the DB as such, but results changes in $data, that are then written into the DB (externally)
+     * 
+     * @param Dataset $dataset
+     * @param string $componentName
+     * @param array $attributeNames
+     * @param array $data data to transform. Has the following format:
+     *     id1 => [attr1=>value1, attr2=>value2]
+     *     id2 => [attr1=>value1, attr2=>value2]
+     */
+    public function update(Dataset $dataset, $componentName, array $attributeNames, array &$data)
     {
         $this->validateAttributes($dataset, $componentName, $attributeNames);
 
-        if (is_array($recordIds)) {
-            
-        } else if (is_null($recordIds)) {
-            if (!$this->supportsNullForRecordIds) {
-                throw new \InvalidArgumentException('Record ids should be an array, null is not supported.');    
-            }
-        } else {
-            throw new \InvalidArgumentException(sprintf('parameter $recordIds should be an array%s, given: %s', $this->supportsNullForRecordIds ? ' or null' : '', var_export($recordIds, true)));    
-        }
-        
-        $this->doUpdate($dataset, $componentName, $attributeNames, $recordIds);
-        
+        $this->doUpdate($dataset, $componentName, $attributeNames, $data);
     }
 
     /**
@@ -51,9 +57,9 @@ abstract class AbstractComponentAttributeUpdater
      * @param Dataset $dataset
      * @param string $componentName
      * @param array $attributeNames
-     * @param array|null $recordIds
+     * @param array $data
      */
-    protected abstract function doUpdate(Dataset $dataset, $componentName, array $attributeNames, array $recordIds = null);
+    protected abstract function doUpdate(Dataset $dataset, $componentName, array $attributeNames, array &$data);
     
     /**
      * Validates passed attributes and throws InvalidArgumentException
