@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\ComponentAttributes;
+namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components\Attributes;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,7 +13,7 @@ class InitCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:component-attributes:init')
+            ->setName('ph:datasets:components:attributes:init')
             ->setDescription('Initialises one or several similar attribute in the component')
             ->makeDatasetAware()
             ->markAsBroken()

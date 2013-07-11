@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\ComponentAttributes;
+namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components\Attributes;
 
 use Symfony\Component\Console\Input\InputOption;
 
@@ -15,7 +15,7 @@ class UpdateCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:component-attributes:update')
+            ->setName('ph:datasets:components:attributes:update')
             ->setDescription('Updates given attributes of the given dataset component')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\ComponentRecords;
+namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components\Records;
 
 use Symfony\Component\Console\Input\InputOption;
 
@@ -16,7 +16,7 @@ class CopyCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:component-records:copy')
+            ->setName('ph:datasets:components:records:copy')
             ->setDescription('Copies records into the component from another dataset')
             ->makeDatasetAware()
             ->makeForceAware()

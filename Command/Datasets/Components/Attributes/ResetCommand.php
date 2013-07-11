@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\ComponentAttributes;
+namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components\Attributes;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,7 +13,7 @@ class ResetCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:component-attributes:reset')
+            ->setName('ph:datasets:components:attributes:reset')
             ->setDescription('Resets an attribute of the given dataset component')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')

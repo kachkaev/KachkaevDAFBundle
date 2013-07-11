@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\ComponentRecords;
+namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components\Records;
 
 use Symfony\Component\Console\Input\InputOption;
 
@@ -16,7 +16,7 @@ class CleanCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:component-records:clean')
+            ->setName('ph:datasets:components:records:clean')
             ->setDescription('Removes records from the component (all or a filtered subset)')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')
