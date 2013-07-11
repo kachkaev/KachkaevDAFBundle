@@ -277,7 +277,13 @@ class ComponentAttributeManager {
 
     public function renameAttribute($componentName, $attributeName, $newAttributeName)
     {
-        
+        $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/rename", [
+                'schema'=>$this->dataset->getSchema(),
+                'datasetName'=>$this->dataset->getName(),
+                'componentName'=>$componentName,
+                'attributeName'=>$attributeName,
+                'newAttributeName'=>$newAttributeName,
+            ]);
     }
     
     /**
