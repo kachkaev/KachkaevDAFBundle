@@ -61,7 +61,7 @@ class CopyCommand extends AbstractParameterAwareCommand
 
         // Do the action
         $output->write(sprintf('Replacing %s records and adding %s...', number_format($intersectingIdCount), number_format($addingIdCount)));
-        $destinationDataset->getComponentRecordManager()->copy($componentName, $sourceDataset, $filter, $input->getOption('existing-only'), $input->getOption('ignore-attribute-mismatch'), $attributeMappings, $output);
+        $destinationDataset->getComponentRecordManager()->copy($componentName, $sourceDataset, $filter, $input->getOption('existing-only'), $input->getOption('ignore-attribute-mismatch'), $attributeMappings);
         $output->writeln('Done.');
     }
 }

@@ -52,7 +52,7 @@ class ComponentAttributeManager {
             $attributeNamesAsArray = $attributeNames;
         }
         
-        $this->sqlTemplateManager->run('postgres_helper#datasets/component-attributes/init', [
+        $this->sqlTemplateManager->run('postgres_helper#datasets/components/attributes/init', [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -69,7 +69,7 @@ class ComponentAttributeManager {
         
         $recordIdsAsStr = "'".implode("','", $recordIds)."'";
         
-        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/component-attributes/getByIds", [
+        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/getByIds", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -86,7 +86,7 @@ class ComponentAttributeManager {
         //$attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
         $attributeNamesAsStr = ''.implode(',', $attributeNames).'';
         
-        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/component-attributes/getWhere", [
+        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/getWhere", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -99,7 +99,7 @@ class ComponentAttributeManager {
 
     public function getIdsWhere($componentName, $where)
     {
-        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/component-attributes/getIdsWhere", [
+        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/getIdsWhere", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -116,18 +116,19 @@ class ComponentAttributeManager {
      * @param string|array $attributeNames
      * @param any $value
      */
-    public function resetAttributes($componentName, $attributeNames, $value = null)
+    public function resetAttributes($componentName, $attributeNames, $value = null, $filter = null)
     {
         if (is_string($attributeNames)) {
             $attributeNamesAsArray = [$attributeNames];
         } else {
             $attributeNamesAsArray = $attributeNames;
         }
-        $this->sqlTemplateManager->run("postgres_helper#datasets/component-attributes/reset", [
+        $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/reset", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 'attributeNames'=>$attributeNamesAsArray,
+                'filter'=>$filter
                 ], ['attributeValue'=>$value]);
     }
 
@@ -149,7 +150,7 @@ class ComponentAttributeManager {
         
         $recordIdsAsStr = "'".implode("','", $recordIds)."'";
     
-        $this->sqlTemplateManager->run("postgres_helper#datasets/component-attributes/set", [
+        $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/set", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -176,7 +177,7 @@ class ComponentAttributeManager {
         
         $attributeCount = count($attributeNames);
         foreach ($data as $id => $attributeValues) {
-            $this->sqlTemplateManager->run("postgres_helper#datasets/component-attributes/set", [
+            $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/set", [
                     'schema'=>$this->dataset->getSchema(),
                     'datasetName'=>$this->dataset->getName(),
                     'componentName'=>$componentName,

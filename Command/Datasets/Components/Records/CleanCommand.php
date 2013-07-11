@@ -50,5 +50,4 @@ class CleanCommand extends AbstractParameterAwareCommand
                 $output->writeln(sprintf('<comment>0 records to delete in component %s of the dataset %s%s.</comment>', $componentName, $dataset->getFullName(), $filter !== null ? ' with the given filter' : ''));
         }
     }
-    
 }

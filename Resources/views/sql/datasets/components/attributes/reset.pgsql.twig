@@ -1,3 +1,4 @@
 UPDATE {% block fullComponentName %}{{ schema }}.{{ datasetName }}__{{ componentName }}{% endblock %}
     SET ({{ attributeNames | join(',') }}) = ({{ (':attributeValue' | to_array(attributeNames | length)) | join(',') }})
+{% if filter %} WHERE {{ filter }} {% endif %}
 {# -- WHERE {{ attributeName }} <> {{ attributeValue }}; #}
