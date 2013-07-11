@@ -61,6 +61,28 @@ class ComponentAttributeManager {
                 ]);
     }
     
+    /**
+     * Returns an array of attribute names [name1, name2, ...]
+     * @param string $componentName
+     */
+    public function listAttributeNames($componentName)
+    {
+        return array_keys($this->listAttributeNames($componentName));
+    }
+    
+    /**
+     * Returns an array of attribute name / type pairs [name1 => postgres type1, name2 => postgres type 2]
+     * @param string $componentName
+     */
+    public function listAttrtibuteNamesAndTypes($componentName)
+    {
+        return $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/list", [
+                'schema'=>$this->dataset->getSchema(),
+                'datasetName'=>$this->dataset->getName(),
+                'componentName'=>$componentName,
+                ], null, \PDO::FETCH_KEY_PAIR);
+    }
+    
     public function getAttributesByIds($componentName, $attributeNames, $recordIds)
     {
         // Qutes are removed tom make it possible to typecast attributes
