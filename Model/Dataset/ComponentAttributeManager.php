@@ -118,9 +118,16 @@ class ComponentAttributeManager {
         return $result;
     }
 
+    /**
+     * Returns attributes in queried records
+     * @param string $componentName
+     * @param array $attributeNames
+     * @param string $where
+     * @return array
+     */
     public function getAttributesWhere($componentName, $attributeNames, $where)
     {
-        // Qutes are removed tom make it possible to typecast attributes
+        // Quotes are removed tom make it possible to typecast attributes
         //$attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
         $attributeNamesAsStr = ''.implode(',', $attributeNames).'';
         
@@ -149,7 +156,7 @@ class ComponentAttributeManager {
     
     /**
      * Sets an attributes to a given value or null for all records
-     * @param Dataset $this->dataset
+     * 
      * @param string $componentName
      * @param string|array $attributeNames
      * @param any $value
@@ -273,10 +280,20 @@ class ComponentAttributeManager {
             $queueElement['updater']->update($this->dataset, $componentName, $queueElement['attributes'], $recordIds);
         }
     }
-    
 
+    /**
+     * Renames an attribute
+     * @param string $componentName
+     * @param string $attributeName
+     * @param string $newAttributeName
+     */
     public function renameAttribute($componentName, $attributeName, $newAttributeName)
     {
+        if ('id' === $attributeNames) {
+            throw new \InvalidArgumentException('Attribute id cannot be renamed');
+        }
+        
+        
         $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/rename", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
@@ -299,6 +316,10 @@ class ComponentAttributeManager {
         } else {
             $attributeNamesAsArray = $attributeNames;
         }
+        
+        if (array_search('id', $attributeNames) !== false) {
+            throw new \InvalidArgumentException('Attribute id cannot be deleted');
+        }
     
         $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/delete", [
                 'schema'=>$this->dataset->getSchema(),
@@ -307,7 +328,4 @@ class ComponentAttributeManager {
                 'attributeNames'=>$attributeNamesAsArray,
             ]);
     }
-    
-    
-    
 }
