@@ -16,7 +16,7 @@ use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
 
 abstract class AbstractComponentRecordPopulator
 {
-    protected $type = '';
+    protected $types = [];
     protected $schema = '';
     
     /**
@@ -40,8 +40,8 @@ abstract class AbstractComponentRecordPopulator
     
     public function populate(Dataset $dataset, array $options = null, OutputInterface $output = null)
     {
-        if ($dataset->getSchema() != $this->schema || $dataset->getProperty('type') != $this->type) {
-            throw new \LogicException(sprintf("%s only populates datasets in schema ‘%s’ and type ‘%s’", get_class($this), $this->schema, $this->type));
+        if ($dataset->getSchema() != $this->schema || array_search($dataset->getProperty('type'), $this->types) === false) {
+            throw new \LogicException(sprintf("%s only populates datasets in schema ‘%s’ and type%s ‘%s’", get_class($this), $this->schema, count($this->types) != 1 ? 's' : '', implode('’ ‘', $this->types)));
         }
         
         if ($output == null) {
