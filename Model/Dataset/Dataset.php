@@ -90,24 +90,6 @@ abstract class Dataset
     }
     
     // ========================================================================
-    // Components
-    // ========================================================================
-    
-    /**
-     * Checks if the dataset has a particular component (table)
-     * @param string $componentName
-     * @return boolean
-     */
-    public function hasComponent($componentName)
-    {
-        if (null === $this->components) {
-            $this->updateProperties();
-        }
-        
-        return array_key_exists($propertyName, $this->components);
-    }
-        
-    // ========================================================================
     // Properties
     // ========================================================================
     
