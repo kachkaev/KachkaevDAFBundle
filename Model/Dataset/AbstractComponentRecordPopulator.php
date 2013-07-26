@@ -56,9 +56,10 @@ abstract class AbstractComponentRecordPopulator
             $options = [];
         }
         
-        if (!array_key_exists('thread-count', $options)) {
+        if (!array_key_exists('thread-count', $options) || ($this->supportsMultipleThreads() && $options['thread-count'] === 0)) {
             $options['thread-count'] = $this->defaultThreadCount;
         }
+        
         $this->validateThreadCountValue($options['thread-count']);
 
         if (!array_key_exists('gui', $options)) {
