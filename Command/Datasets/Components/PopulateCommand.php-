@@ -18,7 +18,7 @@ class PopulateCommand extends AbstractParameterAwareCommand
             ->setDescription('Populates dataset component runs a query or a script')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component to populate')
-            ->makeForceAware('Forces initialisation of the component before populating to avoid an error if it already ')
+            ->makeForceAware('Forces initialisation of the component before populating to avoid an error if it has already been created')
         ;
     }
 
