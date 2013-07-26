@@ -19,6 +19,10 @@ abstract class AbstractComponentRecordPopulator
     protected $types = [];
     protected $schema = '';
     
+    protected $maxThreadCount = 0;
+    protected $defaultThreadCount = 0;
+    protected $supportsGUI = false;
+    
     /**
      *  @var ContainerInterface */
     protected $container;
@@ -52,7 +56,44 @@ abstract class AbstractComponentRecordPopulator
             $options = [];
         }
         
+        if (!array_key_exists('thread-count', $options)) {
+            $options['thread-count'] = $this->defaultThreadCount;
+        }
+        $this->validateThreadCountValue($options['thread-count']);
+
+        if (!array_key_exists('gui', $options)) {
+            $options['gui'] = false;
+        }
+        $this->validateGuiValue($options['gui']);
+                
         $this->doPopulate($dataset, $options, $output);
+    }
+    
+    public function supportsMultipleThreads()
+    {
+        return $this->maxThreadCount != 0;
+    }
+    
+    public function supportsGUI()
+    {
+        return $this->supportsGUI;
+    }
+    
+    public function validateThreadCountValue($threadCount)
+    {
+        if (!$this->supportsMultipleThreads() && $threadCount) {
+            throw new \InvalidArgumentException(sprintf("Thread count cannot be defined as %s – the populator does not support threading", $threadCount));
+        }
+        if ($threadCount < 0 || $threadCount > $this->maxThreadCount || (int)$threadCount != $threadCount) {
+            throw new \InvalidArgumentException(sprintf("Thread count cannot be defined as %s it should be an integer between between 0 and %s", $threadCount, $this->maxThreadCount));
+        }
+    }
+    
+    public function validateGuiValue($gui)
+    {
+        if (!$this->supportsGUI() && $gui) {
+            throw new \InvalidArgumentException(sprintf("The populator does not support gui", $gui));
+        }    
     }
     
     abstract protected function doPopulate(Dataset $dataset, array $options, OutputInterface $output);

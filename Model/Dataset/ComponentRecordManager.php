@@ -45,7 +45,7 @@ class ComponentRecordManager {
         $this->sqlTemplateManager = $this->datasetManager->getSQLTemplatManager();
         $this->container = $this->datasetManager->getContainer();
     }
-        
+
     public function populate($componentName, array $options, OutputInterface $output = null)
     {
         $this->dataset->getComponentManager()->assertHaving($componentName, sprintf('The dataset is missing the ‘%s’ component', $componentName));
@@ -80,7 +80,7 @@ class ComponentRecordManager {
      * @param string $componentName
      * @param string $filter
      */
-    public function count($componentName, $filter)
+    public function count($componentName, $filter = '')
     {
         return $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/records/count", [
                 'schema'=>$this->dataset->getSchema(),
