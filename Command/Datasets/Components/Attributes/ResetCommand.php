@@ -38,6 +38,10 @@ class ResetCommand extends AbstractParameterAwareCommand
         $attributeValue = $input->getArgument('attribute-value');
         $filter = $input->getOption('filter');
         
+        if (strtolower($attributeValue) === "null") {
+            $attributeValue = null;
+        }
+        
         $datasetComponentAttributeManager = $dataset->getComponentAttributeManager();
         $datasetComponentRecordManager = $dataset->getComponentRecordManager();
         $affectedRecordCount = $datasetComponentRecordManager->count($componentName, $filter);

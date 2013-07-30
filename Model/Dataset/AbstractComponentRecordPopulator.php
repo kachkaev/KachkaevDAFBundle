@@ -44,7 +44,7 @@ abstract class AbstractComponentRecordPopulator
     
     public function populate(Dataset $dataset, array $options = null, OutputInterface $output = null)
     {
-        if ($dataset->getSchema() != $this->schema || array_search($dataset->getProperty('type'), $this->types) === false) {
+        if (($this->schema != null && $dataset->getSchema() != $this->schema) || ($this->types !== null && array_search($dataset->getProperty('type'), $this->types) === false)) {
             throw new \LogicException(sprintf("%s only populates datasets in schema ‘%s’ and type%s ‘%s’", get_class($this), $this->schema, count($this->types) != 1 ? 's' : '', implode('’ ‘', $this->types)));
         }
         

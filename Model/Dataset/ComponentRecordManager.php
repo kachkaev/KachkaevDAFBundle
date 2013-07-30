@@ -67,14 +67,20 @@ class ComponentRecordManager {
             }
         }
         
-        if ($populator == null) {
-            throw new \LogicException(sprintf('Data populator not found. Were looking for services %s.', implode(', ', $populatorServiceNames)));
+        if ($populator != null) {
+            $populator->populate($this->dataset, $options, $output);
+        } else {
+            // Populator not found. Trying to apply sql templates
+            $sqlPopulator = $this->container->get('ph.dataset_component_record_populator.sql_template_based');
+            $sqlPopulatorTemplateNames = $sqlPopulator->getSearchableTemplateNames($this->dataset, $componentName);
+            if ($sqlPopulator->hasTemplateToExecute($this->dataset, $componentName)) {
+                $sqlPopulator->populate($this->dataset, ['component-name' => $componentName]);
+            } else {
+                throw new \LogicException(sprintf('Data populator not found. Were looking for services %s, also checking templates %s', implode(', ', $populatorServiceNames), implode(', ', $sqlPopulatorTemplateNames)));
+            }
         }
-        
-        $populator->populate($this->dataset, $options, $output);
-
     }
-    
+
     /**
      * 
      * @param string $componentName

@@ -2,6 +2,8 @@
 
 namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components\Records;
 
+use Symfony\Component\Console\Input\ArrayInput;
+
 use Kachkaev\PostgresHelperBundle\Model\Dataset\AbstractComponentRecordPopulator;
 
 use Symfony\Component\Console\Input\InputOption;
@@ -34,10 +36,29 @@ class PopulateCommand extends AbstractParameterAwareCommand
         $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
         $componentRecordManager = $dataset->getComponentRecordManager();
+        $componentName = $input->getArgument('component-name');
         
-        $populator = $componentRecordManager->populate($input->getArgument('component-name'), [
+        // Create the component if it does not exist
+        if (!$dataset->getComponentManager()->has($componentName)) {
+            $invokedCommandName = 'ph:datasets:components:init';
+            $invokedCommand = $this->getApplication()->find($invokedCommandName);
+            $invokedCommandArguments = array(
+                    'command' => $invokedCommandName,
+                    'dataset-full-name' => $dataset->getFullName(),
+                    'component-name' => $componentName,
+            );
+            
+            $invokedCommandInput = new ArrayInput($invokedCommandArguments);
+            $invokedCommand->run($invokedCommandInput, $output);
+        }
+        
+        $output->write(sprintf('Populating component <info>%s</info> in dataset <info>%s</info>...', $componentName, $dataset->getFullName()));
+        
+        $populator = $componentRecordManager->populate($componentName, [
                 'thread-count' => $input->getOption('thread-count'),
                 'gui' => $input->getOption('gui')
             ], $output);
+
+        $output->writeln(' Done.');
     }
 }
