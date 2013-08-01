@@ -68,8 +68,12 @@ class UpdateCommand extends AbstractParameterAwareCommand
         $idChunks = array_chunk($ids, $chunkSize);
         
         foreach ($idChunks as $idChunk) {
-            $attributeManager->updateAttributes($componentName, $attributeNames, $idChunk);
-            $progress->advance(count($idChunk));
+            try {
+                $attributeManager->updateAttributes($componentName, $attributeNames, $idChunk);
+                $progress->advance(count($idChunk));
+            } catch (\Exception $e) {
+                $output->writeln($e->getMessage());    
+            }
         }
         $progress->finish();
         
