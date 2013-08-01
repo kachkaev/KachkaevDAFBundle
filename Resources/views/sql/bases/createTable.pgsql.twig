@@ -29,3 +29,6 @@ COMMENT ON TABLE "{{ block('schema') }}"."{{ block('tableName') }}" IS '{{ getGl
 COMMENT ON COLUMN "{{ block('schema') }}"."{{ block('tableName') }}"."{{ columnName }}" IS '{{ attributeComment }}';
 {% endfor %}
 {% endif %}
+
+{% block indices %}
+{% endblock indices %}
