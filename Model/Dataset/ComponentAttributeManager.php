@@ -180,7 +180,7 @@ class ComponentAttributeManager {
                 'componentName'=>$componentName,
                 'attributeNames'=>$attributeNamesAsArray,
                 'filter'=>$filter
-                ], ['attributeValue'=>$value]);
+                ], array_pad([], count($attributeNamesAsArray), ($value)));
     }
 
     /**

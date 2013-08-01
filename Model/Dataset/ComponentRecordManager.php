@@ -76,7 +76,7 @@ class ComponentRecordManager {
             if ($sqlPopulator->hasTemplateToExecute($this->dataset, $componentName)) {
                 $sqlPopulator->populate($this->dataset, ['component-name' => $componentName]);
             } else {
-                throw new \LogicException(sprintf('Data populator not found. Were looking for services %s, also checking templates %s', implode(', ', $populatorServiceNames), implode(', ', $sqlPopulatorTemplateNames)));
+                throw new \LogicException(sprintf('Data populator not found. Were looking for services %s, also checked templates %s', implode(', ', $populatorServiceNames), implode(', ', $sqlPopulatorTemplateNames)));
             }
         }
     }
