@@ -14,6 +14,7 @@ abstract class UpdateCommandAlias extends AbstractParameterAwareCommand
 {
     
     private $commandName;
+    private $commandDescription;
     private $datasetSchemaName;
     private $componentName;
     private $attributesToUpdate;
@@ -22,6 +23,9 @@ abstract class UpdateCommandAlias extends AbstractParameterAwareCommand
     {
         $config = $this->preconfigure();
         $this->commandName = $config['command-name'];
+        if (array_key_exists('command-description', $config)) {
+            $this->commandDescription = $config['command-description'];
+        }
         $this->datasetSchemaName = $config['dataset-schema'];
         $this->componentName = $config['component-name'];
         $this->attributesToUpdate = $config['attributes-to-update'];
@@ -44,7 +48,7 @@ abstract class UpdateCommandAlias extends AbstractParameterAwareCommand
     {
         $this
             ->setName($this->commandName)
-            ->setDescription(sprintf('Updates %s in component %s', implode(', ', $this->attributesToUpdate), $this->componentName))
+            ->setDescription($this->commandDescription ?: sprintf('Updates %s in component %s', implode(', ', $this->attributesToUpdate), $this->componentName))
             ->makeDatasetAware($this->datasetSchemaName)
             ->addOption('filter', null, InputOption::VALUE_REQUIRED,
                     'sql WHERE to filter records and get their ids',
