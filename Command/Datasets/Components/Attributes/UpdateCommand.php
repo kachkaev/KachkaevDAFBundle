@@ -72,7 +72,19 @@ class UpdateCommand extends AbstractParameterAwareCommand
                 $attributeManager->updateAttributes($componentName, $attributeNames, $idChunk);
                 $progress->advance(count($idChunk));
             } catch (\Exception $e) {
-                $output->writeln($e->getMessage());    
+                $message = $e->getMessage();
+                
+                // Some (whitelisted) errors that do not break the loop
+                $errorIsInWhiteList = false; 
+                if (strpos($message, 'parse')) {
+                    $errorIsInWhiteList = true;
+                }
+                
+                if ($errorIsInWhiteList) {
+                    $output->writeln($e->getMessage());    
+                } else {
+                    throw $e;
+                }
             }
         }
         $progress->finish();
