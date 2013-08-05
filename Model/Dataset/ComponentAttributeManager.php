@@ -228,6 +228,15 @@ class ComponentAttributeManager {
         
         $attributeCount = count($attributeNames);
         foreach ($data as $id => $attributeValues) {
+            
+            //Get rid of PDOException "Invalid text representation: 7 ERROR: invalid input syntax for type boolean"
+            // (replacing false with "false"
+            foreach ($attributeValues as $i => &$av) {
+                if ($av === false) {
+                    $attributeValues[$i] = 'false';
+                }
+            } 
+
             $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/set", [
                     'schema'=>$this->dataset->getSchema(),
                     'datasetName'=>$this->dataset->getName(),
@@ -299,7 +308,6 @@ class ComponentAttributeManager {
         foreach ($data as $id => &$record) {
             $currentDataToWrite = [];
             foreach ($attributeNamesAsArray as &$attributeName) {
-                //var_dump($record);
                 $currentDataToWrite[] = $record[$attributeName];
             }
             $dataToWrite[$id] = $currentDataToWrite;
