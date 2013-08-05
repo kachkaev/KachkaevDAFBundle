@@ -2,6 +2,8 @@
 
 namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components\Records;
 
+use Kachkaev\PostgresHelperBundle\Model\Dataset\ComponentRecordManager;
+
 use Symfony\Component\Console\Input\InputOption;
 
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,6 +26,7 @@ class CopyCommand extends AbstractParameterAwareCommand
             ->addArgument('origin-dataset-name', InputArgument::REQUIRED, 'Name of the dataset within the same schema to copy data from')
             ->addOption('filter', null, InputOption::VALUE_REQUIRED, 'Filter (WHERE statement) to select what records to copy')
             ->addOption('existing-only', null, InputOption::VALUE_NONE, 'Only update attribute values of the records that already exist in the destination dataset component')
+            ->addOption('missing-only', null, InputOption::VALUE_NONE, 'Only insert records that don’t exist in the destination dataset component')
             ->addOption('ignore-attribute-mismatch', null, InputOption::VALUE_NONE, 'Does not throw an error when there are mismatches in attributes (columns) between the datasets')
             ->addOption('attribute-mappings', null, InputOption::VALUE_REQUIRED, 'Comma-separated array of attribute (column) names that need to be renamed / casted, e.g. "myfield->myfield_with_new_name,myotherfield::int->myotherfield_of_new_type"')
             ;
@@ -39,7 +42,18 @@ class CopyCommand extends AbstractParameterAwareCommand
         $componentName = $input->getArgument('component-name');
         $filter = $input->getOption('filter');
         $attributeMappingsAsStr = $input->getOption('attribute-mappings');
-
+        
+        $copyMode = ComponentRecordManager::COPYMODE_ALL;
+        if ($input->getOption('existing-only')) {
+            $copyMode = ComponentRecordManager::COPYMODE_EXISTING_ONLY;
+        }
+        if ($input->getOption('missing-only')) {
+            $copyMode = ComponentRecordManager::COPYMODE_MISSING_ONLY;
+        }
+        if ($input->getOption('missing-only') && $input->getOption('existing-only')) {
+            throw new \InvalidArgumentException('Only one of options --existing-only and --missing-only can be used.');
+        }
+        
         $attributeMappings = [];
         if ($attributeMappingsAsStr) {
             $attributeMappingsAsRawArray = explode(',', $attributeMappingsAsStr);
@@ -53,15 +67,16 @@ class CopyCommand extends AbstractParameterAwareCommand
 
         $totalIdCount = $sourceDataset->getComponentRecordManager()->count($componentName, $filter);
         $intersectingIdCount = $destinationDataset->getComponentRecordManager()->countIntersectingIds($componentName, $sourceDataset, $filter);
-        $addingIdCount = $input->getOption('existing-only') ? 0 : $totalIdCount - $intersectingIdCount;
+        $addingIdCount = $copyMode == ComponentRecordManager::COPYMODE_EXISTING_ONLY ? 0 : $totalIdCount - $intersectingIdCount;
+        $replacingIdCount = $copyMode == ComponentRecordManager::COPYMODE_MISSING_ONLY ? 0 : $intersectingIdCount;
 
-        if ($this->forceNotUsed($input, $output, sprintf('%s recrods will be replaced and %s added.', number_format($intersectingIdCount), number_format($addingIdCount)))) {
+        if ($this->forceNotUsed($input, $output, sprintf('%s recrods will be replaced and %s added.', number_format($replacingIdCount), number_format($addingIdCount)))) {
             return;
         }
 
         // Do the action
-        $output->write(sprintf('Replacing %s records and adding %s...', number_format($intersectingIdCount), number_format($addingIdCount)));
-        $destinationDataset->getComponentRecordManager()->copy($componentName, $sourceDataset, $filter, $input->getOption('existing-only'), $input->getOption('ignore-attribute-mismatch'), $attributeMappings);
+        $output->write(sprintf('Replacing %s records and adding %s...', number_format($replacingIdCount), number_format($addingIdCount)));
+        $destinationDataset->getComponentRecordManager()->copy($componentName, $sourceDataset, $filter, $copyMode, $input->getOption('ignore-attribute-mismatch'), $attributeMappings);
         $output->writeln('Done.');
     }
 }

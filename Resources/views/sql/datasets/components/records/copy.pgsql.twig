@@ -4,4 +4,4 @@ SELECT {{ sourceAttributesAsStr }}
 FROM {{ schema }}.{{ sourceDatasetName }}__{{ componentName }}
 {% if filter or idsAsStr %} WHERE {% endif %}
 {% if filter %} ({{ filter }}) {% endif %}
-{% if idsAsStr %}{% if filter %} AND {% endif %} id IN ({{ idsAsStr }}){% endif %}
+{% if idsAsStr %}{% if filter %} AND {% endif %} id {% if  missingOnly %}NOT {% endif %}IN ({{ idsAsStr }}){% endif %}

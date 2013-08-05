@@ -35,6 +35,10 @@ class ComponentRecordManager {
      *  @var ContainerInterface */
     protected $container;
 
+    const COPYMODE_ALL = 0;
+    const COPYMODE_EXISTING_ONLY = 1;
+    const COPYMODE_MISSING_ONLY = 2;
+    
     /**
      * @param Dataset $dataset
      */
@@ -108,7 +112,7 @@ class ComponentRecordManager {
         return $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/records/count-intersecting-ids", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
-                'dataset2Name'=>$this->dataset->getName(),
+                'dataset2Name'=>$dataset2->getName(),
                 'componentName'=>$componentName,
                 'filterForDataset2'=>$filterForDataset2,
             ])[0]['count'];
@@ -171,11 +175,11 @@ class ComponentRecordManager {
      * @param string $componentName
      * @param Dataset $sourceDataset
      * @param string $filter
-     * @param boolean $existingOnly
+     * @param boolean $copyMode COPYMODE_ALL, COPYMODE_EXISTING_ONLY, COPYMODE_MISSING_ONLY
      * @param boolean $ignoreAttributeMismatch
      * @param array $attributeMappings associative array of attribute (column) names that need to be renamed / casted, e.g. myfield=>myfield_with_new_name or myfield::int=>myfield_of_new_type 
      */
-    public function copy($componentName, Dataset $sourceDataset, $filter, $existingOnly, $ignoreAttributeMismatch, array $attributeMappings)
+    public function copy($componentName, Dataset $sourceDataset, $filter, $copyMode, $ignoreAttributeMismatch, array $attributeMappings)
     {
         // Check if source is compatible with destination
         if ($sourceDataset->getSchema() != $this->dataset->getSchema()) {
@@ -229,7 +233,9 @@ class ComponentRecordManager {
         $existingIds = $this->listIntersectingIds($componentName, $sourceDataset, $filter);
         
         // Clean existing ids
-        $this->clean($componentName, $existingIds);
+        if ($copyMode != self::COPYMODE_MISSING_ONLY) {
+            $this->clean($componentName, $existingIds);
+        }
         
         // Copy all records that match the filter or only those that are among existingIds
         $this->sqlTemplateManager->run("postgres_helper#datasets/components/records/copy", [
@@ -240,7 +246,8 @@ class ComponentRecordManager {
                 'sourceAttributesAsStr'=>implode(',', $attributeNamesInSource),
                 'destinationAttributesAsStr'=>implode(',', $attributeNamesInDestination),
                 'filter' => $filter,
-                'idsAsStr' => $existingOnly ? "'" . implode("','",$existingIds) . "'" : null
+                'idsAsStr' => ($copyMode != self::COPYMODE_ALL) ? "'" . implode("','",$existingIds) . "'" : null,
+                'missingOnly' => $copyMode == self::COPYMODE_MISSING_ONLY
             ]);
     }
 }
