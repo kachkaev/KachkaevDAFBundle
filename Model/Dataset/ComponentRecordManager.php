@@ -226,8 +226,8 @@ class ComponentRecordManager {
             throw new \RuntimeException(sprintf("Attributes in source and destination mismatch!\nExist in source only: %s,\nExist in destination only: %s.", var_export($attributesSourceNotDestination, true), var_export($attributesDestinationNotSource, true)));
         }
         
-        $attributeNamesInSource = array_merge(array_keys($attributesInBoth), array_keys($attributeMappings));
-        $attributeNamesInDestination = array_merge(array_keys($attributesInBoth), array_values($attributeMappings));
+        $attributeNamesInSource = array_unique(array_merge(array_keys($attributesInBoth), array_keys($attributeMappings)));
+        $attributeNamesInDestination = array_unique(array_merge(array_keys($attributesInBoth), array_values($attributeMappings)));
         
         // List existing ids
         $existingIds = $this->listIntersectingIds($componentName, $sourceDataset, $filter);

@@ -315,6 +315,37 @@ class ComponentAttributeManager {
         
         $this->setData($componentName, $attributeNamesAsArray, $dataToWrite);
     }
+    
+    /**
+     * 
+     * 
+     * @param string $componentName
+     * @param Dataset $sourceDataset
+     * @param array $attributeNames
+     * @param array $recordIds
+     * @param unknown $breakOnError
+     * 
+     * @return int number of records affected
+     */
+    public function copyAttributes($componentName, Dataset $sourceDataset, array $attributeNames, array $recordIds, $breakOnError = true)
+    {
+        $attributesByIds = $sourceDataset->getComponentAttributeManager()->getAttributesByIds($componentName, $attributeNames, $recordIds);
+        
+        $data = [];
+        foreach ($attributesByIds as $id => $attributes) {
+            $currentData = [];
+            foreach ($attributeNames as $attributeName) {
+                $currentData[]= $attributes[$attributeName];
+            }
+            $data[$id] = $currentData;
+        }
+         //var_dump($data);
+//          die();
+        
+        $this->setData($componentName, $attributeNames, $data);
+        
+        return count($data);
+    }
 
     /**
      * Renames an attribute
