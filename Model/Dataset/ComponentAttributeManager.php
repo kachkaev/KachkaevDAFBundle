@@ -355,7 +355,7 @@ class ComponentAttributeManager {
      */
     public function renameAttribute($componentName, $attributeName, $newAttributeName)
     {
-        if ('id' === $attributeNames) {
+        if ('id' === $attributeName) {
             throw new \InvalidArgumentException('Attribute id cannot be renamed');
         }
         
