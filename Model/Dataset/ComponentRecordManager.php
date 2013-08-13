@@ -205,14 +205,32 @@ class ComponentRecordManager {
         $attributesDestinationNotSource = array_diff_assoc($destinationAttributes, $sourceAttributes);
         $attributesInBoth = array_intersect_assoc($sourceAttributes, $destinationAttributes);
         
-        // Check mappings a::type->b
+        // Check mappings a::type->b or a|convert(a)->b
+        $realAttributeMappings = [];
         foreach ($attributeMappings as $attributeAndTypeFrom => $attributeTo) {
             $attributeFrom = $attributeAndTypeFrom;
-            if (strpos($attributeFrom, ':') !== false) {
-                $attributeFrom = substr($attributeFrom, 0, strpos($attributeFrom, ':'));
+            
+            // a|convert(a)->b
+            if (strpos($attributeAndTypeFrom, '|') !== false) {
+                $attributeFrom = substr($attributeFrom, 0, strpos($attributeFrom, '|'));
+                $conversionExpression = substr($attributeAndTypeFrom, strlen($attributeFrom) + 1);
+                if (substr_count($conversionExpression, '(') != substr_count($conversionExpression, ')')) {
+                    throw new \InvalidArgumentException(sprintf('Conversion expression %s is wrong: numbers of brackets mismatch.', $conversionExpression));
+                }
+                if (substr_count($conversionExpression, '[') != substr_count($conversionExpression, ']')) {
+                    throw new \InvalidArgumentException(sprintf('Conversion expression %s is wrong: numbers of square brackets mismatch.', $conversionExpression));
+                }
+                $realAttributeMappings[$conversionExpression] = $attributeTo;
+            
+            } else {
+                // a::type->b
+                if (strpos($attributeFrom, ':') !== false) {
+                    $attributeFrom = substr($attributeFrom, 0, strpos($attributeFrom, ':'));
+                }
+                $realAttributeMappings[$attributeAndTypeFrom] = $attributeTo;
             }
             
-            if (!array_key_exists($attributeFrom, $sourceAttributes)) {
+            if ($attributeFrom && !array_key_exists($attributeFrom, $sourceAttributes)) {
                 throw new \InvalidArgumentException(sprintf('Cannot find attribute %s in the source component among %s', $attributeFrom, implode(', ', array_keys($sourceAttributes))));
             }
             if (!array_key_exists($attributeTo, $destinationAttributes)) {
@@ -226,8 +244,8 @@ class ComponentRecordManager {
             throw new \RuntimeException(sprintf("Attributes in source and destination mismatch!\nExist in source only: %s,\nExist in destination only: %s.", var_export($attributesSourceNotDestination, true), var_export($attributesDestinationNotSource, true)));
         }
         
-        $attributeNamesInSource = array_unique(array_merge(array_keys($attributesInBoth), array_keys($attributeMappings)));
-        $attributeNamesInDestination = array_unique(array_merge(array_keys($attributesInBoth), array_values($attributeMappings)));
+        $attributeNamesInSource = array_unique(array_merge(array_keys($attributesInBoth), array_keys($realAttributeMappings)));
+        $attributeNamesInDestination = array_unique(array_merge(array_keys($attributesInBoth), array_values($realAttributeMappings)));
         
         // List existing ids
         $existingIds = $this->listIntersectingIds($componentName, $sourceDataset, $filter);
@@ -238,7 +256,7 @@ class ComponentRecordManager {
         }
         
         // Copy all records that match the filter or only those that are among existingIds
-        $this->sqlTemplateManager->run("postgres_helper#datasets/components/records/copy", [
+        echo $this->sqlTemplateManager->run("postgres_helper#datasets/components/records/copy", [
                 'schema'=>$this->dataset->getSchema(),
                 'sourceDatasetName'=>$sourceDataset->getName(),
                 'destinationDatasetName'=>$this->dataset->getName(),
