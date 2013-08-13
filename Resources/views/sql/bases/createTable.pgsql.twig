@@ -15,10 +15,19 @@ ALTER TABLE {{ block('schema') }}.{{ block('tableName') }}
   OWNER TO {{ mainDBOwner }};
 {% endblock %}
 
+{{ setGlobalScopeVar('geometryColumns', {}) }}
 {{ setGlobalScopeVar('tableComment', {}) }}
 {{ setGlobalScopeVar('attributeComments', {}) }}
+
+{% block geometryColumns %}
+{% endblock %}
+
 {% block comments %}
 {% endblock %}
+
+{% for geomtetryColumnName, geometryColumnType in getGlobalScopeVar('geometryColumns') %}
+SELECT AddGeometryColumn ('{{ block('schema') }}','{{ block('tableName') }}', '{{ geomtetryColumnName }}', 4326, '{{ geometryColumnType }}', 2);
+{% endfor %}
 
 {% if (getGlobalScopeVar('tableComment')) %}
 COMMENT ON TABLE "{{ block('schema') }}"."{{ block('tableName') }}" IS '{{ getGlobalScopeVar('tableComment') }}';
