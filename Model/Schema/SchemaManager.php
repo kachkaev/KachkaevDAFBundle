@@ -121,11 +121,16 @@ class SchemaManager implements ManagerInterface
      */
     public function updateFunctions($schemaName)
     {
+        $directory = sprintf('%s/../src/Kachkaev/PR%sBundle/Resources/views/sql/schema/functions', $this->container->getParameter('kernel.root_dir'), ucfirst($schemaName));
+        if (!is_dir($directory)) {
+            return;
+        }
+        
         // Find all pgsql templates in the directory
         $finder = new Finder();
         $finder
         ->files()
-        ->in(sprintf('%s/../src/Kachkaev/PR%sBundle/Resources/views/sql/schema/functions', $this->container->getParameter('kernel.root_dir'), ucfirst($schemaName)))
+        ->in($directory)
         ->name('*.pgsql.twig')
         ->depth(0);
     
@@ -199,11 +204,16 @@ class SchemaManager implements ManagerInterface
      */
     public function updateTypes($schemaName)
     {
+        $directory = sprintf('%s/../src/Kachkaev/PR%sBundle/Resources/views/sql/schema/types', $this->container->getParameter('kernel.root_dir'), ucfirst($schemaName));
+        if (!is_dir($directory)) {
+            return;
+        }
+        
         // Find all pgsql templates in the directory
         $finder = new Finder();
         $finder
         ->files()
-        ->in(sprintf('%s/../src/Kachkaev/PR%sBundle/Resources/views/sql/schema/types', $this->container->getParameter('kernel.root_dir'), ucfirst($schemaName)))
+        ->in($directory)
         ->name('*.pgsql.twig')
         ->depth(0);
     
