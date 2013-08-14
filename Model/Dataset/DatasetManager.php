@@ -152,6 +152,8 @@ abstract class DatasetManager implements ManagerInterface
     
     /**
      * Initialises given dataset
+     * 
+     * @return Dataset
      */
     public function init($datasetName)
     {
