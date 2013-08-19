@@ -228,7 +228,11 @@ class SQLTemplateManager
         if ($queryTemplateParts[0] == 'postgres_helper') {
             $queryBundle = 'KachkaevPostgresHelperBundle';
         } else {
-            $queryBundle = $this->queryTemplatesNamespaceLookup[$queryTemplateParts[0]]['bundle'];
+            if (!array_key_exists($queryTemplateParts[0], $this->queryTemplatesNamespaceLookup)) {
+                throw new \InvalidArgumentException(sprintf('Don’t know where to search for templates starting with ‘%s’', $queryTemplateParts[0]));
+            } else {
+                $queryBundle = $this->queryTemplatesNamespaceLookup[$queryTemplateParts[0]]['bundle'];
+            }
         }
         $result =  $queryBundle.':'.str_lreplace('/', ':', $queryTemplateParts[1]).'.pgsql.twig';
         
