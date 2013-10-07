@@ -128,6 +128,15 @@ class SQLTemplateManager
         
     }
 
+    public function prepare($queryTemplates, $templateParams = [])
+    {
+        $this->initializeConnectionIfNeeded();
+    
+        $query = $this->render($queryTemplates, $templateParams);
+    
+        return $this->connection->prepare($query);
+    }
+    
     public function run($queryTemplates, $templateParams = [], $queryParams = null)
     {
         $this->initializeConnectionIfNeeded();
