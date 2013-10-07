@@ -19,6 +19,9 @@ abstract class UpdateCommandAlias extends AbstractParameterAwareCommand
     private $componentName;
     private $attributesToUpdate;
     
+    protected $maxAttributesInDescription = 5;
+    protected $attributesInShortenDescription = 3;
+    
     public function __construct($name = null)
     {
         $config = $this->preconfigure();
@@ -46,9 +49,14 @@ abstract class UpdateCommandAlias extends AbstractParameterAwareCommand
     
     protected function configure()
     {
+        if (count($this->attributesToUpdate) > $this->maxAttributesInDescription) {
+            $listOfAttributesToUpdateAsString = sprintf('%s and %s more', implode(', ', array_slice($this->attributesToUpdate, 0, $this->maxAttributesInDescription)), count($this->attributesToUpdate) - $this->attributesInShortenDescription);
+        } else {
+            $listOfAttributesToUpdateAsString = implode(', ', $this->attributesToUpdate);
+        }
         $this
             ->setName($this->commandName)
-            ->setDescription($this->commandDescription ?: sprintf('Updates %s in component %s', implode(', ', $this->attributesToUpdate), $this->componentName))
+            ->setDescription($this->commandDescription ?: sprintf('Updates %s in component %s', $listOfAttributesToUpdateAsString, $this->componentName))
             ->makeDatasetAware($this->datasetSchemaName)
             ->addOption('filter', null, InputOption::VALUE_REQUIRED,
                     'sql WHERE to filter records and get their ids',
