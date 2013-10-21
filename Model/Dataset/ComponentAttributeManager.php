@@ -44,7 +44,7 @@ class ComponentAttributeManager {
     /**
      * Add one or several columns to the component table
      */
-    public function initAttributes($componentName, $attributeNames, $attributeColumnDefinition)
+    public function initAttributes($componentName, $attributeNames, $attributeColumnDefinition, $attributeColumnComment)
     {
         if (is_string($attributeNames)) {
             $attributeNamesAsArray = [$attributeNames];
@@ -58,6 +58,7 @@ class ComponentAttributeManager {
                 'componentName'=>$componentName,
                 'attributeNames'=>$attributeNames,
                 'attributeColumnDefinition'=>$attributeColumnDefinition,
+                'attributeColumnComment'=>$attributeColumnComment,
                 ]);
     }
     

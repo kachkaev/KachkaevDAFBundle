@@ -2,4 +2,10 @@ ALTER TABLE {{ schema }}.{{ datasetName }}__{{ componentName }}
 {% for attributeName in attributeNames %}
     ADD COLUMN {{ attributeName }} {{ attributeColumnDefinition -}}
     {% if not loop.last %},{% endif %}
+{% endfor %};
+
+{% if attributeColumnComment %}
+{% for attributeName in attributeNames %}
+    COMMENT ON COLUMN  {{ schema }}.{{ datasetName }}__{{ componentName }}.{{ attributeName }} IS '{{ attributeColumnComment }}'
 {% endfor %}
+{% endif %}
