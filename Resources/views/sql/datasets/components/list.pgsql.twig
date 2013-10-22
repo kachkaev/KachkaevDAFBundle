@@ -12,4 +12,13 @@ UNION
 SELECT replace(viewname, '{{ datasetName }}__', '') FROM pg_views
 WHERE
         viewname LIKE '{{ datasetName }}\_\_%'
+    AND schemaname = '{{ schema }}'
+
+UNION
+
+-- Materialized views
+SELECT replace(matviewname, '{{ datasetName }}__', '') FROM pg_matviews
+WHERE
+        matviewname LIKE '{{ datasetName }}\_\_%'
     AND schemaname = '{{ schema }}';
+    

@@ -1,3 +1,2 @@
 CREATE MATERIALIZED VIEW {% block fullViewName %}{% block schema %}{{ schema }}{% endblock %}.{% block viewName %}{% endblock %}{% endblock %}
     AS ({% block query %}{% endblock %})
-    {% block withOrWithoutData %}WITH DATA{% endblock %}
