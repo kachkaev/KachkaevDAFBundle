@@ -56,7 +56,7 @@ class ComponentAttributeManager {
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
-                'attributeNames'=>$attributeNames,
+                'attributeNames'=>$attributeNamesAsArray,
                 'attributeColumnDefinition'=>$attributeColumnDefinition,
                 'attributeColumnComment'=>$attributeColumnComment,
                 ]);
@@ -208,7 +208,7 @@ class ComponentAttributeManager {
                 'componentName'=>$componentName,
                 'attributeNames'=>$attributeNamesAsArray,
                 'recordIdsAsStr'=>$recordIdsAsStr,
-                ], ['attributeValue'=>$value]);
+                ], [$value]);
     }
     
     /**
