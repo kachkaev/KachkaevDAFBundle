@@ -58,10 +58,17 @@ class ComponentRecordManager {
          */
         $populator = null;
         
+        $parsedComponentName = $this->dataset->getComponentManager()->parse($componentName);
+        
         $populatorServiceNames = [];
         if ($this->dataset->getProperty('type') !== null) {
             $populatorServiceNames []= sprintf('ph.dataset_component_record_populator.%s.%s.%s', $this->dataset->getSchema(), $componentName, $this->dataset->getProperty('type'));
         };
+        
+        if (array_key_exists('instanceName', $parsedComponentName)) {
+            $populatorServiceNames []= sprintf('ph.dataset_component_record_populator.%s.%s__', $this->dataset->getSchema(), $parsedComponentName['familyName']);
+        }
+        
         $populatorServiceNames []= sprintf('ph.dataset_component_record_populator.%s.%s', $this->dataset->getSchema(), $componentName);
 
         foreach ($populatorServiceNames as $populatorServiceName) {
@@ -72,7 +79,7 @@ class ComponentRecordManager {
         }
         
         if ($populator != null) {
-            $populator->populate($this->dataset, $options, $output);
+            $populator->populate($this->dataset, $componentName, $options, $output);
         } else {
             // Populator not found. Trying to apply sql templates
             $sqlPopulator = $this->container->get('ph.dataset_component_record_populator.sql_template_based');

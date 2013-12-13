@@ -42,7 +42,7 @@ abstract class AbstractComponentRecordPopulator
         $this->sqlTemplateManager = $container->get('postgres_helper.sql_template_manager');
     }
     
-    public function populate(Dataset $dataset, array $options = null, OutputInterface $output = null)
+    public function populate(Dataset $dataset, $componentName, array $options = null, OutputInterface $output = null)
     {
         if (($this->schema != null && $dataset->getSchema() != $this->schema) || ($this->types !== null && array_search($dataset->getProperty('type'), $this->types) === false)) {
             throw new \LogicException(sprintf("%s only populates datasets in schema ‘%s’ and type%s ‘%s’", get_class($this), $this->schema, count($this->types) != 1 ? 's' : '', implode('’ ‘', $this->types)));
@@ -67,7 +67,7 @@ abstract class AbstractComponentRecordPopulator
         }
         $this->validateGuiValue($options['gui']);
                 
-        $this->doPopulate($dataset, $options, $output);
+        $this->doPopulate($dataset, $componentName, $options, $output);
     }
     
     public function supportsMultipleThreads()
@@ -97,5 +97,5 @@ abstract class AbstractComponentRecordPopulator
         }    
     }
     
-    abstract protected function doPopulate(Dataset $dataset, array $options, OutputInterface $output);
+    abstract protected function doPopulate(Dataset $dataset, $componentName, array $options, OutputInterface $output);
 }

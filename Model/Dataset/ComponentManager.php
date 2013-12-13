@@ -121,13 +121,6 @@ class ComponentManager implements ManagerInterface
         $this->updateList();
     }
     
-    public function populate($componentName)
-    {
-        $this->assertHaving($componentName, sprintf('Cannot populate component %s in dataset %s.%s as it does not exist', $componentName, $this->dataset->getSchema(), $this->dataset->getName()));
-        
-        $this->runTaskSpecificSQLTemplate($componentName, 'populate', true, true);
-    }
-    
     /**
      * Despite being a part of ManagerInterface,
      * this method is not applicable to components
@@ -204,19 +197,59 @@ class ComponentManager implements ManagerInterface
         $schema = $this->dataset->getSchema();
         $type = $this->dataset->getProperty('type');
         
-        $templates = ["$schema#$componentName/$task.$type"];
+        $parsedComponentName = $this->parse($componentName);
+        
+        $templates = [sprintf('%s#%s/%s.%s', $schema, $componentName, $task, $type)];
+        
+        if ($parsedComponentName['familyName']) {
+            $templates []= sprintf('%s#%s__/%s.%s', $schema, $parsedComponentName['familyName'], $task, $type);
+        }
         
         if ($considerSchemaRelatedTemplate) {
-            $templates []= "$schema#$componentName/$task";
+            $templates []= sprintf('%s#%s/%s', $schema, $componentName, $task);
+            if ($parsedComponentName['familyName']) {
+                $templates []= sprintf('%s#%s__/%s', $schema, $parsedComponentName['familyName'], $task);
+            }
         }
+        
+        
 //         if ($considerPostgresHelperTemplate) {
 //             $templates []= "$schema#$componentName/$task";
 //         }
         
         $this->sqlTemplateManager->run($templates, [
-                'schema'=>$this->dataset->getSchema(),
-                'datasetName'=>$this->dataset->getName(),
-                'componentName'=>$componentName,
-                ]);
+                'schema' => $this->dataset->getSchema(),
+                'datasetName' => $this->dataset->getName(),
+                'componentName' => $componentName,
+                'componentInstanceName' => $parsedComponentName['instanceName'],
+            ]);
+    }
+    
+    /**
+     * Some components may have multiple instances. A sign for a multi-instance component (component family)
+     * is a double underscore in the component name.
+     * E.g.
+     * my_dataset -> my_component__one
+     * my_dataset -> my_component__two
+     * my_dataset -> my_component__three
+     * 
+     * This method extracts component family and component instance and returns values in array 
+     * 
+     * @param string $componentName
+     * @return array
+     *         [] for a simple component
+     *         ['familyName' => 'my_component', 'instanceName' => 'one'] for multi-instance components
+     */
+    public function parse($componentName)
+    {
+        $componentParts = explode('__', $componentName);
+        if (count($componentParts) > 1) {
+            return [
+                'familyName' => $componentParts[0],
+                'instanceName' => substr($componentName, strlen($componentParts[0]) + 2)
+            ];
+        } else {
+            return [];
+        }
     }
 }
