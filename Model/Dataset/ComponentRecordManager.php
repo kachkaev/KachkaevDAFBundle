@@ -175,7 +175,7 @@ class ComponentRecordManager {
      * @param string $componentName
      * @param Dataset $sourceDataset
      * @param string $filter
-     * @param boolean $copyMode COPYMODE_ALL, COPYMODE_EXISTING_ONLY, COPYMODE_MISSING_ONLY
+     * @param int $copyMode COPYMODE_ALL, COPYMODE_EXISTING_ONLY, COPYMODE_MISSING_ONLY
      * @param boolean $ignoreAttributeMismatch
      * @param array $attributeMappings associative array of attribute (column) names that need to be renamed / casted, e.g. myfield=>myfield_with_new_name or myfield::int=>myfield_of_new_type 
      */
