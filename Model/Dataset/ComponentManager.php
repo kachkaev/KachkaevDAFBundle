@@ -201,7 +201,7 @@ class ComponentManager implements ManagerInterface
         
         $templates = [sprintf('%s#%s/%s.%s', $schema, $componentName, $task, $type)];
         
-        if ($parsedComponentName['familyName']) {
+        if ($parsedComponentName['instanceName']) {
             $templates []= sprintf('%s#%s__/%s.%s', $schema, $parsedComponentName['familyName'], $task, $type);
         }
         
@@ -249,7 +249,10 @@ class ComponentManager implements ManagerInterface
                 'instanceName' => substr($componentName, strlen($componentParts[0]) + 2)
             ];
         } else {
-            return [];
+            return [
+                'familyName' => null,
+                'instanceName' => null,
+            ];
         }
     }
 }

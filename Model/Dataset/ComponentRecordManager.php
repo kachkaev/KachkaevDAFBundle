@@ -65,7 +65,7 @@ class ComponentRecordManager {
             $populatorServiceNames []= sprintf('ph.dataset_component_record_populator.%s.%s.%s', $this->dataset->getSchema(), $componentName, $this->dataset->getProperty('type'));
         };
         
-        if (array_key_exists('instanceName', $parsedComponentName)) {
+        if ($parsedComponentName['instanceName']) {
             $populatorServiceNames []= sprintf('ph.dataset_component_record_populator.%s.%s__', $this->dataset->getSchema(), $parsedComponentName['familyName']);
         }
         
