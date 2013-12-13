@@ -69,7 +69,7 @@ class UpdateCommand extends AbstractParameterAwareCommand
         
         foreach ($idChunks as $idChunk) {
             try {
-                $attributeManager->updateAttributes($componentName, $attributeNames, $idChunk);
+                $attributeManager->updateAttributes($componentName, $attributeNames, $idChunk, $output);
                 $progress->advance(count($idChunk));
             } catch (\Exception $e) {
                 $message = $e->getMessage();

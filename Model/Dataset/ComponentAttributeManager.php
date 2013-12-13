@@ -1,6 +1,8 @@
 <?php
 namespace Kachkaev\PostgresHelperBundle\Model\Dataset;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 use Kachkaev\PostgresHelperBundle\Model\Dataset\Dataset;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -254,9 +256,10 @@ class ComponentAttributeManager {
      * @param string $componentName
      * @param string|array $attributeNames
      * @param array $recordIds
+     * @param OutputInterface $output
      * @throws \RuntimeException
      */
-    public function updateAttributes($componentName, $attributeNames, $recordIds)
+    public function updateAttributes($componentName, $attributeNames, $recordIds, OutputInterface $output = null)
     {
         if (is_string($attributeNames)) {
             $attributeNamesAsArray = [$attributeNames];
@@ -302,7 +305,7 @@ class ComponentAttributeManager {
         
         // Actual updating using assigned updaters
         foreach ($updateQueue as $queueElement) {
-            $queueElement['updater']->update($this->dataset, $componentName, $queueElement['updatableAttributes'], $data);
+            $queueElement['updater']->update($this->dataset, $componentName, $queueElement['updatableAttributes'], $data, $output);
         }
         
         $dataToWrite = [];

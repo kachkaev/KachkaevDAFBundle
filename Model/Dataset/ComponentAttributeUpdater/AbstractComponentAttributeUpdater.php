@@ -1,5 +1,7 @@
 <?php
 namespace Kachkaev\PostgresHelperBundle\Model\Dataset\ComponentAttributeUpdater;
+use Symfony\Component\Console\Output\OutputInterface;
+
 use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
 
 use Kachkaev\PostgresHelperBundle\Model\Dataset\Dataset;
@@ -43,12 +45,13 @@ abstract class AbstractComponentAttributeUpdater
      * @param array $data data to transform. Has the following format:
      *     id1 => [attr1=>value1, attr2=>value2]
      *     id2 => [attr1=>value1, attr2=>value2]
+     * @param OutputInterface $output (optional)   
      */
-    public function update(Dataset $dataset, $componentName, array $attributeNames, array &$data)
+    public function update(Dataset $dataset, $componentName, array $attributeNames, array &$data, OutputInterface $output = null)
     {
         $this->validateAttributes($dataset, $componentName, $attributeNames);
 
-        $this->doUpdate($dataset, $componentName, $attributeNames, $data);
+        $this->doUpdate($dataset, $componentName, $attributeNames, $data, $output);
     }
 
     /**
@@ -58,8 +61,9 @@ abstract class AbstractComponentAttributeUpdater
      * @param string $componentName
      * @param array $attributeNames
      * @param array $data
+     * @param OutputInterface $output
      */
-    protected abstract function doUpdate(Dataset $dataset, $componentName, array $attributeNames, array &$data);
+    protected abstract function doUpdate(Dataset $dataset, $componentName, array $attributeNames, array &$data, OutputInterface $output = null);
     
     /**
      * Validates passed attributes and throws InvalidArgumentException

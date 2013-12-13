@@ -13,25 +13,19 @@ use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
 abstract class UpdateCommandAlias extends AbstractParameterAwareCommand
 {
     
-    private $commandName;
-    private $commandDescription;
-    private $datasetSchemaName;
-    private $componentName;
-    private $attributesToUpdate;
+    private $config;
     
     protected $maxAttributesInDescription = 5;
     protected $attributesInShortenDescription = 3;
     
     public function __construct($name = null)
     {
-        $config = $this->preconfigure();
-        $this->commandName = $config['command-name'];
-        if (array_key_exists('command-description', $config)) {
-            $this->commandDescription = $config['command-description'];
-        }
-        $this->datasetSchemaName = $config['dataset-schema'];
-        $this->componentName = $config['component-name'];
-        $this->attributesToUpdate = $config['attributes-to-update'];
+        $this->config = $this->preconfigure() +  
+            [
+                'command-description' => null,
+                'filter' => null,
+                'chunk-size' => null
+            ];
 
         parent::__construct($name);
     }
@@ -49,22 +43,27 @@ abstract class UpdateCommandAlias extends AbstractParameterAwareCommand
     
     protected function configure()
     {
-        if (count($this->attributesToUpdate) > $this->maxAttributesInDescription) {
-            $listOfAttributesToUpdateAsString = sprintf('%s and %s more', implode(', ', array_slice($this->attributesToUpdate, 0, $this->maxAttributesInDescription)), count($this->attributesToUpdate) - $this->attributesInShortenDescription);
+        if (count($this->config['attributes-to-update']) > $this->maxAttributesInDescription) {
+            $listOfAttributesToUpdateAsString = sprintf('%s and %s more', implode(', ', array_slice($this->config['attributes-to-update'], 0, $this->maxAttributesInDescription)), count($this->config['attributes-to-update']) - $this->attributesInShortenDescription);
         } else {
-            $listOfAttributesToUpdateAsString = implode(', ', $this->attributesToUpdate);
+            $listOfAttributesToUpdateAsString = implode(', ', $this->config['attributes-to-update']);
         }
         $this
-            ->setName($this->commandName)
-            ->setDescription($this->commandDescription ?: sprintf('Updates %s in component %s', $listOfAttributesToUpdateAsString, $this->componentName))
-            ->makeDatasetAware($this->datasetSchemaName)
-            ->addOption('filter', null, InputOption::VALUE_REQUIRED,
+            ->setName($this->config['command-name'])
+            ->setDescription($this->config['command-description'] ?: sprintf('Updates %s in component %s', $listOfAttributesToUpdateAsString, $this->config['component-name']))
+            ->makeDatasetAware($this->config['dataset-schema']);
+        
+        if (!$this->config['filter']) {
+            $this->addOption('filter', null, InputOption::VALUE_REQUIRED,
                     'sql WHERE to filter records and get their ids',
-                    null)
-            ->addOption('chunk-size', null, InputOption::VALUE_REQUIRED,
+                    null);
+        }
+        
+        if (!$this->config['chunk-size']) {
+            $this->addOption('chunk-size', null, InputOption::VALUE_REQUIRED,
                     sprintf('number of records in a batch'),
-                    null)
-            ;
+                    null);
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -75,19 +74,19 @@ abstract class UpdateCommandAlias extends AbstractParameterAwareCommand
         $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
         
-        $filter = $input->getOption('filter') ?: 'TRUE';
+        $filter = $this->config['filter'] ?: ($input->getOption('filter') ?: 'TRUE');
         
         $invokedCommandName = 'ph:datasets:components:attributes:update';
         $invokedCommand = $this->getApplication()->find($invokedCommandName);
         $invokedCommandArguments = [
                 'command' => $invokedCommandName,
                 'dataset-full-name' => $dataset->getFullName(),
-                'component-name' => $this->componentName,
-                'attribute-names' => implode(',', $this->attributesToUpdate),
+                'component-name' => $this->config['component-name'],
+                'attribute-names' => implode(',', $this->config['attributes-to-update']),
                 '--filter' => $filter,
         ];
         
-        $chunkSize = $input->getOption('chunk-size');
+        $chunkSize = $this->config['chunk-size'] ?: $input->getOption('chunk-size');
         if ($chunkSize) {
             $invokedCommandArguments['--chunk-size'] = $chunkSize;
         }
