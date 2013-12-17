@@ -119,6 +119,8 @@ class ComponentManager implements ManagerInterface
         $this->runTaskSpecificSQLTemplate($componentName, 'init', true, true);
 
         $this->updateList();
+        $this->datasetManager->updateFunctions();
+
     }
     
     /**
@@ -169,6 +171,8 @@ class ComponentManager implements ManagerInterface
             ]);
         
         $this->updateList();
+        $this->datasetManager->updateFunctions();
+
     }
     
     /**
@@ -254,5 +258,38 @@ class ComponentManager implements ManagerInterface
                 'instanceName' => null,
             ];
         }
+    }
+
+    /**
+     * Returns names of instances for components of a defined family name.
+     * E.g. dataset consists of
+     *     component1
+     *     component2
+     *     component3__isntance1
+     *     component3__isntance2
+     *     component3__isntance3
+     * 
+     * then 
+     * listInstanceNames('component3') → [instance1, instance2, instance3]
+     * listInstanceNames('component2') → []
+     * listInstanceNames('component42') → []
+     * 
+     * @param string $familyName
+     */
+    public function listInstanceNames($familyName)
+    {
+        if (!$familyName && !is_string($familyName)) {
+            throw new \InvalidArgumentException(sprintf("Argument familyName must be alphanumeric, %s given.", var_export($familyName, true)));
+        }
+        $list = $this->listNames();
+        $result = [];
+        foreach ($list as $componentName) {
+            $parsedComponentName = $this->parse($componentName);
+            if ($familyName === $parsedComponentName['familyName']) {
+                $result []= $parsedComponentName['instanceName'];
+            }
+        }
+    
+        return $result;
     }
 }

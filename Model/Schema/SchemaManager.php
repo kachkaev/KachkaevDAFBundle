@@ -117,6 +117,12 @@ class SchemaManager implements ManagerInterface
      *
      * 3) Related to datasets and dataset types - same as 2, but is applicable only to datasets having a certain type
      *       dataset__{my_function}.{dataset_type}.pgsql.twig
+     *       
+     * 4) Related to datasets and specific to instances of components (for components with multiple instances)
+     *      dataset__{component_family_name}__instance__{my_function}.pgsql.twig
+     *      
+     * 5) [stub] Related to datasets, specific to instances of components and type
+     *      dataset__{component_family_name}__instance__{my_function}.{dataset_type}.pgsql.twig
      *
      */
     public function updateFunctions($schemaName)
@@ -134,18 +140,22 @@ class SchemaManager implements ManagerInterface
         ->name('*.pgsql.twig')
         ->depth(0);
     
-        $functionsByCategory = [[], [], []];
+        $functionsByCategory = [[], [], [], []];
     
         // Categorise found templates
         foreach ($finder as $file) {
             $functionName = $file->getBaseName('.pgsql.twig');
-            preg_match('/^(dataset__)?([^\.]*)(\.(.+))?$/', $functionName, $matches);
+            preg_match('/^(dataset__)?([^\.]*?)((__instance__([^\.]+))?)((\.(.+))?)$/', $functionName, $matches);
             if (!$matches[1]) {
                 $functionsByCategory[0] []= $functionName;
-            } else if (!array_key_exists(3, $matches)) {
+            } else if (!$matches[6] && !$matches[3]) { // Not specific to type and component instance
                 $functionsByCategory[1] []= $functionName;
-            } else {
+            } else if ($matches[6] && !$matches[3]) { // Specific to type, but not to component instance
                 $functionsByCategory[2] []= $functionName;
+            } else if (!$matches[6] && $matches[3]) { // Specific component instance, but not to type
+                $functionsByCategory[3] []= $functionName;
+            } else {
+                throw new \LogicExcepton(sprintf("Cannot determine type of function template %s", $functionName));
             }
         }
     
@@ -185,13 +195,25 @@ class SchemaManager implements ManagerInterface
                     }
                 }
         
-                // Add functions from category 3 that do not have corresponding funtions in category 2
+                // Add functions from category 3 that do not have corresponding functions in category 2
                 foreach ($functionsByCategory[2] as $typeSpecificFunction) {
                     list($function, $type) = explode('.', $typeSpecificFunction);
                     if (false === array_search($function, $functionsByCategory[1]) && $datasetType == $type) {
                         $this->sqlTemplateManager->run($schemaName.'#schema/functions/'.$typeSpecificFunction, [
                                 'datasetName'=>$datasetName,
                             ]);
+                    }
+                }
+                
+                // Add functions from category 4 
+                foreach ($functionsByCategory[3] as $componentInstanceSpecificFunction) {
+                    list($nothing1, $familyName, $nothing2, $functionName) = explode('__', $componentInstanceSpecificFunction);
+                    $instanceNames = $dataset->getComponentManager()->listInstanceNames($familyName);
+                    foreach($instanceNames as $instanceName) {
+                        $this->sqlTemplateManager->run($schemaName.'#schema/functions/'.$componentInstanceSpecificFunction, [
+                                'datasetName'=>$datasetName,
+                                'componentInstanceName'=>$instanceName,
+                                ]);
                     }
                 }
             }
