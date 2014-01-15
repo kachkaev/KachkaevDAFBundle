@@ -52,7 +52,6 @@ class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPo
     
     protected function doPopulate(Dataset $dataset, $componentName, array $options, OutputInterface $output)
     {
-        $componentName = $options['component-name'];
         $templateNameToExecute = $this->getTemplateNameToExecute($dataset, $componentName);
         
         if (!$templateNameToExecute) {

@@ -85,7 +85,7 @@ class ComponentRecordManager {
             $sqlPopulator = $this->container->get('ph.dataset_component_record_populator.sql_template_based');
             $sqlPopulatorTemplateNames = $sqlPopulator->getSearchableTemplateNames($this->dataset, $componentName);
             if ($sqlPopulator->hasTemplateToExecute($this->dataset, $componentName)) {
-                $sqlPopulator->populate($this->dataset, ['component-name' => $componentName]);
+                $sqlPopulator->populate($this->dataset, $componentName, $options);
             } else {
                 throw new \LogicException(sprintf('Data populator not found. Were looking for services %s, also checked templates %s', implode(', ', $populatorServiceNames), implode(', ', $sqlPopulatorTemplateNames)));
             }
