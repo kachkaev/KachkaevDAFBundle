@@ -1,5 +1,5 @@
 -- Tables
-SELECT replace(tablename, '{{ datasetName }}__', '') FROM pg_tables
+SELECT replace(tablename, '{{ datasetName }}__', '') as name FROM pg_tables
 WHERE
         tablename LIKE '{{ datasetName }}\_\_%'
     AND tablename NOT LIKE '{{ datasetName }}\_\_\_%'
@@ -9,7 +9,7 @@ WHERE
 UNION
 
 -- Views
-SELECT replace(viewname, '{{ datasetName }}__', '') FROM pg_views
+SELECT replace(viewname, '{{ datasetName }}__', '') as name FROM pg_views
 WHERE
         viewname LIKE '{{ datasetName }}\_\_%'
     AND schemaname = '{{ schema }}'
@@ -17,8 +17,8 @@ WHERE
 UNION
 
 -- Materialized views
-SELECT replace(matviewname, '{{ datasetName }}__', '') FROM pg_matviews
+(SELECT replace(matviewname, '{{ datasetName }}__', '') as name FROM pg_matviews
 WHERE
         matviewname LIKE '{{ datasetName }}\_\_%'
-    AND schemaname = '{{ schema }}';
-    
+    AND schemaname = '{{ schema }}')
+ORDER BY name
