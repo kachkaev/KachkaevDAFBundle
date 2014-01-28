@@ -18,7 +18,7 @@ class ComponentNameValidator implements ValidatorInterface
     
     public function isValid($value)
     {
-        return true || (bool) preg_match($this->pattern, $value) && $value !== 'meta';
+        return (bool) preg_match($this->pattern, $value) && $value !== 'meta';
     }
 
     public function assertValid($value)

@@ -142,7 +142,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
             
             $matches = null;
             if (!preg_match($fullnameRegexp, $fullName, $matches)) {
-                throw new \InvalidArgumentException(sprintf('Wrong value for dataset-full-name: %s. It must have the format schema.name.', var_export($fullName, true)));
+                throw new \InvalidArgumentException(sprintf('Wrong value for dataset-full-name: %s. It must have the format schema.name (all lowercase).', var_export($fullName, true)));
             }
             
             $schema = $matches[1];
