@@ -24,11 +24,17 @@ class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPo
         $datasetType = $dataset->getProperty('type');
         $datasetSchemaName = $dataset->getSchema();
         
+        $parsedComponentName = $dataset->getComponentManager()->parse($componentName);
+        if ($parsedComponentName['familyName'] !== null) {
+            $componentDirectory = $parsedComponentName['familyName'].'__';
+        } else {
+            $componentDirectory = $componentName;
+        }
         $templateNames = [];
         if ($datasetType) {
-            $templateNames []= sprintf('%s#%s/populate.%s', $datasetSchemaName, $componentName, $datasetType);
+            $templateNames []= sprintf('%s#%s/populate.%s', $datasetSchemaName, $componentDirectory, $datasetType);
         }
-        $templateNames []= sprintf('%s#%s/populate', $datasetSchemaName, $componentName);
+        $templateNames []= sprintf('%s#%s/populate', $datasetSchemaName, $componentDirectory);
             
         return $templateNames;
     }
@@ -58,6 +64,8 @@ class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPo
             throw new \LogicException('Cannot run sql-tempalte-based populator as corresponding templates are not found. Were looking for %s', implode(', ', $this->getSearchableTemplateNames($dataset, $componentName)));
         }
         
+        $parsedComponentName = $dataset->getComponentManager()->parse($componentName);
+        
         // Cleaning the component
         $dataset->getComponentRecordManager()->clean($componentName);
         
@@ -65,7 +73,8 @@ class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPo
         $this->sqlTemplateManager->run([$templateNameToExecute],
             [
                 'schema'=>$dataset->getSchema(),
-                'datasetName'=>$dataset->getName()
+                'datasetName'=>$dataset->getName(),
+                'componentInstanceName'=>$parsedComponentName['instanceName']
             ]);
     }
 }
