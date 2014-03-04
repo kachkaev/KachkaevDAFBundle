@@ -24,10 +24,18 @@ class SetCommand extends AbstractParameterAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->processInput($input, $output, $extractedArguments);
+        $output->write(sprintf('Setting property <info>%s</info> to <info>%s</info> for dataset <info>%s</info>...',
+                $input->getArgument('property-name'),
+                $input->getArgument('property-value'),
+                $input->getArgument('dataset-full-name')
+            ));
 
+        $this->processInput($input, $output, $extractedArguments);
+        
         $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
         $dataset->setProperty($input->getArgument('property-name'), $input->getArgument('property-value'));
+        
+        $output->writeln(' Done.');
     }
 }
