@@ -1,8 +1,8 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components\Records;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets\Components\Records;
 
-use Kachkaev\PostgresHelperBundle\Model\Dataset\ComponentRecordManager;
+use Kachkaev\DatasetAbstractionBundle\Model\Dataset\ComponentRecordManager;
 
 use Symfony\Component\Console\Input\InputOption;
 
@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 class CopyCommand extends AbstractParameterAwareCommand
 {
@@ -18,7 +18,7 @@ class CopyCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:components:records:copy')
+            ->setName('da:datasets:components:records:copy')
             ->setDescription('Copies records into the component from another dataset')
             ->makeDatasetAware()
             ->makeForceAware()

@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets\Components;
 
 use Symfony\Component\Console\Input\InputArgument;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +15,7 @@ class ListCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:components:list')
+            ->setName('da:datasets:components:list')
             ->makeDatasetAware()
             ->setDescription('Lists existing components in the dataset')
             ->setDescription('Lists existing components in the dataset')

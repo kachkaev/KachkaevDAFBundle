@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model\Validator;
+namespace Kachkaev\DatasetAbstractionBundle\Model\Validator;
 
 interface ValidatorInterface
 {

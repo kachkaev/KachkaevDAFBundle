@@ -1,13 +1,13 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model\Dataset;
+namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
+use Kachkaev\DatasetAbstractionBundle\Model\SQLTemplateManager;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use Kachkaev\PostgresHelperBundle\Model\Dataset\Dataset;
+use Kachkaev\DatasetAbstractionBundle\Model\Dataset\Dataset;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -99,7 +99,7 @@ class ComponentRecordManager {
      */
     public function count($componentName, $filter = '')
     {
-        return $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/records/count", [
+        return $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/records/count", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -116,7 +116,7 @@ class ComponentRecordManager {
      */
     public function countIntersectingIds($componentName, Dataset $dataset2, $filterForDataset2)
     {
-        return $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/records/count-intersecting-ids", [
+        return $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/records/count-intersecting-ids", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'dataset2Name'=>$dataset2->getName(),
@@ -135,7 +135,7 @@ class ComponentRecordManager {
      */
     public function listIntersectingIds($componentName, Dataset $dataset2, $filterForDataset2)
     {
-        return $this->sqlTemplateManager->runAndFetchAllAsList("postgres_helper#datasets/components/records/list-intersecting-ids", [
+        return $this->sqlTemplateManager->runAndFetchAllAsList("dataset_abstraction#datasets/components/records/list-intersecting-ids", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'dataset2Name'=>$dataset2->getName(),
@@ -153,7 +153,7 @@ class ComponentRecordManager {
     public function clean($componentName, $filterOrIds = null)
     {
         if (is_string($filterOrIds) || is_null($filterOrIds)) {
-            $this->sqlTemplateManager->run("postgres_helper#datasets/components/records/clean-by-filter", [
+            $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/records/clean-by-filter", [
                     'schema'=>$this->dataset->getSchema(),
                     'datasetName'=>$this->dataset->getName(),
                     'componentName'=>$componentName,
@@ -164,7 +164,7 @@ class ComponentRecordManager {
             $idChunks = array_chunk($filterOrIds, 1000);
             
             foreach ($idChunks as $idChunk) {
-                $this->sqlTemplateManager->run("postgres_helper#datasets/components/records/clean-by-ids", [
+                $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/records/clean-by-ids", [
                         'schema'=>$this->dataset->getSchema(),
                         'datasetName'=>$this->dataset->getName(),
                         'componentName'=>$componentName,
@@ -195,14 +195,14 @@ class ComponentRecordManager {
         
         // List attributes
         // -- source
-        $sourceAttributes = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/list", [
+        $sourceAttributes = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/list", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$sourceDataset->getName(),
                 'componentName'=>$componentName,
                 ], null, \PDO::FETCH_KEY_PAIR);
         
         // -- destination
-        $destinationAttributes = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/list", [
+        $destinationAttributes = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/list", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -263,7 +263,7 @@ class ComponentRecordManager {
         }
         
         // Copy all records that match the filter or only those that are among existingIds
-        echo $this->sqlTemplateManager->run("postgres_helper#datasets/components/records/copy", [
+        echo $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/records/copy", [
                 'schema'=>$this->dataset->getSchema(),
                 'sourceDatasetName'=>$sourceDataset->getName(),
                 'destinationDatasetName'=>$this->dataset->getName(),

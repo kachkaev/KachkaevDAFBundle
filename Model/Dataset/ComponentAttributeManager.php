@@ -1,9 +1,9 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model\Dataset;
+namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\PostgresHelperBundle\Model\Dataset\Dataset;
+use Kachkaev\DatasetAbstractionBundle\Model\Dataset\Dataset;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -54,7 +54,7 @@ class ComponentAttributeManager {
             $attributeNamesAsArray = $attributeNames;
         }
         
-        $this->sqlTemplateManager->run('postgres_helper#datasets/components/attributes/init', [
+        $this->sqlTemplateManager->run('dataset_abstraction#datasets/components/attributes/init', [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -79,7 +79,7 @@ class ComponentAttributeManager {
      */
     public function listAttributeNamesAndTypes($componentName)
     {
-        return $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/list", [
+        return $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/list", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -111,7 +111,7 @@ class ComponentAttributeManager {
         
         $recordIdsAsStr = "'".implode("','", $recordIds)."'";
         
-        $plainResult = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/getByIds", [
+        $plainResult = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/getByIds", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -140,7 +140,7 @@ class ComponentAttributeManager {
         //$attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
         $attributeNamesAsStr = ''.implode(',', $attributeNames).'';
         
-        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/getWhere", [
+        $result = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/getWhere", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -153,7 +153,7 @@ class ComponentAttributeManager {
 
     public function getIdsWhere($componentName, $where)
     {
-        $result = $this->sqlTemplateManager->runAndFetchAll("postgres_helper#datasets/components/attributes/getIdsWhere", [
+        $result = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/getIdsWhere", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -177,7 +177,7 @@ class ComponentAttributeManager {
         } else {
             $attributeNamesAsArray = $attributeNames;
         }
-        $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/reset", [
+        $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/reset", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -204,7 +204,7 @@ class ComponentAttributeManager {
         
         $recordIdsAsStr = "'".implode("','", $recordIds)."'";
     
-        $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/set", [
+        $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/set", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -240,7 +240,7 @@ class ComponentAttributeManager {
                 }
             } 
 
-            $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/set", [
+            $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/set", [
                     'schema'=>$this->dataset->getSchema(),
                     'datasetName'=>$this->dataset->getName(),
                     'componentName'=>$componentName,
@@ -364,7 +364,7 @@ class ComponentAttributeManager {
         }
         
         
-        $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/rename", [
+        $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/rename", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -391,7 +391,7 @@ class ComponentAttributeManager {
             throw new \InvalidArgumentException('Attribute id cannot be deleted');
         }
     
-        $this->sqlTemplateManager->run("postgres_helper#datasets/components/attributes/delete", [
+        $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/delete", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,

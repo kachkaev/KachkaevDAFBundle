@@ -1,17 +1,17 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model\Dataset;
+namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
 
-use Kachkaev\PostgresHelperBundle\Model\Dataset\ComponentAttributeUpdater\AbstractComponentAttributeUpdater;
-use Kachkaev\PostgresHelperBundle\Model\Dataset\ComponentAttributeUpdater\ComponentAttributeUpdaterInterface;
+use Kachkaev\DatasetAbstractionBundle\Model\Dataset\ComponentAttributeUpdater\AbstractComponentAttributeUpdater;
+use Kachkaev\DatasetAbstractionBundle\Model\Dataset\ComponentAttributeUpdater\ComponentAttributeUpdaterInterface;
 
-use Kachkaev\PostgresHelperBundle\Model\Dataset\Dataset;
+use Kachkaev\DatasetAbstractionBundle\Model\Dataset\Dataset;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * Simply keeps all services tagged as postgres_helper.component_attribute_updater
+ * Simply keeps all services tagged as dataset_abstraction.component_attribute_updater
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  *
- * @DI\Service("postgres_helper.component_attribute_updaters")
+ * @DI\Service("dataset_abstraction.component_attribute_updaters")
  */
 class ComponentAttributeUpdaterCollection
 {

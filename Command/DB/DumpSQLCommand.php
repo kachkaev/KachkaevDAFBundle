@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\DB;
+namespace Kachkaev\DatasetAbstractionBundle\Command\DB;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +15,7 @@ class DumpSQLCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:db:dump-sql')
+            ->setName('da:db:dump-sql')
             ->setDescription('Runs the query from template and saves the result into a file')
             ->makeSQLTemplateNameAware()
             ->makeSQLTemplateParametersAware()
@@ -26,7 +26,7 @@ class DumpSQLCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output);
         
-        $sqlTemplateManager = $this->getContainer()->get('postgres_helper.sql_template_manager');
+        $sqlTemplateManager = $this->getContainer()->get('dataset_abstraction.sql_template_manager');
         
         $output->writeln(sprintf('<info>%s</info>', $sqlTemplateManager->render($input->getArgument('sql-template-name'), $input->getArgument('sql-template-parameters'))));
     }

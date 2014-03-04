@@ -1,10 +1,10 @@
 services:
-    postgres_helper.real_db_connection.main:
+    dataset_abstraction.real_db_connection.main:
         class:            Doctrine\DBAL\Driver\Connection
         factory_service:  doctrine.dbal.main_connection
         factory_method:   getWrappedConnection
 
-    postgres_helper.real_db_connection.geograph:
+    dataset_abstraction.real_db_connection.geograda:
         class:            Doctrine\DBAL\Driver\Connection
         factory_service:  doctrine.dbal.geograph_connection
         factory_method:   getWrappedConnection

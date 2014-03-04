@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model\Validator;
+namespace Kachkaev\DatasetAbstractionBundle\Model\Validator;
 
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -8,7 +8,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  *
- * @DI\Service("postgres_helper.validator.dataset_name")
+ * @DI\Service("dataset_abstraction.validator.dataset_name")
  */
 
 class DatasetNameValidator implements ValidatorInterface

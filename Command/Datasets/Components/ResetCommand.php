@@ -1,19 +1,19 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets\Components;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 class ResetCommand extends AbstractParameterAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:components:reset')
+            ->setName('da:datasets:components:reset')
             ->setDescription('Deletes all data in the dataset component and recreates it')
             ->makeForceAware()
             ->makeDatasetAware()

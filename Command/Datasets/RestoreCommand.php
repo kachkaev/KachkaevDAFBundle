@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets;
 
 use Symfony\Component\Console\Input\InputArgument;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +15,7 @@ class RestoreCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:restore')
+            ->setName('da:datasets:restore')
             ->setDescription('Restores selected dataset from a given dump file')
             ->addArgument('backup-filename', InputArgument::REQUIRED, 'Path to backup file; can be relative to point to standard backup directory')
         ;
@@ -30,7 +30,7 @@ class RestoreCommand extends AbstractParameterAwareCommand
         // Add standard directory to filename if it is relative
         $pathToBackup = $backupFilename;
         if (substr($backupFilename, 0, 1) !== '/' || strpos(':', $backupFilename) !== false) {
-            $pathToBackup = realpath($this->getContainer()->getParameter('postgres_helper.env.datasets_backup_dir').'/'.$backupFilename);
+            $pathToBackup = realpath($this->getContainer()->getParameter('dataset_abstraction.env.datasets_backup_dir').'/'.$backupFilename);
         }
         // Extract schema name
         $schema = explode('.', basename($backupFilename))[0];

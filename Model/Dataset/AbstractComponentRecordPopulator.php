@@ -1,13 +1,13 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model\Dataset;
+namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
 
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 
-use Kachkaev\PostgresHelperBundle\Model\Dataset\Dataset;
-use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
+use Kachkaev\DatasetAbstractionBundle\Model\Dataset\Dataset;
+use Kachkaev\DatasetAbstractionBundle\Model\SQLTemplateManager;
 
 /**
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
@@ -39,7 +39,7 @@ abstract class AbstractComponentRecordPopulator
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->sqlTemplateManager = $container->get('postgres_helper.sql_template_manager');
+        $this->sqlTemplateManager = $container->get('dataset_abstraction.sql_template_manager');
     }
     
     public function populate(Dataset $dataset, $componentName, array $options = null, OutputInterface $output = null)

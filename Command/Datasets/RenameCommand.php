@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets;
 
 use Symfony\Component\Console\Input\InputArgument;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +15,7 @@ class RenameCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:rename')
+            ->setName('da:datasets:rename')
             ->setDescription('Renames given dataset')
             ->makeDatasetAware()
             ->addArgument('dataset-new-name', InputArgument::REQUIRED, 'New name of the dataset (without schema)')

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components\Records;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets\Components\Records;
 
 use Symfony\Component\Console\Input\InputOption;
 
@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 class CountCommand extends AbstractParameterAwareCommand
 {
@@ -16,7 +16,7 @@ class CountCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:components:records:count')
+            ->setName('da:datasets:components:records:count')
             ->setDescription('Counts records in the component (all or a filtered subset)')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')

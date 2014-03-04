@@ -1,10 +1,10 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model\Dataset\ComponentAttributeUpdater;
+namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset\ComponentAttributeUpdater;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
+use Kachkaev\DatasetAbstractionBundle\Model\SQLTemplateManager;
 
-use Kachkaev\PostgresHelperBundle\Model\Dataset\Dataset;
+use Kachkaev\DatasetAbstractionBundle\Model\Dataset\Dataset;
 
 abstract class AbstractComponentAttributeUpdater
 {

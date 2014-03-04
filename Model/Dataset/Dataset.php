@@ -1,7 +1,7 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model\Dataset;
+namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
 
-use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
+use Kachkaev\DatasetAbstractionBundle\Model\SQLTemplateManager;
 use Doctrine\DBAL\Driver\Connection as DriverConnection;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -187,13 +187,13 @@ abstract class Dataset
         // Create, update or delete the property
         if (null !== $this->getProperty($propertyName)) {
             if (null === $propertyValue) {
-                $this->sqlTemplateManager->run('postgres_helper#datasets/properties/delete', [
+                $this->sqlTemplateManager->run('dataset_abstraction#datasets/properties/delete', [
                         'schema'=>$this->schema,
                         'datasetName'=>$this->name,
                     ], [$propertyName]);
                 unset ($this->properties[$propertyName]);
             } else {
-                $this->sqlTemplateManager->run('postgres_helper#datasets/properties/update', [
+                $this->sqlTemplateManager->run('dataset_abstraction#datasets/properties/update', [
                         'schema'=>$this->schema,
                         'datasetName'=>$this->name,
                     ], [$propertyName, $propertyValue, $propertyName]);
@@ -202,7 +202,7 @@ abstract class Dataset
         } else {
             if (null === $propertyValue) {
             } else {
-                $this->sqlTemplateManager->run('postgres_helper#datasets/properties/init', [
+                $this->sqlTemplateManager->run('dataset_abstraction#datasets/properties/init', [
                         'schema'=>$this->schema,
                         'datasetName'=>$this->name,
                     ], [$propertyName, $propertyValue]);
@@ -234,7 +234,7 @@ abstract class Dataset
      */
     public function updateProperties()
     {
-        $properties = $this->sqlTemplateManager->runAndFetchAll('postgres_helper#datasets/properties/list', [
+        $properties = $this->sqlTemplateManager->runAndFetchAll('dataset_abstraction#datasets/properties/list', [
                 'schema'=>$this->schema,
                 'datasetName'=>$this->name,
                 ], null, \PDO::FETCH_KEY_PAIR);

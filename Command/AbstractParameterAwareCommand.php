@@ -1,7 +1,7 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command;
-use Kachkaev\PostgresHelperBundle\Model\Dataset\DatasetManager;
+namespace Kachkaev\DatasetAbstractionBundle\Command;
+use Kachkaev\DatasetAbstractionBundle\Model\Dataset\DatasetManager;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -83,7 +83,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
     protected function makeSQLTemplateNameAware()
     {
         $this
-            ->addArgument('sql-template-name', InputArgument::REQUIRED, 'Name of an SQL template to render, e.g. postgres_helper#init-db');
+            ->addArgument('sql-template-name', InputArgument::REQUIRED, 'Name of an SQL template to render, e.g. dataset_abstraction#init-db');
                 
         return $this;
     }
@@ -197,7 +197,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
      */
     public function getDatasetManager($schema) {
         
-        $this->getContainer()->get('postgres_helper.validator.schema_name')->assertValid($schema);
+        $this->getContainer()->get('dataset_abstraction.validator.schema_name')->assertValid($schema);
         
         $serviceName = sprintf('ph.dataset_manager.%s', $schema);
         if ($this->getContainer()->has($serviceName)) {

@@ -1,9 +1,9 @@
 {
-    "name": "kachkaev/postgres-helper-bundle",
+    "name": "kachkaev/dataset-abstraction-bundle",
     "type": "symfony-bundle",
     "description": "Simplifies processing of the datasets stored in a postgresql database",
-    "keywords": ["postgres", "postgresql", "dataset", "database"],
-    "homepage": "http://github.com/kachkaev/KachkaevPostgresHelperBundle",
+    "keywords": ["dataset", "database", "abstraction", "postgres", "postgresql"],
+    "homepage": "http://github.com/kachkaev/KachkaevDatasetAbstractionBundle",
     "license": "MIT",
 
     "authors": [
@@ -14,7 +14,7 @@
         },
 		{
             "name": "Contributors",
-            "homepage": "https://github.com/kachkaev/KachkaevPostgresHelperBundle/contributors"
+            "homepage": "https://github.com/kachkaev/KachkaevDatasetAbstractionBundle/contributors"
         }
     ],
 
@@ -34,9 +34,9 @@
 
     "autoload": {
         "psr-0": {
-            "Kachkaev\\PostgresHelperBundle": ""
+            "Kachkaev\\DatasetAbstractionBundle": ""
         }
     },
 
-    "target-dir": "Kachkaev/PostgresHelperBundle"
+    "target-dir": "Kachkaev/DatasetAbstractionBundle"
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Schemas;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Schemas;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,7 +14,7 @@ class UpdateTypesCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:schemas:update-types')
+            ->setName('da:schemas:update-types')
             ->setDescription('Updates types in a given schema')
             ->makeSchemaAware()
         ;
@@ -24,7 +24,7 @@ class UpdateTypesCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output, $extractedArguments);
 
-        $schemaManager = $this->getContainer()->get('postgres_helper.schema_manager');
+        $schemaManager = $this->getContainer()->get('dataset_abstraction.schema_manager');
         $schemaManager->updateTypes($input->getArgument('schema'));
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Tests\Model\Validator;
+namespace Kachkaev\DatasetAbstractionBundle\Tests\Model\Validator;
 
 abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
 {

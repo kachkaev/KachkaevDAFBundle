@@ -1,12 +1,12 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Properties;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets\Properties;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 class SetCommand extends AbstractParameterAwareCommand
 {
@@ -14,7 +14,7 @@ class SetCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:properties:set')
+            ->setName('da:datasets:properties:set')
             ->setDescription('Sets single dataset property')
             ->makeDatasetAware()
             ->addArgument('property-name', InputArgument::REQUIRED, 'Name of a property to set')

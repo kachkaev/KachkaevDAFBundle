@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components\Records;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets\Components\Records;
 
 use Symfony\Component\Console\Input\ArrayInput;
 
-use Kachkaev\PostgresHelperBundle\Model\Dataset\AbstractComponentRecordPopulator;
+use Kachkaev\DatasetAbstractionBundle\Model\Dataset\AbstractComponentRecordPopulator;
 
 use Symfony\Component\Console\Input\InputOption;
 
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 class PopulateCommand extends AbstractParameterAwareCommand
 {
@@ -20,7 +20,7 @@ class PopulateCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:components:records:populate')
+            ->setName('da:datasets:components:records:populate')
             ->setDescription('Populates the component with records using a corresponding service')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')
@@ -40,7 +40,7 @@ class PopulateCommand extends AbstractParameterAwareCommand
         
         // Create the component if it does not exist
         if (!$dataset->getComponentManager()->has($componentName)) {
-            $invokedCommandName = 'ph:datasets:components:init';
+            $invokedCommandName = 'da:datasets:components:init';
             $invokedCommand = $this->getApplication()->find($invokedCommandName);
             $invokedCommandArguments = array(
                     'command' => $invokedCommandName,

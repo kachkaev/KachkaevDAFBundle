@@ -1,13 +1,13 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model\Dataset;
+namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
 
-use Kachkaev\PostgresHelperBundle\Model\Validator\ValidatorInterface;
+use Kachkaev\DatasetAbstractionBundle\Model\Validator\ValidatorInterface;
 
-use Kachkaev\PostgresHelperBundle\Model\ManagerInterface;
+use Kachkaev\DatasetAbstractionBundle\Model\ManagerInterface;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
+use Kachkaev\DatasetAbstractionBundle\Model\SQLTemplateManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -56,7 +56,7 @@ class ComponentManager implements ManagerInterface
      */
     public function updateList()
     {
-        $list = $this->sqlTemplateManager->runAndFetchAll('postgres_helper#datasets/components/list', [
+        $list = $this->sqlTemplateManager->runAndFetchAll('dataset_abstraction#datasets/components/list', [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
             ], null, \PDO::FETCH_COLUMN);
@@ -147,7 +147,7 @@ class ComponentManager implements ManagerInterface
     
     /**
      * (non-PHPdoc)
-     * @see \Kachkaev\PostgresHelperBundle\Model\ManagerInterface::delete()
+     * @see \Kachkaev\DatasetAbstractionBundle\Model\ManagerInterface::delete()
      */
     public function delete($componentName)
     {
@@ -160,7 +160,7 @@ class ComponentManager implements ManagerInterface
         $templates = [
             "$schema#$componentName/$deleteMode.$type",
             "$schema#$componentName/$deleteMode",
-            "postgres_helper#datasets/components/$deleteMode"
+            "dataset_abstraction#datasets/components/$deleteMode"
         ];
         
         // TODO replace with a real query that deletes component table and functions
@@ -194,9 +194,9 @@ class ComponentManager implements ManagerInterface
      * @param string $componentName
      * @param string $task
      * @param bool $considerSchemaRelatedTemplate
-     * @param bool $considerPostgresHelperTemplate
+     * @param bool $considerDatasetAbstractionTemplate
      */
-    protected function runTaskSpecificSQLTemplate($componentName, $task, $considerSchemaRelatedTemplate = false, $considerPostgresHelperTemplate = false)
+    protected function runTaskSpecificSQLTemplate($componentName, $task, $considerSchemaRelatedTemplate = false, $considerDatasetAbstractionTemplate = false)
     {
         $schema = $this->dataset->getSchema();
         $type = $this->dataset->getProperty('type');
@@ -217,7 +217,7 @@ class ComponentManager implements ManagerInterface
         }
         
         
-//         if ($considerPostgresHelperTemplate) {
+//         if ($considerDatasetAbstractionTemplate) {
 //             $templates []= "$schema#$componentName/$task";
 //         }
         

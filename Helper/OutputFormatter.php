@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Helper;
+namespace Kachkaev\DatasetAbstractionBundle\Helper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use JMS\DiExtraBundle\Annotation as DI;

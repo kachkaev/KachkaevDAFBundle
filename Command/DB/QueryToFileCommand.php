@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\DB;
+namespace Kachkaev\DatasetAbstractionBundle\Command\DB;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +15,7 @@ class QueryToFileCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:db:query-to-file')
+            ->setName('da:db:query-to-file')
             ->setDescription('Saves the result of the query to a file')
             ->makePathToFileAware()
             ->makeSQLTemplateNameAware()
@@ -27,7 +27,7 @@ class QueryToFileCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output);
         
-        $sqlTemplateManager = $this->getContainer()->get('postgres_helper.sql_template_manager');
+        $sqlTemplateManager = $this->getContainer()->get('dataset_abstraction.sql_template_manager');
         
         $output->write('Saving query result to file...');
 

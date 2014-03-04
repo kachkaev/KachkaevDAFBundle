@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model;
+namespace Kachkaev\DatasetAbstractionBundle\Model;
 
 use Doctrine\DBAL\Portability\Connection;
 
@@ -14,7 +14,7 @@ use Symfony\Component\Templating\EngineInterface;
 /**
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  *
- * @DI\Service("postgres_helper.sql_template_manager")
+ * @DI\Service("dataset_abstraction.sql_template_manager")
  */
 
 class SQLTemplateManager
@@ -42,7 +42,7 @@ class SQLTemplateManager
     {
         $this->container = $container;
         $this->templating = $container->get('templating');
-        $this->queryTemplatesNamespaceLookup = $container->getParameter('postgres_helper.query_templates_namespace_lookups');
+        $this->queryTemplatesNamespaceLookup = $container->getParameter('dataset_abstraction.query_templates_namespace_lookups');
     }
     
     protected function initializeConnectionIfNeeded()
@@ -50,7 +50,7 @@ class SQLTemplateManager
         if ($this->connection)
             return;
         
-        $this->connection = $this->container->get("postgres_helper.real_db_connection.main");
+        $this->connection = $this->container->get("dataset_abstraction.real_db_connection.main");
     }
     
     /**
@@ -223,7 +223,7 @@ class SQLTemplateManager
      * Converts short address of sql template to twig-compatable format
      * 
      * Example:
-     *     postgres_helper#a/b/c → KachkaevPostgresHelperBundle:sql/a/b:c.pgsql.twig 
+     *     dataset_abstraction#a/b/c → KachkaevDatasetAbstractionBundle:sql/a/b:c.pgsql.twig 
      */
     protected function getQueryTemplatePath($queryTemplate)
     {
@@ -234,8 +234,8 @@ class SQLTemplateManager
         if (array_key_exists(1, $queryTemplateParts))
         $queryTemplateParts[1] = 'sql/'.$queryTemplateParts[1];
         
-        if ($queryTemplateParts[0] == 'postgres_helper') {
-            $queryBundle = 'KachkaevPostgresHelperBundle';
+        if ($queryTemplateParts[0] == 'dataset_abstraction') {
+            $queryBundle = 'KachkaevDatasetAbstractionBundle';
         } else {
             if (!array_key_exists($queryTemplateParts[0], $this->queryTemplatesNamespaceLookup)) {
                 throw new \InvalidArgumentException(sprintf('Don’t know where to search for templates starting with ‘%s’', $queryTemplateParts[0]));
@@ -250,7 +250,7 @@ class SQLTemplateManager
     
     public function getTemplateNamespacePath($schemaName) {
         if (!array_key_exists($schemaName, $this->queryTemplatesNamespaceLookup)) {
-            throw new \InvalidArgumentException(sprintf('SQL template namespace %s not found, please add it to postgres_helper.query_templates_namespace_lookups parameter', $schemaName));
+            throw new \InvalidArgumentException(sprintf('SQL template namespace %s not found, please add it to dataset_abstraction.query_templates_namespace_lookups parameter', $schemaName));
         }
         return $this->queryTemplatesNamespaceLookup[$schemaName]['path'];
     }

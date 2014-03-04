@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets;
 
 use Symfony\Component\Console\Input\ArrayInput;
 
@@ -7,15 +7,15 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-use Kachkaev\PostgresHelperBundle\Model\Dataset;
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Model\Dataset;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 class InitCommand extends AbstractParameterAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:init')
+            ->setName('da:datasets:init')
             ->setDescription('Initialises an empty dataset')
             ->makeDatasetAware()
             ->makeDatasetTypeAware(true)
@@ -37,7 +37,7 @@ class InitCommand extends AbstractParameterAwareCommand
         
         if ($input->hasArgument('dataset-type')) {
             
-            $command = $this->getApplication()->find('ph:datasets:properties:set');
+            $command = $this->getApplication()->find('da:datasets:properties:set');
             $arguments = [
                     'dataset-full-name' => $input->getArgument('dataset-full-name'),
                     'property-name' => 'type',

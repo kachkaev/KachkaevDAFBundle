@@ -1,9 +1,9 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets;
 
 use Symfony\Component\Console\Input\InputArgument;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,7 +14,7 @@ class DuplicateCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:duplicate')
+            ->setName('da:datasets:duplicate')
             ->setDescription('Renames given dataset')
             ->makeDatasetAware()
             ->addArgument('duplicate-dataset-name', InputArgument::REQUIRED, 'Name of the dataset (without schema)')

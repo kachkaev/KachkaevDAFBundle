@@ -1,7 +1,7 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model\Dataset;
+namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
 
-use Kachkaev\PostgresHelperBundle\Model\Schema\SchemaManager;
+use Kachkaev\DatasetAbstractionBundle\Model\Schema\SchemaManager;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -9,10 +9,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Templating\EngineInterface;
 
-use Kachkaev\PostgresHelperBundle\Model\Validator\ValidatorInterface;
-use Kachkaev\PostgresHelperBundle\Model\Validator\NameValidator;
-use Kachkaev\PostgresHelperBundle\Model\ManagerInterface;
-use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
+use Kachkaev\DatasetAbstractionBundle\Model\Validator\ValidatorInterface;
+use Kachkaev\DatasetAbstractionBundle\Model\Validator\NameValidator;
+use Kachkaev\DatasetAbstractionBundle\Model\ManagerInterface;
+use Kachkaev\DatasetAbstractionBundle\Model\SQLTemplateManager;
 
 /**
  * Manages datasets
@@ -57,8 +57,8 @@ abstract class DatasetManager implements ManagerInterface
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->sqlTemplateManager = $container->get('postgres_helper.sql_template_manager');
-        $this->schemaManager = $container->get('postgres_helper.schema_manager');
+        $this->sqlTemplateManager = $container->get('dataset_abstraction.sql_template_manager');
+        $this->schemaManager = $container->get('dataset_abstraction.schema_manager');
         $this->nameValidator = $this->getValidator('dataset_name');
         $this->updateList();
     }
@@ -68,7 +68,7 @@ abstract class DatasetManager implements ManagerInterface
      */
     public function updateList()
     {
-        $listOfExistingNames = $this->sqlTemplateManager->runAndFetchAllAsList('postgres_helper#datasets/list', [
+        $listOfExistingNames = $this->sqlTemplateManager->runAndFetchAllAsList('dataset_abstraction#datasets/list', [
                 'schema'=>$this->schema
                 ]);
         
@@ -160,7 +160,7 @@ abstract class DatasetManager implements ManagerInterface
         $this->assertNotHaving($datasetName, sprintf('Cannot initialise dataset %s.%s as it already exists in the database', $this->schema, $datasetName));
         
         // Creating meta table
-        $this->sqlTemplateManager->run('postgres_helper#datasets/init', [
+        $this->sqlTemplateManager->run('dataset_abstraction#datasets/init', [
                 'schema'=>$this->schema,
                 'datasetName'=>$datasetName,
                 ]);
@@ -183,7 +183,7 @@ abstract class DatasetManager implements ManagerInterface
 
         $this->assertNotHaving($newDatasetName, sprintf('Unable to rename dataset %s.%s to %s.%s as such dataset already exists', $this->schema, $datasetName, $this->schema, $newDatasetName));
         
-        $this->sqlTemplateManager->run('postgres_helper#datasets/rename', [
+        $this->sqlTemplateManager->run('dataset_abstraction#datasets/rename', [
                 'schema'=>$this->schema,
                 'datasetName'=>$datasetName,
                 'newDatasetName'=>$newDatasetName,
@@ -208,7 +208,7 @@ abstract class DatasetManager implements ManagerInterface
             throw new \InvalidArgumentException(sprintf('Unable to duplicate dataset %s.%s to %s.%s as such dataset already exists', $this->schema, $datasetName, $this->schema, $newDatasetName));
         }
         
-        $this->sqlTemplateManager->run('postgres_helper#datasets/duplicate', [
+        $this->sqlTemplateManager->run('dataset_abstraction#datasets/duplicate', [
                 'schema'=>$this->schema,
                 'datasetName'=>$datasetName,
                 'duplicateDatasetName'=>$newDatasetName,
@@ -333,7 +333,7 @@ abstract class DatasetManager implements ManagerInterface
         $dataset = $this->get($datasetName);
         
         // Deleting all tables starting with name__
-        $this->sqlTemplateManager->run('postgres_helper#datasets/delete', [
+        $this->sqlTemplateManager->run('dataset_abstraction#datasets/delete', [
                 'schema'=>$this->schema,
                 'datasetName'=>$datasetName,
             ]);
@@ -349,8 +349,8 @@ abstract class DatasetManager implements ManagerInterface
      */
     public function getValidator($validatorName)
     {
-        foreach ([$this->schema, 'postgres_helper'] as $schema) {
-            $serviceName = 'postgres_helper.validator.'.$validatorName;
+        foreach ([$this->schema, 'dataset_abstraction'] as $schema) {
+            $serviceName = 'dataset_abstraction.validator.'.$validatorName;
             if ($this->container->has($serviceName))
                 return $this->container->get($serviceName);
         }
@@ -390,11 +390,11 @@ abstract class DatasetManager implements ManagerInterface
     
     /**
      * Returns all registered component attribute updaters
-     * (services tagged with postgres_helper.component_attribute_updater)
+     * (services tagged with dataset_abstraction.component_attribute_updater)
      */
     public function getComponentAttributeUpdaters()
     {
-        return $this->container->get('postgres_helper.component_attribute_updaters')->getAll();
+        return $this->container->get('dataset_abstraction.component_attribute_updaters')->getAll();
     }
     
 }

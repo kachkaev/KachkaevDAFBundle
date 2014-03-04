@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model;
+namespace Kachkaev\DatasetAbstractionBundle\Model;
 
 interface ManagerInterface
 {

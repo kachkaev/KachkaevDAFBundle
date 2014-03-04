@@ -1,14 +1,14 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle;
+namespace Kachkaev\DatasetAbstractionBundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-use Kachkaev\PostgresHelperBundle\DependencyInjection\Compiler\ComponentAttributeUpdaterPass;
+use Kachkaev\DatasetAbstractionBundle\DependencyInjection\Compiler\ComponentAttributeUpdaterPass;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class KachkaevPostgresHelperBundle extends Bundle
+class KachkaevDatasetAbstractionBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {

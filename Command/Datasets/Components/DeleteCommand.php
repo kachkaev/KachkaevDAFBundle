@@ -1,19 +1,19 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets\Components;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 class DeleteCommand extends AbstractParameterAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:components:delete')
+            ->setName('da:datasets:components:delete')
             ->setDescription('Deletes dataset component (drops a table)')
             ->makeForceAware()
             ->makeDatasetAware()

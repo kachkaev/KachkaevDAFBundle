@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\DB;
+namespace Kachkaev\DatasetAbstractionBundle\Command\DB;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +15,7 @@ class InitCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:db:init')
+            ->setName('da:db:init')
             ->setDescription('Initialises the database (can use given template)')
             ->addArgument('template-name', InputArgument::OPTIONAL, 'Name of the postgres template to use')
             ->addArgument('default-schemas', InputArgument::OPTIONAL, 'Names of schemas to initialise by default (comma-separated, no spaces between)')
@@ -27,7 +27,7 @@ class InitCommand extends AbstractParameterAwareCommand
         $this->processInput($input, $output);
         
         $connection = $this->getContainer()->get('doctrine.dbal.main_connection');
-        $sqlTemplateManager = $this->getContainer()->get('postgres_helper.sql_template_manager');
+        $sqlTemplateManager = $this->getContainer()->get('dataset_abstraction.sql_template_manager');
         
         // XXX validate template-name
         $templateName = $input->getArgument('template-name'); 
@@ -57,7 +57,7 @@ class InitCommand extends AbstractParameterAwareCommand
         }
         
         try {
-            $query = $sqlTemplateManager->render('postgres_helper#init-db', ['database' => $name, 'template' => $templateName]);
+            $query = $sqlTemplateManager->render('dataset_abstraction#init-db', ['database' => $name, 'template' => $templateName]);
             $tmpConnection->getWrappedConnection()->exec($query);
             $output->writeln(' Done.');
         } catch (\Exception $e) {
@@ -67,7 +67,7 @@ class InitCommand extends AbstractParameterAwareCommand
         
         if ($defaultSchemas) {
             $output->write(sprintf('Initialising default schema%s (<info>%s</info>)...', sizeof($defaultSchemas) > 1 ? 's':'', implode('</info>, <info>', $defaultSchemas)));
-            $schemaManager = $this->getContainer()->get('postgres_helper.schema_manager');
+            $schemaManager = $this->getContainer()->get('dataset_abstraction.schema_manager');
             foreach ($defaultSchemas as $schemaName) {
                 $schemaManager->init($schemaName);
             }

@@ -1,12 +1,12 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 class BackupCommand extends AbstractParameterAwareCommand
 {
@@ -14,7 +14,7 @@ class BackupCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:backup')
+            ->setName('da:datasets:backup')
             ->setDescription('Dumps selected dataset into a backup file')
             ->makeDatasetAware()
             ->addArgument('backup-directory', InputArgument::OPTIONAL, 'Backup directory; file name will be schema.dataset-YYYY-MM-DD.pgdump')
@@ -27,7 +27,7 @@ class BackupCommand extends AbstractParameterAwareCommand
         
         $backupDirectory = $input->getArgument('backup-directory');
         if (!$backupDirectory) {
-            $backupDirectory = $this->getContainer()->getParameter('postgres_helper.env.datasets_backup_dir');
+            $backupDirectory = $this->getContainer()->getParameter('dataset_abstraction.env.datasets_backup_dir');
         }
         
         $output->write(sprintf('Creating backup of <info>%s</info> (this may take a while)...', $extractedArguments['dataset-full-name']));

@@ -1,12 +1,12 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Schemas;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Schemas;
 
 use Doctrine\DBAL\Portability\Connection;
 
 use Doctrine\DBAL\Schema\PostgreSqlSchemaManager;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +17,7 @@ class DeleteCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:schemas:delete')
+            ->setName('da:schemas:delete')
             ->setDescription('Deletes given database schema in the main database')
             ->addArgument('schema-name', InputArgument::REQUIRED, 'Name of the schema to delete')
             ->makeForceAware()
@@ -29,7 +29,7 @@ class DeleteCommand extends AbstractParameterAwareCommand
         $this->processInput($input, $output);
         
         $schemaName = $input->getArgument('schema-name');
-        $schemaManager = $this->getContainer()->get('postgres_helper.schema_manager');
+        $schemaManager = $this->getContainer()->get('dataset_abstraction.schema_manager');
         
         if ($schemaManager->has($schemaName)) {
             if (!$input->getOption('force')) {

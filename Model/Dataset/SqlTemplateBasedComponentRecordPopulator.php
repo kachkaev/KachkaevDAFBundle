@@ -1,13 +1,13 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model\Dataset;
+namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
 
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 
-use Kachkaev\PostgresHelperBundle\Model\Dataset\Dataset;
-use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
+use Kachkaev\DatasetAbstractionBundle\Model\Dataset\Dataset;
+use Kachkaev\DatasetAbstractionBundle\Model\SQLTemplateManager;
 
 /**
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"

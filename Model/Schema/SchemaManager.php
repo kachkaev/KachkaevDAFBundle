@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\PostgresHelperBundle\Model\Schema;
+namespace Kachkaev\DatasetAbstractionBundle\Model\Schema;
 
 use Symfony\Component\Finder\Finder;
 
@@ -9,13 +9,13 @@ use Doctrine\DBAL\Statement;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Templating\EngineInterface;
 
-use Kachkaev\PostgresHelperBundle\Model\ManagerInterface;
-use Kachkaev\PostgresHelperBundle\Model\SQLTemplateManager;
+use Kachkaev\DatasetAbstractionBundle\Model\ManagerInterface;
+use Kachkaev\DatasetAbstractionBundle\Model\SQLTemplateManager;
 
 /**
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  * 
- * @DI\Service("postgres_helper.schema_manager")
+ * @DI\Service("dataset_abstraction.schema_manager")
  */
 
 class SchemaManager implements ManagerInterface
@@ -50,7 +50,7 @@ class SchemaManager implements ManagerInterface
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->sqlTemplateManager = $container->get('postgres_helper.sql_template_manager');
+        $this->sqlTemplateManager = $container->get('dataset_abstraction.sql_template_manager');
         //$this->nameValidator = $this->getValidator('schema_name');
         $this->updateList();
     }
@@ -62,7 +62,7 @@ class SchemaManager implements ManagerInterface
     
     public function listNames()
     {
-        $allSchemas =  $this->sqlTemplateManager->runAndFetchAllAsList("postgres_helper#schemas/list");
+        $allSchemas =  $this->sqlTemplateManager->runAndFetchAllAsList("dataset_abstraction#schemas/list");
         $filteredSchemas = array_diff($allSchemas, $this->systemSchemas);
         
         return $filteredSchemas;
@@ -77,7 +77,7 @@ class SchemaManager implements ManagerInterface
     
     public function init($schemaName)
     {
-        $this->sqlTemplateManager->run("postgres_helper#schemas/init", [
+        $this->sqlTemplateManager->run("dataset_abstraction#schemas/init", [
                 'schema' => $schemaName
             ]);    
     }
@@ -88,7 +88,7 @@ class SchemaManager implements ManagerInterface
             throw new \InvalidArgumentException("You are not allowed to delete system schema $schemaName");    
         }
         
-        $this->sqlTemplateManager->run("postgres_helper#schemas/delete", [
+        $this->sqlTemplateManager->run("dataset_abstraction#schemas/delete", [
                 'schema' => $schemaName
             ]);
     }
@@ -160,7 +160,7 @@ class SchemaManager implements ManagerInterface
         }
     
         // Delete all functions
-        $this->sqlTemplateManager->run('postgres_helper#schemas/delete-all-functions', [
+        $this->sqlTemplateManager->run('dataset_abstraction#schemas/delete-all-functions', [
                 'schema' => $schemaName,
                 ]);
     

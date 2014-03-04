@@ -1,20 +1,20 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Datasets\Components;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets\Components;
 
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 class PopulateCommand extends AbstractParameterAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('ph:datasets:components:populate')
+            ->setName('da:datasets:components:populate')
             ->setDescription('Populates dataset component runs a query or a script')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component to populate')
@@ -32,10 +32,10 @@ class PopulateCommand extends AbstractParameterAwareCommand
         $componentManager = $dataset->getComponentManager();
 
         if (!$componentManager->has($componentName) && $input->getOption('force')) {
-            $command = $this->getApplication()->find('ph:datasets:components:init');
+            $command = $this->getApplication()->find('da:datasets:components:init');
             
             $arguments = array(
-                    'command' => 'ph:datasets:components:init',
+                    'command' => 'da:datasets:components:init',
                     'dataset-full-name' => $extractedArguments['dataset-full-name'],
                     'component-name'    => $componentName,
             );

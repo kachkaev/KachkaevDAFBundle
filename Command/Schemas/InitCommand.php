@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\PostgresHelperBundle\Command\Schemas;
+namespace Kachkaev\DatasetAbstractionBundle\Command\Schemas;
 
 use Symfony\Component\Console\Input\InputArgument;
 
-use Kachkaev\PostgresHelperBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +15,7 @@ class InitCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('ph:schemas:init')
+            ->setName('da:schemas:init')
             ->setDescription('Initialises given database schema in the main database')
             ->addArgument('schema-name', InputArgument::REQUIRED, 'Name of the schema to initialise')
         ;
@@ -28,7 +28,7 @@ class InitCommand extends AbstractParameterAwareCommand
         $schemaName = $input->getArgument('schema-name');
         
         $output->write(sprintf('Initialising schema <info>%s</info>...', $schemaName));
-        $this->getContainer()->get('postgres_helper.schema_manager')->init($schemaName);
+        $this->getContainer()->get('dataset_abstraction.schema_manager')->init($schemaName);
         $output->writeln(' Done.');
     }
 }
