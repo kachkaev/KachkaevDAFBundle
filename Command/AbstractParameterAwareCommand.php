@@ -199,7 +199,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
         
         $this->getContainer()->get('dataset_abstraction.validator.schema_name')->assertValid($schema);
         
-        $serviceName = sprintf('ph.dataset_manager.%s', $schema);
+        $serviceName = sprintf('da.dataset_manager.%s', $schema);
         if ($this->getContainer()->has($serviceName)) {
             return $this->getContainer()->get($serviceName);
         } else {

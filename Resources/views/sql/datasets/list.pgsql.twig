@@ -1,2 +1,0 @@
-SELECT replace(tablename, '__meta', '') FROM pg_tables
-WHERE tablename LIKE '%__meta' AND schemaname = '{{ schema }}';
