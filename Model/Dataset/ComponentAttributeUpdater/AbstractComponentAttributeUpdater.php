@@ -2,7 +2,7 @@
 namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset\ComponentAttributeUpdater;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Model\SQLTemplateManager;
+use Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging\SQLTemplateManager;
 
 use Kachkaev\DatasetAbstractionBundle\Model\Dataset\Dataset;
 

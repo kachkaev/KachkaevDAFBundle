@@ -7,7 +7,7 @@ use Kachkaev\DatasetAbstractionBundle\Model\ManagerInterface;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Model\SQLTemplateManager;
+use Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging\SQLTemplateManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Templating\EngineInterface;
 

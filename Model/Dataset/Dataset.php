@@ -1,7 +1,7 @@
 <?php
 namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
 
-use Kachkaev\DatasetAbstractionBundle\Model\SQLTemplateManager;
+use Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging\SQLTemplateManager;
 use Doctrine\DBAL\Driver\Connection as DriverConnection;
 use Symfony\Component\Templating\EngineInterface;
 

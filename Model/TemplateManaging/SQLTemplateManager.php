@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model;
+namespace Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging;
 
 use Doctrine\DBAL\Portability\Connection;
 

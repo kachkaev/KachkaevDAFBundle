@@ -12,7 +12,7 @@ use Symfony\Component\Templating\EngineInterface;
 use Kachkaev\DatasetAbstractionBundle\Model\Validator\ValidatorInterface;
 use Kachkaev\DatasetAbstractionBundle\Model\Validator\NameValidator;
 use Kachkaev\DatasetAbstractionBundle\Model\ManagerInterface;
-use Kachkaev\DatasetAbstractionBundle\Model\SQLTemplateManager;
+use Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging\SQLTemplateManager;
 
 /**
  * Manages datasets
