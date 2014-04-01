@@ -106,7 +106,7 @@ class SchemaManager implements ManagerInterface
     
     /**
      * Updates all schema functions
-     * Function templates are stored in *Bundle/Resources/views/sql/schema/functions
+     * Function templates are stored in *Bundle/Resources/views/pgsql/schema/functions
      * 
      * There are 3 categories of functions:
      * 1) Standard - created only once in the schema
@@ -127,7 +127,7 @@ class SchemaManager implements ManagerInterface
      */
     public function updateFunctions($schemaName)
     {
-        $directory = sprintf('%s/../src/Kachkaev/PR%sBundle/Resources/views/sql/schema/functions', $this->container->getParameter('kernel.root_dir'), ucfirst($schemaName));
+        $directory = sprintf('%s/../src/Kachkaev/PR%sBundle/Resources/views/pgsql/schema/functions', $this->container->getParameter('kernel.root_dir'), ucfirst($schemaName));
         if (!is_dir($directory)) {
             return;
         }
@@ -222,11 +222,11 @@ class SchemaManager implements ManagerInterface
     
     /**
      * Updates all schema types
-     * Type templates are stored in *Bundle/Resources/views/sql/schema/types
+     * Type templates are stored in *Bundle/Resources/views/pgsql/schema/types
      */
     public function updateTypes($schemaName)
     {
-        $directory = sprintf('%s/../src/Kachkaev/PR%sBundle/Resources/views/sql/schema/types', $this->container->getParameter('kernel.root_dir'), ucfirst($schemaName));
+        $directory = sprintf('%s/../src/Kachkaev/PR%sBundle/Resources/views/pgsql/schema/types', $this->container->getParameter('kernel.root_dir'), ucfirst($schemaName));
         if (!is_dir($directory)) {
             return;
         }
