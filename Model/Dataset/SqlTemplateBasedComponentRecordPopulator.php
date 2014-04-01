@@ -12,7 +12,7 @@ use Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging\SQLTemplateManager;
 /**
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  *
- * @DI\Service("ph.dataset_component_record_populator.sql_template_based")
+ * @DI\Service("da.dataset_component_record_populator.sql_template_based")
  */
 class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPopulator
 {
