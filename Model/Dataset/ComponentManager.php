@@ -187,6 +187,14 @@ class ComponentManager implements ManagerInterface
         $this->init($componentName);
     }
     
+    public function count($componentName) {
+        return $this->dataset->getComponentRecordManager()->count($componentName);
+    }
+
+    public function countUnprocessed($componentName) {
+        return $this->dataset->getComponentRecordManager()->count($componentName, 'status <> 3 AND status <> 2');
+    }
+    
     /**
      * Runs a task-specific sql template (a shortcut)
      * By default only schema- and type-specific templates are considered: {schema}#{componentName}/{task}.{type}

@@ -88,14 +88,25 @@ class ComponentAttributeManager {
     
     /**
      * 
+     * @param string $componentName
+     * @param array $attributeNames
+     */
+    public function hasAttributes($componentName, array $attributeNames)
+    {
+        $missingAttributes = array_diff($attributeNames, $this->listAttributeNames($componentName));
+        return !count($missingAttributes);
+    }
+    
+    /**
+     * 
      * @param array $attributeNames
      * @param string $errorMessage
      */
     public function assertHavingAttributes($componentName, $attributeNames, $errorMessage = null)
     {
-        $missingAttributes = array_diff($attributeNames, $this->listAttributeNames($componentName));
-        if (count($missingAttributes)) {
+        if (!$this->hasAttributes($componentName, $attributeNames)) {
             if (!$errorMessage) {
+                $missingAttributes = array_diff($attributeNames, $this->listAttributeNames($componentName));
                 $errorMessage = sprintf(count($missingAttributes) == 1 ? 'Attribute %s in component %s does not exist' : 'Attributes %s in component %s do not exist', implode(', ', $missingAttributes), $componentName);
             }
             throw new \LogicException($errorMessage);

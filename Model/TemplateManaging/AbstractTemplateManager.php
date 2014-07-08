@@ -48,7 +48,7 @@ class AbstractTemplateManager
      */
     public function exists($templateName)
     {
-        $templateNamePath = $this->getQueryTemplatePath($templateName);
+        $templateNamePath = $this->getTemplatePath($templateName);
         return $this->templating->exists($templateNamePath);
     }
     
@@ -60,7 +60,7 @@ class AbstractTemplateManager
     public function existSomeOf(array $templateNames)
     {
         foreach ($templateNames as $templateName) {
-            $templateNamePath = $this->getQueryTemplatePath($templateName);
+            $templateNamePath = $this->getTemplatePath($templateName);
             if ($this->templating->exists($templateNamePath)) {
                 return true;
             }
@@ -76,7 +76,7 @@ class AbstractTemplateManager
     public function existAllOf(array $templateNames)
     {
         foreach ($templateNames as $templateName) {
-            $templateNamePath = $this->getQueryTemplatePath($templateName);
+            $templateNamePath = $this->getTemplatePath($templateName);
             if (!$this->templating->exists($templateNamePath)) {
                 return false;
             }

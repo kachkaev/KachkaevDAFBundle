@@ -385,6 +385,7 @@ abstract class DatasetManager implements ManagerInterface
     
     public function updateFunctions()
     {
+        $this->updateList();
         $this->schemaManager->updateFunctions($this->schema);
     }
     

@@ -155,6 +155,11 @@ abstract class Dataset
         }   
     }
     
+    public function getComponentProperty($componentName, $propertyName)
+    {
+        return $this->getProperty(sprintf('.%s.%s', $componentName, $propertyName));
+    }
+    
     /**
      * Sets the value of the given property.
      * If new value is null, the property gets removed from the table
@@ -215,6 +220,12 @@ abstract class Dataset
             $this->getDatasetManager()->updateFunctions();
         }
     }
+    
+    public function setComponentProperty($componentName, $propertyName, $propertyValue)
+    {
+        return $this->setProperty(sprintf('.%s.%s', $componentName, $propertyName, $propertyValue));
+    }
+    
     
     /**
      * Returns the list of all properties of the dataset (records in "meta" table)
