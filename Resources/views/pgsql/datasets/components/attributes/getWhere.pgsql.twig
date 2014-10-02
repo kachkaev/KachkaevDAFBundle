@@ -1,2 +1,4 @@
 SELECT {{attributeNamesAsStr}} FROM {% block fullComponentName %}{{ schema }}.{{ datasetName }}__{{ componentName }}{% endblock %}
-    WHERE {{ where }};
+    WHERE {{ where }}
+{% if orderBy %} ORDER BY {{ orderBy }} {% endif %}
+;

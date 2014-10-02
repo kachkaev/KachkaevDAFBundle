@@ -69,12 +69,16 @@ class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPo
         // Cleaning the component
         $dataset->getComponentRecordManager()->clean($componentName);
         
-        // Calling the template
-        $this->sqlTemplateManager->run([$templateNameToExecute],
-            [
+        
+        // Desiding what variables to include 
+        $templateVars = [
                 'schema'=>$dataset->getSchema(),
                 'datasetName'=>$dataset->getName(),
-                'componentInstanceName'=>$parsedComponentName['instanceName']
-            ]);
+                'componentInstanceName'=>$parsedComponentName['instanceName'],
+                'componentProperties' => $dataset->listComponentProperties($componentName)
+            ];
+        
+        // Calling the template
+        $this->sqlTemplateManager->run([$templateNameToExecute], $templateVars);
     }
 }

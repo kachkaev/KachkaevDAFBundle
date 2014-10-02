@@ -145,7 +145,7 @@ class ComponentAttributeManager {
      * @param string $where
      * @return array
      */
-    public function getAttributesWhere($componentName, $attributeNames, $where)
+    public function getAttributesWhere($componentName, $attributeNames, $where, $orderBy = null)
     {
         // Quotes are removed tom make it possible to typecast attributes
         //$attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
@@ -157,18 +157,21 @@ class ComponentAttributeManager {
                 'componentName'=>$componentName,
                 'attributeNamesAsStr'=>$attributeNamesAsStr,
                 'where'=>$where,
+                'orderBy'=>$orderBy,
                 ]);
         
         return $result;
     }
 
-    public function getIdsWhere($componentName, $where)
+    public function getIdsWhere($componentName, $where, $orderBy = null)
     {
-        $result = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/getIdsWhere", [
+        $result = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/getWhere", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
+                'attributeNamesAsStr'=>'id',
                 'where'=>$where,
+                'orderBy'=>$orderBy,
         ], null, \PDO::FETCH_COLUMN);
         
         return $result;

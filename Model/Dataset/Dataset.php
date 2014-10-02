@@ -241,6 +241,23 @@ abstract class Dataset
     }
     
     /**
+     * Returns the list of all properties of the dataset component (filtered records in "meta" table)
+     * @return array
+     */
+    public function listComponentProperties($componentName)
+    {
+        $requiredPropertyPrefix = '.'.$componentName.'.'; 
+        $componentProperties = [];
+        foreach($this->listProperties() as $propertyName => $propertyValue) {
+            if (strpos($propertyName, $requiredPropertyPrefix) === 0) {
+                $componentProperties[substr($propertyName, strlen($requiredPropertyPrefix))] = $propertyValue;
+            }
+        }
+        return $componentProperties;
+    }
+    
+    
+    /**
      * Actuates the list of properties from the database
      */
     public function updateProperties()
