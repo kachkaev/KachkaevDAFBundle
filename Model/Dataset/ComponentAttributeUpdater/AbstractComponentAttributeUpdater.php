@@ -50,7 +50,8 @@ abstract class AbstractComponentAttributeUpdater
     public function update(Dataset $dataset, $componentName, array $attributeNames, array &$data, OutputInterface $output = null)
     {
         $this->validateAttributes($dataset, $componentName, $attributeNames);
-
+        
+        ini_set('memory_limit', '-1');
         $this->doUpdate($dataset, $componentName, $attributeNames, $data, $output);
     }
 
