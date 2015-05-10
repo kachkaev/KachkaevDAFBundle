@@ -1,8 +1,7 @@
 services:
     daf.real_db_connection.main:
         class:            Doctrine\DBAL\Driver\Connection
-        factory_service:  doctrine.dbal.main_connection
-        factory_method:   getWrappedConnection
+        factory:          ["@doctrine.dbal.main_connection", getWrappedConnection]
 
 #    example:
 #        class: Path\To\Class
