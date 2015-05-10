@@ -1,5 +1,5 @@
 parameters:
-    dataset_abstraction.env.data_dir: %kernel.root_dir%/../../../data
-    dataset_abstraction.env.datasets_backup_dir: %dataset_abstraction.env.data_dir%/backups/datasets/
-    dataset_abstraction.conventional_null: -2,147,483,642 # not -2,147,483,648
-    dataset_abstraction.batch_chunk_size: 50
+    daf.env.data_dir: %kernel.root_dir%/../../../data
+    daf.env.datasets_backup_dir: %daf.env.data_dir%/backups/datasets/
+    daf.conventional_null: -2,147,483,642 # not -2,147,483,648
+    daf.batch_chunk_size: 50

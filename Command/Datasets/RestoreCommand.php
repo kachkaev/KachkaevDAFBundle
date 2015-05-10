@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets;
+namespace Kachkaev\DAFBundle\Command\Datasets;
 
 use Symfony\Component\Console\Input\InputArgument;
 
-use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,7 +30,7 @@ class RestoreCommand extends AbstractParameterAwareCommand
         // Add standard directory to filename if it is relative
         $pathToBackup = $backupFilename;
         if (substr($backupFilename, 0, 1) !== '/' || strpos(':', $backupFilename) !== false) {
-            $pathToBackup = realpath($this->getContainer()->getParameter('dataset_abstraction.env.datasets_backup_dir').'/'.$backupFilename);
+            $pathToBackup = realpath($this->getContainer()->getParameter('daf.env.datasets_backup_dir').'/'.$backupFilename);
         }
         // Extract schema name
         $schema = explode('.', basename($backupFilename))[0];

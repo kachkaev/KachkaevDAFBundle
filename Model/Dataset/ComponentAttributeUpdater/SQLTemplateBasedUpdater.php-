@@ -1,16 +1,16 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset\ComponentAttributeUpdater;
+namespace Kachkaev\DAFBundle\Model\Dataset\ComponentAttributeUpdater;
 
 use JMS\DiExtraBundle\Annotation as DI;
 
-use Kachkaev\DatasetAbstractionBundle\Model\Dataset\Dataset;
-use Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging\SQLTemplateManager;
+use Kachkaev\DAFBundle\Model\Dataset\Dataset;
+use Kachkaev\DAFBundle\Model\TemplateManaging\SQLTemplateManager;
 
 /**
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  *
  * @DI\Service()
- * @DI\Tag("dataset_abstraction.component_attribute_updater")
+ * @DI\Tag("daf.component_attribute_updater")
  */
 class SQLTemplateBasedUpdater extends AbstractComponentAttributeUpdater
 {

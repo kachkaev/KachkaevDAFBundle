@@ -1,8 +1,8 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets\Components\Records;
+namespace Kachkaev\DAFBundle\Command\Datasets\Components\Records;
 
-use Kachkaev\DatasetAbstractionBundle\Model\Dataset\ComponentRecordManager;
+use Kachkaev\DAFBundle\Model\Dataset\ComponentRecordManager;
 
 use Symfony\Component\Console\Input\InputOption;
 
@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 
 class CopyCommand extends AbstractParameterAwareCommand
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Helper;
+namespace Kachkaev\DAFBundle\Helper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use JMS\DiExtraBundle\Annotation as DI;

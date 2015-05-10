@@ -1,12 +1,7 @@
 services:
-    dataset_abstraction.real_db_connection.main:
+    daf.real_db_connection.main:
         class:            Doctrine\DBAL\Driver\Connection
         factory_service:  doctrine.dbal.main_connection
-        factory_method:   getWrappedConnection
-
-    dataset_abstraction.real_db_connection.geograda:
-        class:            Doctrine\DBAL\Driver\Connection
-        factory_service:  doctrine.dbal.geograph_connection
         factory_method:   getWrappedConnection
 
 #    example:

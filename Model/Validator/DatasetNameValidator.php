@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model\Validator;
+namespace Kachkaev\DAFBundle\Model\Validator;
 
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -8,7 +8,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  *
- * @DI\Service("dataset_abstraction.validator.dataset_name")
+ * @DI\Service("daf.validator.dataset_name")
  */
 
 class DatasetNameValidator implements ValidatorInterface

@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model\Schema;
+namespace Kachkaev\DAFBundle\Model\Schema;
 
 use Symfony\Component\Finder\Finder;
 
@@ -9,13 +9,13 @@ use Doctrine\DBAL\Statement;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Templating\EngineInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Model\ManagerInterface;
-use Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging\SQLTemplateManager;
+use Kachkaev\DAFBundle\Model\ManagerInterface;
+use Kachkaev\DAFBundle\Model\TemplateManaging\SQLTemplateManager;
 
 /**
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  * 
- * @DI\Service("dataset_abstraction.schema_manager")
+ * @DI\Service("daf.schema_manager")
  */
 
 class SchemaManager implements ManagerInterface
@@ -50,7 +50,7 @@ class SchemaManager implements ManagerInterface
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->sqlTemplateManager = $container->get('dataset_abstraction.sql_template_manager');
+        $this->sqlTemplateManager = $container->get('daf.sql_template_manager');
         //$this->nameValidator = $this->getValidator('schema_name');
         $this->updateList();
     }

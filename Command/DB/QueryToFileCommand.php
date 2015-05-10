@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Command\DB;
+namespace Kachkaev\DAFBundle\Command\DB;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 
-use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,7 +27,7 @@ class QueryToFileCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output);
         
-        $sqlTemplateManager = $this->getContainer()->get('dataset_abstraction.sql_template_manager');
+        $sqlTemplateManager = $this->getContainer()->get('daf.sql_template_manager');
         
         $output->write('Saving query result to file...');
 

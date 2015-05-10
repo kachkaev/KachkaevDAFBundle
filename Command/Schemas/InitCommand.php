@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Command\Schemas;
+namespace Kachkaev\DAFBundle\Command\Schemas;
 
 use Symfony\Component\Console\Input\InputArgument;
 
-use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +28,7 @@ class InitCommand extends AbstractParameterAwareCommand
         $schemaName = $input->getArgument('schema-name');
         
         $output->write(sprintf('Initialising schema <info>%s</info>...', $schemaName));
-        $this->getContainer()->get('dataset_abstraction.schema_manager')->init($schemaName);
+        $this->getContainer()->get('daf.schema_manager')->init($schemaName);
         $output->writeln(' Done.');
     }
 }

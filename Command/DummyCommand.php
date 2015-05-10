@@ -1,11 +1,11 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Command;
+namespace Kachkaev\DAFBundle\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 
 class DummyCommand extends AbstractParameterAwareCommand
 {

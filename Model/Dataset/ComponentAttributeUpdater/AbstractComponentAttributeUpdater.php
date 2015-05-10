@@ -1,10 +1,10 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset\ComponentAttributeUpdater;
+namespace Kachkaev\DAFBundle\Model\Dataset\ComponentAttributeUpdater;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging\SQLTemplateManager;
+use Kachkaev\DAFBundle\Model\TemplateManaging\SQLTemplateManager;
 
-use Kachkaev\DatasetAbstractionBundle\Model\Dataset\Dataset;
+use Kachkaev\DAFBundle\Model\Dataset\Dataset;
 
 abstract class AbstractComponentAttributeUpdater
 {

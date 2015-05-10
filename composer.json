@@ -1,9 +1,9 @@
 {
-    "name": "kachkaev/dataset-abstraction-bundle",
+    "name": "kachkaev/daf-bundle",
     "type": "symfony-bundle",
-    "description": "Simplifies processing of the datasets stored in a postgresql database",
+    "description": "Dataset abstraction framework (DAF) simplifies processing of complex datasets that are stored in a postgresql database",
     "keywords": ["dataset", "database", "abstraction", "postgres", "postgresql"],
-    "homepage": "http://github.com/kachkaev/KachkaevDatasetAbstractionBundle",
+    "homepage": "http://github.com/kachkaev/KachkaevDAFBundle",
     "license": "MIT",
 
     "authors": [
@@ -14,7 +14,7 @@
         },
 		{
             "name": "Contributors",
-            "homepage": "https://github.com/kachkaev/KachkaevDatasetAbstractionBundle/contributors"
+            "homepage": "https://github.com/kachkaev/KachkaevDAFBundle/contributors"
         }
     ],
 
@@ -34,9 +34,9 @@
 
     "autoload": {
         "psr-0": {
-            "Kachkaev\\DatasetAbstractionBundle": ""
+            "Kachkaev\\DAFBundle": ""
         }
     },
 
-    "target-dir": "Kachkaev/DatasetAbstractionBundle"
+    "target-dir": "Kachkaev/DAFBundle"
 }

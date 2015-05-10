@@ -1,12 +1,12 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets;
+namespace Kachkaev\DAFBundle\Command\Datasets;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 
 class BackupCommand extends AbstractParameterAwareCommand
 {
@@ -27,7 +27,7 @@ class BackupCommand extends AbstractParameterAwareCommand
         
         $backupDirectory = $input->getArgument('backup-directory');
         if (!$backupDirectory) {
-            $backupDirectory = $this->getContainer()->getParameter('dataset_abstraction.env.datasets_backup_dir');
+            $backupDirectory = $this->getContainer()->getParameter('daf.env.datasets_backup_dir');
         }
         
         $output->write(sprintf('Creating backup of <info>%s</info> (this may take a while)...', $extractedArguments['dataset-full-name']));

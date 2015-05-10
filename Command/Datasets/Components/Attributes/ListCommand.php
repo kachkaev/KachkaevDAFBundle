@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets\Components\Attributes;
+namespace Kachkaev\DAFBundle\Command\Datasets\Components\Attributes;
 
 use Symfony\Component\Console\Input\InputArgument;
 
-use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;

@@ -1,17 +1,17 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
+namespace Kachkaev\DAFBundle\Model\Dataset;
 
-use Kachkaev\DatasetAbstractionBundle\Model\Dataset\ComponentAttributeUpdater\AbstractComponentAttributeUpdater;
-use Kachkaev\DatasetAbstractionBundle\Model\Dataset\ComponentAttributeUpdater\ComponentAttributeUpdaterInterface;
+use Kachkaev\DAFBundle\Model\Dataset\ComponentAttributeUpdater\AbstractComponentAttributeUpdater;
+use Kachkaev\DAFBundle\Model\Dataset\ComponentAttributeUpdater\ComponentAttributeUpdaterInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Model\Dataset\Dataset;
+use Kachkaev\DAFBundle\Model\Dataset\Dataset;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * Simply keeps all services tagged as dataset_abstraction.component_attribute_updater
+ * Simply keeps all services tagged as daf.component_attribute_updater
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  *
- * @DI\Service("dataset_abstraction.component_attribute_updaters")
+ * @DI\Service("daf.component_attribute_updaters")
  */
 class ComponentAttributeUpdaterCollection
 {

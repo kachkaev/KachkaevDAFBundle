@@ -1,14 +1,12 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle;
+namespace Kachkaev\DAFBundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-
-use Kachkaev\DatasetAbstractionBundle\DependencyInjection\Compiler\ComponentAttributeUpdaterPass;
-
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Kachkaev\DAFBundle\DependencyInjection\Compiler\ComponentAttributeUpdaterPass;
 
-class KachkaevDatasetAbstractionBundle extends Bundle
+class KachkaevDAFBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {

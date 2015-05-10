@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets\Components\Attributes;
+namespace Kachkaev\DAFBundle\Command\Datasets\Components\Attributes;
 
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputOption;
@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 
 abstract class UpdateCommandAlias extends AbstractParameterAwareCommand
 {

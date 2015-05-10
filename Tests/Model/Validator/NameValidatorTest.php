@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Tests\Model\Validator;
+namespace Kachkaev\DAFBundle\Tests\Model\Validator;
 
 class NameValidatorTest extends AbstractValidatorTest
 {
     protected $validValues = ['a', 'aa', 'abc123', 'ab_cde', 'one_two_3'];
     protected $invalidValues = [null, '', ' ', ' a', 'a ', 'test_', '42a', 'some__thing', 'Capitals', '_abc', '_'];
-    protected $class = '\Kachkaev\DatasetAbstractionBundle\Model\Validator\NameValidator';
+    protected $class = '\Kachkaev\DAFBundle\Model\Validator\NameValidator';
 }

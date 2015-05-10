@@ -1,9 +1,9 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
+namespace Kachkaev\DAFBundle\Model\Dataset;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Model\Dataset\Dataset;
+use Kachkaev\DAFBundle\Model\Dataset\Dataset;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

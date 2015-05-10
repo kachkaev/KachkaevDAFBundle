@@ -1,10 +1,10 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Command\DB;
+namespace Kachkaev\DAFBundle\Command\DB;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 
-use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,7 +27,7 @@ class InitCommand extends AbstractParameterAwareCommand
         $this->processInput($input, $output);
         
         $connection = $this->getContainer()->get('doctrine.dbal.main_connection');
-        $sqlTemplateManager = $this->getContainer()->get('dataset_abstraction.sql_template_manager');
+        $sqlTemplateManager = $this->getContainer()->get('daf.sql_template_manager');
         
         // XXX validate template-name
         $templateName = $input->getArgument('template-name'); 
@@ -67,7 +67,7 @@ class InitCommand extends AbstractParameterAwareCommand
         
         if ($defaultSchemas) {
             $output->write(sprintf('Initialising default schema%s (<info>%s</info>)...', sizeof($defaultSchemas) > 1 ? 's':'', implode('</info>, <info>', $defaultSchemas)));
-            $schemaManager = $this->getContainer()->get('dataset_abstraction.schema_manager');
+            $schemaManager = $this->getContainer()->get('daf.schema_manager');
             foreach ($defaultSchemas as $schemaName) {
                 $schemaManager->init($schemaName);
             }

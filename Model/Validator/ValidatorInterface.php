@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model\Validator;
+namespace Kachkaev\DAFBundle\Model\Validator;
 
 interface ValidatorInterface
 {

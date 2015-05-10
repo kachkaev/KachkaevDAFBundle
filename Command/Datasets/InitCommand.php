@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets;
+namespace Kachkaev\DAFBundle\Command\Datasets;
 
 use Symfony\Component\Console\Input\ArrayInput;
 
@@ -7,8 +7,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Model\Dataset;
-use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DAFBundle\Model\Dataset;
+use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 
 class InitCommand extends AbstractParameterAwareCommand
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging;
+namespace Kachkaev\DAFBundle\Model\TemplateManaging;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Templating\EngineInterface;
@@ -38,7 +38,7 @@ class AbstractTemplateManager
     {
         $this->container = $container;
         $this->templating = $container->get('templating');
-        $this->queryTemplatesNamespaceLookup = $container->getParameter('dataset_abstraction.query_templates_namespace_lookups');
+        $this->queryTemplatesNamespaceLookup = $container->getParameter('daf.query_templates_namespace_lookups');
     }
     
     /**
@@ -129,7 +129,7 @@ class AbstractTemplateManager
      * Converts short address of sql template to twig-compatable format
      * 
      * Example:
-     *     dataset_abstraction#a/b/c → KachkaevDatasetAbstractionBundle:$templateType/a/b:c.$templateType.twig 
+     *     dataset_abstraction#a/b/c → KachkaevDAFBundle:$templateType/a/b:c.$templateType.twig 
      */
     protected function getTemplatePath($templateName)
     {
@@ -141,7 +141,7 @@ class AbstractTemplateManager
         $templateNameParts[1] = $this->templateType.'/'.$templateNameParts[1];
         
         if ($templateNameParts[0] == 'dataset_abstraction') {
-            $queryBundle = 'KachkaevDatasetAbstractionBundle';
+            $queryBundle = 'KachkaevDAFBundle';
         } else {
             if (!array_key_exists($templateNameParts[0], $this->queryTemplatesNamespaceLookup)) {
                 throw new \InvalidArgumentException(sprintf('Don’t know where to search for templates starting with ‘%s’', $templateNameParts[0]));
@@ -156,7 +156,7 @@ class AbstractTemplateManager
     
     public function getTemplateNamespacePath($schemaName) {
         if (!array_key_exists($schemaName, $this->queryTemplatesNamespaceLookup)) {
-            throw new \InvalidArgumentException(sprintf('SQL template namespace %s not found, please add it to dataset_abstraction.query_templates_namespace_lookups parameter', $schemaName));
+            throw new \InvalidArgumentException(sprintf('SQL template namespace %s not found, please add it to daf.query_templates_namespace_lookups parameter', $schemaName));
         }
         return $this->queryTemplatesNamespaceLookup[$schemaName]['path'];
     }

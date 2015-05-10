@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Helper;
+namespace Kachkaev\DAFBundle\Helper;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Console\Helper\ProgressHelper;

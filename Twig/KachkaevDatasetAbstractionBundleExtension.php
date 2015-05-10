@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Twig;
+namespace Kachkaev\DAFBundle\Twig;
 
 use Doctrine\DBAL\Portability\Connection;
 
@@ -15,7 +15,7 @@ use Twig_Function_Method;
  * @DI\Service("pr.photosets.twig_extension")
  * @DI\Tag("twig.extension")
  */
-class KachkaevDatasetAbstractionBundleExtension extends Twig_Extension
+class KachkaevDAFBundleExtension extends Twig_Extension
 {
     protected $container;
     

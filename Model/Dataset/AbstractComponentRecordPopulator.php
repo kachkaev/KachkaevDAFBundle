@@ -1,13 +1,13 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
+namespace Kachkaev\DAFBundle\Model\Dataset;
 
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 
-use Kachkaev\DatasetAbstractionBundle\Model\Dataset\Dataset;
-use Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging\SQLTemplateManager;
+use Kachkaev\DAFBundle\Model\Dataset\Dataset;
+use Kachkaev\DAFBundle\Model\TemplateManaging\SQLTemplateManager;
 
 /**
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
@@ -39,7 +39,7 @@ abstract class AbstractComponentRecordPopulator
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->sqlTemplateManager = $container->get('dataset_abstraction.sql_template_manager');
+        $this->sqlTemplateManager = $container->get('daf.sql_template_manager');
     }
     
     public function populate(Dataset $dataset, $componentName, array $options = null, OutputInterface $output = null)

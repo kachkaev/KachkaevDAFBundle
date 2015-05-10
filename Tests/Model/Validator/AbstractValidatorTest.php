@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Tests\Model\Validator;
+namespace Kachkaev\DAFBundle\Tests\Model\Validator;
 
 abstract class AbstractValidatorTest extends \PHPUnit_Framework_TestCase
 {

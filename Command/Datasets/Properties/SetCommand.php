@@ -1,12 +1,12 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Command\Datasets\Properties;
+namespace Kachkaev\DAFBundle\Command\Datasets\Properties;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 
 class SetCommand extends AbstractParameterAwareCommand
 {

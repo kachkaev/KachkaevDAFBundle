@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model;
+namespace Kachkaev\DAFBundle\Model;
 
 interface ManagerInterface
 {

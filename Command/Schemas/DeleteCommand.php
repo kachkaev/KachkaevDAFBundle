@@ -1,12 +1,12 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Command\Schemas;
+namespace Kachkaev\DAFBundle\Command\Schemas;
 
 use Doctrine\DBAL\Portability\Connection;
 
 use Doctrine\DBAL\Schema\PostgreSqlSchemaManager;
 
-use Kachkaev\DatasetAbstractionBundle\Command\AbstractParameterAwareCommand;
+use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,7 +29,7 @@ class DeleteCommand extends AbstractParameterAwareCommand
         $this->processInput($input, $output);
         
         $schemaName = $input->getArgument('schema-name');
-        $schemaManager = $this->getContainer()->get('dataset_abstraction.schema_manager');
+        $schemaManager = $this->getContainer()->get('daf.schema_manager');
         
         if ($schemaManager->has($schemaName)) {
             if (!$input->getOption('force')) {

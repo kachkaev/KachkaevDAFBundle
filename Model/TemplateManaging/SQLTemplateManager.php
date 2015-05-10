@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging;
+namespace Kachkaev\DAFBundle\Model\TemplateManaging;
 
 use Doctrine\DBAL\Portability\Connection;
 use Doctrine\DBAL\Driver\PDOStatement;
@@ -10,7 +10,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 /**
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  *
- * @DI\Service("dataset_abstraction.sql_template_manager")
+ * @DI\Service("daf.sql_template_manager")
  */
 
 class SQLTemplateManager extends AbstractTemplateManager
@@ -26,7 +26,7 @@ class SQLTemplateManager extends AbstractTemplateManager
         if ($this->connection)
             return;
         
-        $this->connection = $this->container->get("dataset_abstraction.real_db_connection.main");
+        $this->connection = $this->container->get("daf.real_db_connection.main");
     }
 
     public function prepare($queryTemplates, $templateParams = [])

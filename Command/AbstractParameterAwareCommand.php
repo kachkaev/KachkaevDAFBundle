@@ -1,7 +1,7 @@
 <?php
 
-namespace Kachkaev\DatasetAbstractionBundle\Command;
-use Kachkaev\DatasetAbstractionBundle\Model\Dataset\DatasetManager;
+namespace Kachkaev\DAFBundle\Command;
+use Kachkaev\DAFBundle\Model\Dataset\DatasetManager;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -197,7 +197,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
      */
     public function getDatasetManager($schema) {
         
-        $this->getContainer()->get('dataset_abstraction.validator.schema_name')->assertValid($schema);
+        $this->getContainer()->get('daf.validator.schema_name')->assertValid($schema);
         
         $serviceName = sprintf('da.dataset_manager.%s', $schema);
         if ($this->getContainer()->has($serviceName)) {

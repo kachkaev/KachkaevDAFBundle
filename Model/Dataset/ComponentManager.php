@@ -1,13 +1,13 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
+namespace Kachkaev\DAFBundle\Model\Dataset;
 
-use Kachkaev\DatasetAbstractionBundle\Model\Validator\ValidatorInterface;
+use Kachkaev\DAFBundle\Model\Validator\ValidatorInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Model\ManagerInterface;
+use Kachkaev\DAFBundle\Model\ManagerInterface;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging\SQLTemplateManager;
+use Kachkaev\DAFBundle\Model\TemplateManaging\SQLTemplateManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -147,7 +147,7 @@ class ComponentManager implements ManagerInterface
     
     /**
      * (non-PHPdoc)
-     * @see \Kachkaev\DatasetAbstractionBundle\Model\ManagerInterface::delete()
+     * @see \Kachkaev\DAFBundle\Model\ManagerInterface::delete()
      */
     public function delete($componentName)
     {

@@ -1,7 +1,7 @@
 <?php
-namespace Kachkaev\DatasetAbstractionBundle\Model\Dataset;
+namespace Kachkaev\DAFBundle\Model\Dataset;
 
-use Kachkaev\DatasetAbstractionBundle\Model\Schema\SchemaManager;
+use Kachkaev\DAFBundle\Model\Schema\SchemaManager;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -9,10 +9,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Templating\EngineInterface;
 
-use Kachkaev\DatasetAbstractionBundle\Model\Validator\ValidatorInterface;
-use Kachkaev\DatasetAbstractionBundle\Model\Validator\NameValidator;
-use Kachkaev\DatasetAbstractionBundle\Model\ManagerInterface;
-use Kachkaev\DatasetAbstractionBundle\Model\TemplateManaging\SQLTemplateManager;
+use Kachkaev\DAFBundle\Model\Validator\ValidatorInterface;
+use Kachkaev\DAFBundle\Model\Validator\NameValidator;
+use Kachkaev\DAFBundle\Model\ManagerInterface;
+use Kachkaev\DAFBundle\Model\TemplateManaging\SQLTemplateManager;
 
 /**
  * Manages datasets
@@ -57,8 +57,8 @@ abstract class DatasetManager implements ManagerInterface
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->sqlTemplateManager = $container->get('dataset_abstraction.sql_template_manager');
-        $this->schemaManager = $container->get('dataset_abstraction.schema_manager');
+        $this->sqlTemplateManager = $container->get('daf.sql_template_manager');
+        $this->schemaManager = $container->get('daf.schema_manager');
         $this->nameValidator = $this->getValidator('dataset_name');
         $this->updateList();
     }
@@ -350,7 +350,7 @@ abstract class DatasetManager implements ManagerInterface
     public function getValidator($validatorName)
     {
         foreach ([$this->schema, 'dataset_abstraction'] as $schema) {
-            $serviceName = 'dataset_abstraction.validator.'.$validatorName;
+            $serviceName = 'daf.validator.'.$validatorName;
             if ($this->container->has($serviceName))
                 return $this->container->get($serviceName);
         }
@@ -391,11 +391,11 @@ abstract class DatasetManager implements ManagerInterface
     
     /**
      * Returns all registered component attribute updaters
-     * (services tagged with dataset_abstraction.component_attribute_updater)
+     * (services tagged with daf.component_attribute_updater)
      */
     public function getComponentAttributeUpdaters()
     {
-        return $this->container->get('dataset_abstraction.component_attribute_updaters')->getAll();
+        return $this->container->get('daf.component_attribute_updaters')->getAll();
     }
     
 }
