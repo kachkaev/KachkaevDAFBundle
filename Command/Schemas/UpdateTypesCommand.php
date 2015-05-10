@@ -14,7 +14,7 @@ class UpdateTypesCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:schemas:update-types')
+            ->setName('daf:schemas:update-types')
             ->setDescription('Updates types in a given schema')
             ->makeSchemaAware()
         ;

@@ -15,7 +15,7 @@ class CopyCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:components:attributes:copy')
+            ->setName('daf:datasets:components:attributes:copy')
             ->setDescription('Copies given attributes from the same component of another dataset')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')

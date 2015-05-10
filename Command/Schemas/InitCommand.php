@@ -15,7 +15,7 @@ class InitCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:schemas:init')
+            ->setName('daf:schemas:init')
             ->setDescription('Initialises given database schema in the main database')
             ->addArgument('schema-name', InputArgument::REQUIRED, 'Name of the schema to initialise')
         ;

@@ -14,7 +14,7 @@ class DuplicateCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:duplicate')
+            ->setName('daf:datasets:duplicate')
             ->setDescription('Renames given dataset')
             ->makeDatasetAware()
             ->addArgument('duplicate-dataset-name', InputArgument::REQUIRED, 'Name of the dataset (without schema)')

@@ -15,7 +15,7 @@ class ResetCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:components:attributes:reset')
+            ->setName('daf:datasets:components:attributes:reset')
             ->setDescription('Resets an attribute of the given dataset component')
             ->makeForceAware()
             ->makeDatasetAware()

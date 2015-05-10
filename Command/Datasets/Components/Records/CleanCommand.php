@@ -16,7 +16,7 @@ class CleanCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:components:records:clean')
+            ->setName('daf:datasets:components:records:clean')
             ->setDescription('Removes records from the component (all or a filtered subset)')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')

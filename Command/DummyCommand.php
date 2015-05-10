@@ -13,7 +13,7 @@ class DummyCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:dummy')
+            ->setName('daf:dummy')
             ->setDescription('https://github.com/symfony/symfony/issues/10531')
         ;
     }

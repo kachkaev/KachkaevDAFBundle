@@ -14,7 +14,7 @@ class BackupCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:backup')
+            ->setName('daf:datasets:backup')
             ->setDescription('Dumps selected dataset into a backup file')
             ->makeDatasetAware()
             ->addArgument('backup-directory', InputArgument::OPTIONAL, 'Backup directory; file name will be schema.dataset-YYYY-MM-DD.pgdump')

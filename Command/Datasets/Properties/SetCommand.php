@@ -14,7 +14,7 @@ class SetCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:properties:set')
+            ->setName('daf:datasets:properties:set')
             ->setDescription('Sets single dataset property')
             ->makeDatasetAware()
             ->addArgument('property-name', InputArgument::REQUIRED, 'Name of a property to set')

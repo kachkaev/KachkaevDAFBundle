@@ -15,7 +15,7 @@ class InitCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:init')
+            ->setName('daf:datasets:init')
             ->setDescription('Initialises an empty dataset')
             ->makeDatasetAware()
             ->makeDatasetTypeAware(true)
@@ -37,7 +37,7 @@ class InitCommand extends AbstractParameterAwareCommand
         
         if ($input->hasArgument('dataset-type')) {
             
-            $command = $this->getApplication()->find('da:datasets:properties:set');
+            $command = $this->getApplication()->find('daf:datasets:properties:set');
             $arguments = [
                     'dataset-full-name' => $input->getArgument('dataset-full-name'),
                     'property-name' => 'type',

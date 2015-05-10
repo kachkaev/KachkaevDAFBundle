@@ -13,7 +13,7 @@ class InitCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:components:attributes:init')
+            ->setName('daf:datasets:components:attributes:init')
             ->setDescription('Initialises one or several similar attribute in the component')
             ->makeDatasetAware()
             ->markAsBroken()

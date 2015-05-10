@@ -15,7 +15,7 @@ class ListCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:list')
+            ->setName('daf:datasets:list')
             ->setDescription('Lists existing datasets in a given schema')
             ->makeSchemaAware()
         ;

@@ -76,7 +76,7 @@ abstract class UpdateCommandAlias extends AbstractParameterAwareCommand
         
         $filter = $this->config['filter'] ?: ($input->getOption('filter') ?: 'TRUE');
         
-        $invokedCommandName = 'da:datasets:components:attributes:update';
+        $invokedCommandName = 'daf:datasets:components:attributes:update';
         $invokedCommand = $this->getApplication()->find($invokedCommandName);
         $invokedCommandArguments = [
                 'command' => $invokedCommandName,

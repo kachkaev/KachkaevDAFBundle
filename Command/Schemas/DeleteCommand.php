@@ -17,7 +17,7 @@ class DeleteCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:schemas:delete')
+            ->setName('daf:schemas:delete')
             ->setDescription('Deletes given database schema in the main database')
             ->addArgument('schema-name', InputArgument::REQUIRED, 'Name of the schema to delete')
             ->makeForceAware()

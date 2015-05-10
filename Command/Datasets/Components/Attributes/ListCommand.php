@@ -15,7 +15,7 @@ class ListCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:components:attributes:list')
+            ->setName('daf:datasets:components:attributes:list')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')
             ->setDescription('Lists attributes components in the dataset component')

@@ -14,7 +14,7 @@ class UpdateFunctionsCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:schemas:update-functions')
+            ->setName('daf:schemas:update-functions')
             ->setDescription('Updates functions in a given schema')
             ->makeSchemaAware()
         ;

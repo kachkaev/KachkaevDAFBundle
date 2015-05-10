@@ -15,7 +15,7 @@ class DumpSQLCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:db:dump-sql')
+            ->setName('daf:db:dump-sql')
             ->setDescription('Runs the query from template and saves the result into a file')
             ->makeSQLTemplateNameAware()
             ->makeSQLTemplateParametersAware()

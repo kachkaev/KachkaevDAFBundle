@@ -15,7 +15,7 @@ class UpdateCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:components:attributes:update')
+            ->setName('daf:datasets:components:attributes:update')
             ->setDescription('Updates given attributes of the given dataset component')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')

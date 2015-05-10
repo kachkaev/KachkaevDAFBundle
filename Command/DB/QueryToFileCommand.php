@@ -15,7 +15,7 @@ class QueryToFileCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:db:query-to-file')
+            ->setName('daf:db:query-to-file')
             ->setDescription('Saves the result of the query to a file')
             ->makePathToFileAware()
             ->makeSQLTemplateNameAware()

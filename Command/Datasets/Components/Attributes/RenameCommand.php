@@ -13,7 +13,7 @@ class RenameCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:components:attributes:rename')
+            ->setName('daf:datasets:components:attributes:rename')
             ->setDescription('Renames the dataset component attribute (drops a column)')
             ->makeForceAware()
             ->makeDatasetAware()

@@ -20,7 +20,7 @@ class PopulateCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:components:records:populate')
+            ->setName('daf:datasets:components:records:populate')
             ->setDescription('Populates the component with records using a corresponding service')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')
@@ -40,7 +40,7 @@ class PopulateCommand extends AbstractParameterAwareCommand
         
         // Create the component if it does not exist
         if (!$dataset->getComponentManager()->has($componentName)) {
-            $invokedCommandName = 'da:datasets:components:init';
+            $invokedCommandName = 'daf:datasets:components:init';
             $invokedCommand = $this->getApplication()->find($invokedCommandName);
             $invokedCommandArguments = array(
                     'command' => $invokedCommandName,

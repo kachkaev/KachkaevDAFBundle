@@ -13,7 +13,7 @@ class ResetCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:components:reset')
+            ->setName('daf:datasets:components:reset')
             ->setDescription('Deletes all data in the dataset component and recreates it')
             ->makeForceAware()
             ->makeDatasetAware()

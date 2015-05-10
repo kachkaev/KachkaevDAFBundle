@@ -13,7 +13,7 @@ class DeleteCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:delete')
+            ->setName('daf:datasets:delete')
             ->setDescription('Deletes given dataset')
             ->makeDatasetAware()
             ->makeForceAware()

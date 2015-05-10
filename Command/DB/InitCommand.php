@@ -15,7 +15,7 @@ class InitCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:db:init')
+            ->setName('daf:db:init')
             ->setDescription('Initialises the database (can use given template)')
             ->addArgument('template-name', InputArgument::OPTIONAL, 'Name of the postgres template to use')
             ->addArgument('default-schemas', InputArgument::OPTIONAL, 'Names of schemas to initialise by default (comma-separated, no spaces between)')

@@ -16,7 +16,7 @@ class CountCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:components:records:count')
+            ->setName('daf:datasets:components:records:count')
             ->setDescription('Counts records in the component (all or a filtered subset)')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')

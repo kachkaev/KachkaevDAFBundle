@@ -15,7 +15,7 @@ class ListCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:schemas:list')
+            ->setName('daf:schemas:list')
             ->setDescription('Lists existing database schemas')
         ;
     }

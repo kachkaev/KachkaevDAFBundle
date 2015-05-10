@@ -15,7 +15,7 @@ class RenameCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:rename')
+            ->setName('daf:datasets:rename')
             ->setDescription('Renames given dataset')
             ->makeDatasetAware()
             ->addArgument('dataset-new-name', InputArgument::REQUIRED, 'New name of the dataset (without schema)')

@@ -15,7 +15,7 @@ class RestoreCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:restore')
+            ->setName('daf:datasets:restore')
             ->setDescription('Restores selected dataset from a given dump file')
             ->addArgument('backup-filename', InputArgument::REQUIRED, 'Path to backup file; can be relative to point to standard backup directory')
         ;

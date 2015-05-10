@@ -18,7 +18,7 @@ class CopyCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:properties:copy')
+            ->setName('daf:datasets:properties:copy')
             ->setDescription('Copies properties from the origin dataset to the given dataset')
             ->makeDatasetAware()
             ->makeForceAware()

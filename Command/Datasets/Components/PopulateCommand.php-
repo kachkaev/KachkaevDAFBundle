@@ -14,7 +14,7 @@ class PopulateCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:components:populate')
+            ->setName('daf:datasets:components:populate')
             ->setDescription('Populates dataset component runs a query or a script')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component to populate')
@@ -32,10 +32,10 @@ class PopulateCommand extends AbstractParameterAwareCommand
         $componentManager = $dataset->getComponentManager();
 
         if (!$componentManager->has($componentName) && $input->getOption('force')) {
-            $command = $this->getApplication()->find('da:datasets:components:init');
+            $command = $this->getApplication()->find('daf:datasets:components:init');
             
             $arguments = array(
-                    'command' => 'da:datasets:components:init',
+                    'command' => 'daf:datasets:components:init',
                     'dataset-full-name' => $extractedArguments['dataset-full-name'],
                     'component-name'    => $componentName,
             );

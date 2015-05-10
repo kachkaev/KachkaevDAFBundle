@@ -13,7 +13,7 @@ class InitCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('da:datasets:components:init')
+            ->setName('daf:datasets:components:init')
             ->setDescription('Initialises dataset component (creates a table)')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component to initialise')
