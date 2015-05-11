@@ -62,14 +62,14 @@ class ComponentRecordManager {
         
         $populatorServiceNames = [];
         if ($this->dataset->getProperty('type') !== null) {
-            $populatorServiceNames []= sprintf('da.dataset_component_record_populator.%s.%s.%s', $this->dataset->getSchema(), $componentName, $this->dataset->getProperty('type'));
+            $populatorServiceNames []= sprintf('daf.dataset_component_record_populator.%s.%s.%s', $this->dataset->getSchema(), $componentName, $this->dataset->getProperty('type'));
         };
         
         if ($parsedComponentName['instanceName']) {
-            $populatorServiceNames []= sprintf('da.dataset_component_record_populator.%s.%s__', $this->dataset->getSchema(), $parsedComponentName['familyName']);
+            $populatorServiceNames []= sprintf('daf.dataset_component_record_populator.%s.%s__', $this->dataset->getSchema(), $parsedComponentName['familyName']);
         }
         
-        $populatorServiceNames []= sprintf('da.dataset_component_record_populator.%s.%s', $this->dataset->getSchema(), $componentName);
+        $populatorServiceNames []= sprintf('daf.dataset_component_record_populator.%s.%s', $this->dataset->getSchema(), $componentName);
 
         foreach ($populatorServiceNames as $populatorServiceName) {
             if ($this->container->has($populatorServiceName)) {
@@ -82,7 +82,7 @@ class ComponentRecordManager {
             $populator->populate($this->dataset, $componentName, $options, $output);
         } else {
             // Populator not found. Trying to apply sql templates
-            $sqlPopulator = $this->container->get('da.dataset_component_record_populator.sql_template_based');
+            $sqlPopulator = $this->container->get('daf.dataset_component_record_populator.sql_template_based');
             $sqlPopulatorTemplateNames = $sqlPopulator->getSearchableTemplateNames($this->dataset, $componentName);
             if ($sqlPopulator->hasTemplateToExecute($this->dataset, $componentName)) {
                 $sqlPopulator->populate($this->dataset, $componentName, $options);

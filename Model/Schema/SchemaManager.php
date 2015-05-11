@@ -170,7 +170,7 @@ class SchemaManager implements ManagerInterface
         };
     
         // Get corresponding DatasetManager
-        $serviceName = sprintf('da.dataset_manager.%s', $schemaName);
+        $serviceName = sprintf('daf.dataset_manager.%s', $schemaName);
         if ($this->container->has($serviceName)) {
             $datasetManager = $this->container->get($serviceName);
             
