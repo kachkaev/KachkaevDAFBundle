@@ -12,13 +12,13 @@ use Twig_Function_Method;
 /**
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  *
- * @DI\Service("pr.photosets.twig_extension")
+ * @DI\Service("daf.twig_extension")
  * @DI\Tag("twig.extension")
  */
 class KachkaevDAFBundleExtension extends Twig_Extension
 {
     protected $container;
-    
+
     protected $globalScopeVars = [];
 
     /**
@@ -52,14 +52,14 @@ class KachkaevDAFBundleExtension extends Twig_Extension
 
         return $functions;
     }
-    
+
      public function getFilters() {
         return array(
             'repeat'   => new \Twig_Filter_Function('str_repeat'),
             'to_array'   => new \Twig_Filter_Method($this, 'toArray'),
         );
     }
-        
+
     public function getGlobals()
     {
         return [
@@ -69,9 +69,9 @@ class KachkaevDAFBundleExtension extends Twig_Extension
 
     public function getName()
     {
-        return 'KachkaevPRPostgresHelperExtension';
+        return 'KachkaevDAFBundleExtension';
     }
-    
+
     public function setGlobalScopeVar($key, $value)
     {
         $this->globalScopeVars[$key] = $value;
@@ -81,7 +81,7 @@ class KachkaevDAFBundleExtension extends Twig_Extension
     {
         return $this->globalScopeVars[$key];
     }
-    
+
     public function toArray($arrayElement, $count)
     {
         return array_fill(0, $count, $arrayElement);
