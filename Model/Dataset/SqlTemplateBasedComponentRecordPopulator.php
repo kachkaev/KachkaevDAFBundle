@@ -18,12 +18,12 @@ class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPo
 {
     protected $schema = null;
     protected $types = null;
-    
+
     public function getSearchableTemplateNames(Dataset $dataset, $componentName)
     {
         $datasetType = $dataset->getProperty('type');
         $datasetSchemaName = $dataset->getSchema();
-        
+
         $parsedComponentName = $dataset->getComponentManager()->parse($componentName);
         if ($parsedComponentName['familyName'] !== null) {
             $componentDirectory = $parsedComponentName['familyName'].'__';
@@ -35,14 +35,14 @@ class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPo
             $templateNames []= sprintf('%s#%s/populate.%s', $datasetSchemaName, $componentDirectory, $datasetType);
         }
         $templateNames []= sprintf('%s#%s/populate', $datasetSchemaName, $componentDirectory);
-            
+
         return $templateNames;
     }
-    
+
     public function hasTemplateToExecute(Dataset $dataset, $componentName)
     {
         return $this->getTemplateNameToExecute($dataset, $componentName) != null;
-    } 
+    }
 
     public function getTemplateNameToExecute(Dataset $dataset, $componentName)
     {
@@ -52,32 +52,32 @@ class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPo
                 return $templateName;
             }
         }
-        
+
         return null;
     }
-    
+
     protected function doPopulate(Dataset $dataset, $componentName, array $options, OutputInterface $output)
     {
         $templateNameToExecute = $this->getTemplateNameToExecute($dataset, $componentName);
-        
+
         if (!$templateNameToExecute) {
             throw new \LogicException('Cannot run sql-tempalte-based populator as corresponding templates are not found. Were looking for %s', implode(', ', $this->getSearchableTemplateNames($dataset, $componentName)));
         }
-        
+
         $parsedComponentName = $dataset->getComponentManager()->parse($componentName);
-        
+
         // Cleaning the component
         $dataset->getComponentRecordManager()->clean($componentName);
-        
-        
-        // Desiding what variables to include 
+
+
+        // Desiding what variables to include
         $templateVars = [
                 'schema'=>$dataset->getSchema(),
                 'datasetName'=>$dataset->getName(),
                 'componentInstanceName'=>$parsedComponentName['instanceName'],
                 'componentProperties' => $dataset->listComponentProperties($componentName)
             ];
-        
+
         // Calling the template
         $this->sqlTemplateManager->run([$templateNameToExecute], $templateVars);
     }

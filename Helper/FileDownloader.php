@@ -16,14 +16,14 @@ class FileDownloader {
 
     protected $progressHelper;
     protected $ch;
-    
+
     public function __construct()
     {
         $this->ch = curl_init();
         $this->progressHelper = new ProgressHelper();
         $this->progressHelper->setFormat('[%bar%] %percent%% %current% Bytes');
     }
-    
+
     public function download($source, $target, $output, $showProgress = true)
     {
 
@@ -31,17 +31,17 @@ class FileDownloader {
         $progressHelperStatus = [];
         $progressHelperStatus['state'] = 0;
         $progressHelperStatus['progress'] = 0;
-        
+
         $callback = function ($download_size, $downloaded, $upload_size, $uploaded) use (&$progressHelper, &$output, &$progressHelperStatus, &$showProgress)
         {
             if (!$showProgress) {
                 return;
             }
-            
+
             if ($download_size === 0 || $downloaded === 0) {
                 return;
             }
-        
+
             if (!$progressHelperStatus['state']) {
                 $progressHelper->start($output, $download_size);
                 $progressHelperStatus['state'] = 1;
@@ -55,7 +55,7 @@ class FileDownloader {
             }
             $progressHelperStatus['progress'] = $downloaded;
         };
-        
+
         $options = array(
                 CURLOPT_FILE => fopen($target, 'w'),
                 CURLOPT_TIMEOUT => 28800, // set this to 8 hours so we don't timeout on big files

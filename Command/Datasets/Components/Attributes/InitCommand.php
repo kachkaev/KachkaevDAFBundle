@@ -16,7 +16,6 @@ class InitCommand extends AbstractParameterAwareCommand
             ->setName('daf:datasets:components:attributes:init')
             ->setDescription('Initialises one or several similar attribute in the component')
             ->makeDatasetAware()
-            ->markAsBroken()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')
             ->addArgument('attribute-names', InputArgument::REQUIRED, 'Comma-separated names of the attributes to create')
             ->addArgument('attribute-definition', InputArgument::REQUIRED, 'Definition of all created attribute columns')
@@ -27,20 +26,20 @@ class InitCommand extends AbstractParameterAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->processInput($input, $output, $extractedArguments);
-        
+
         $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
-        
+
         $componentName = $input->getArgument('component-name');
-        $attributeNames = explode(',', $input->getArgument('attribute-names')); 
+        $attributeNames = explode(',', $input->getArgument('attribute-names'));
         $attributeDefinition = $input->getArgument('attribute-definition');
         $attributeComment  = $input->getArgument('attribute-comment');
 
         $output->write(sprintf('Adding attribute(s) <info>%s</info> in <info>%s</info> in dataset <info>%s</info>...',  implode(', ', $attributeNames), $componentName, $dataset->getFullName()));
-        
+
         $datasetComponentAttributeManager = $dataset->getComponentAttributeManager();
         $datasetComponentAttributeManager->initAttributes($componentName, $attributeNames, $attributeDefinition, $attributeComment);
-        
+
         $output->writeln(' Done.');
         $output->writeln('<comment>Please don\'t forget to update component initialisation template!</comment>');
     }

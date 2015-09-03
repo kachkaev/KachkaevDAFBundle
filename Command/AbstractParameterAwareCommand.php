@@ -129,8 +129,10 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
         return $this->broken;
     }
 
-    protected function processInput(InputInterface $input, OutputInterface $output, &$extractedArguments = [])
+    protected function processInput(InputInterface $input, OutputInterface $output)
     {
+        $extractedArguments = [];
+
         // Parse argument 'area'
         if ($input->hasOption('area') && !is_null($input->getOption('area')))
             $input->setOption('area', explode(',', $input->getOption('area')));
@@ -159,6 +161,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
             $extractedArguments['dataset-full-name'] = $this->datasetSchema.'.'.$name;
             $extractedArguments['dataset-schema'] = $this->datasetSchema;
             $extractedArguments['dataset-name'] = $name;
+            $preg = preg_replace();
         }
 
         // TODO Verify arguments 'dataset-name', 'dataset-schema'
@@ -174,6 +177,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
             }
         }
 
+        return $extractedArguments;
 
     }
 

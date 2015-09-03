@@ -15,9 +15,9 @@ use JMS\DiExtraBundle\Annotation as DI;
 class OutputFormatter
 {
     protected $defaultListSpacing = 2;
-    
+
     /**
-     * 
+     *
      * @param OutputInterface $output
      * @param array $data An array to output (key=>value)
      * @param array $tags Styles to use during output
@@ -25,13 +25,13 @@ class OutputFormatter
     public function outputArrayAsAlignedList(OutputInterface $output, $data, $tags = ['info', ''], $fixedWidths = null, $stringSpacings = null)
     {
         $calculatedWidths = [];
-        
+
         $processedData = [];
-        
+
         if (!is_array($stringSpacings)) {
             $stringSpacings = [];
         }
-        
+
         // Checking if array is associative
         $arrayIsAssoc = false;
         for ($i = sizeof($data) - 1; $i >= 0; --$i) {
@@ -40,11 +40,11 @@ class OutputFormatter
                 break;
             }
         }
-        
+
         // Converting data to unified format
         foreach ($data as $k=>$v) {
             $currentProcessedData = $arrayIsAssoc ? [$k] : [];
-            
+
             if (is_array($v)) {
                 foreach ($v as $v2) {
                     $currentProcessedData []= $v2;
@@ -54,7 +54,7 @@ class OutputFormatter
             }
             $processedData []= $currentProcessedData;
         }
-        
+
         // Calculating widths
         foreach($processedData as $currentProcessedData) {
             foreach ($currentProcessedData as $k => $v) {
@@ -63,7 +63,7 @@ class OutputFormatter
                 }
             }
         }
-        
+
         // Supplementing calculated widths with fixed widths
         if (is_array($fixedWidths)) {
             foreach($fixedWidths as $k => $v) {
@@ -84,13 +84,13 @@ class OutputFormatter
                     if ($calculatedWidth > 4) {
                         $v = substr($v, 0, $calculatedWidth - 3) . '...';
                     } elseif ($calculatedWidth > 1) {
-                        $v = substr($v, 0, $calculatedWidth - 1) . '.';                        
+                        $v = substr($v, 0, $calculatedWidth - 1) . '.';
                     } else {
-                        $v = substr($v, 0, 1);                        
+                        $v = substr($v, 0, 1);
                     }
                 }
                 if (array_key_exists($k, $tags) && $tags[$k]) {
-                    $currentResult .= sprintf('<%s>%s</%s>', $tags[$k], $v, $tags[$k]); 
+                    $currentResult .= sprintf('<%s>%s</%s>', $tags[$k], $v, $tags[$k]);
                 } else {
                     $currentResult .= $v;
                 }
@@ -104,7 +104,7 @@ class OutputFormatter
             }
             $result []= $currentResult;
         }
-        
+
         $output->writeln(implode(PHP_EOL, $result));
     }
 }
