@@ -1,2 +1,2 @@
-DELETE FROM {{ schema }}.{{ datasetName }}__{{ componentName }}
+DELETE FROM {{ domainName }}.{{ datasetName }}__{{ componentName }}
 {% if idsAsStr %} WHERE ID IN ({{ idsAsStr }}){% endif %}

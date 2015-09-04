@@ -1,5 +1,5 @@
 {# TODO This template is a stub used for testing and should be removed #}
-CREATE TABLE {{ schema }}.{{ datasetName }}__{{ componentName }}
+CREATE TABLE {{ domainName }}.{{ datasetName }}__{{ componentName }}
 (
   id character varying NOT NULL,
   CONSTRAINT {{ datasetName }}__{{ componentName }}_pkey PRIMARY KEY (id)
@@ -7,5 +7,5 @@ CREATE TABLE {{ schema }}.{{ datasetName }}__{{ componentName }}
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE {{ schema }}.{{ datasetName }}__{{ componentName }}
+ALTER TABLE {{ domainName }}.{{ datasetName }}__{{ componentName }}
   OWNER TO {{ mainDBOwner }};

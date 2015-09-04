@@ -10,14 +10,14 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class DuplicateCommand extends AbstractParameterAwareCommand
 {
-    
+
     protected function configure()
     {
         $this
             ->setName('daf:datasets:duplicate')
             ->setDescription('Renames given dataset')
             ->makeDatasetAware()
-            ->addArgument('duplicate-dataset-name', InputArgument::REQUIRED, 'Name of the dataset (without schema)')
+            ->addArgument('duplicate-dataset-name', InputArgument::REQUIRED, 'Name of the dataset (without domain)')
         ;
     }
 
@@ -25,7 +25,7 @@ class DuplicateCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output, $extractedArguments);
 
-        $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
+        $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $datasetManager->duplicate($extractedArguments['dataset-name'], $input->getArgument("duplicate-dataset-name"));
     }
 }

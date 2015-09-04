@@ -32,12 +32,12 @@ class RestoreCommand extends AbstractParameterAwareCommand
         if (substr($backupFilename, 0, 1) !== '/' || strpos(':', $backupFilename) !== false) {
             $pathToBackup = realpath($this->getContainer()->getParameter('daf.datasets_backup_dir').'/'.$backupFilename);
         }
-        // Extract schema name
-        $schema = explode('.', basename($backupFilename))[0];
+        // Extract domain name
+        $domain = explode('.', basename($backupFilename))[0];
         
         $output->write(sprintf('Restoring dataset backup from <info>%s</info> (this may take a while)...', $backupFilename));
         
-        $datasetManager = $this->getDatasetManager($schema);
+        $datasetManager = $this->getDatasetManager($domain);
         $datasetName = $datasetManager->restore($pathToBackup);
         
         $output->writeln(sprintf(' Done: dataset <info>%s</info> was restored.', $datasetName));

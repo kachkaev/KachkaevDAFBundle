@@ -51,7 +51,7 @@ abstract class UpdateCommandAlias extends AbstractParameterAwareCommand
         $this
             ->setName($this->config['command-name'])
             ->setDescription($this->config['command-description'] ?: sprintf('Updates %s in component %s', $listOfAttributesToUpdateAsString, $this->config['component-name']))
-            ->makeDatasetAware($this->config['dataset-schema']);
+            ->makeDatasetAware($this->config['domain-name']);
         
         if (!$this->config['filter']) {
             $this->addOption('filter', null, InputOption::VALUE_REQUIRED,
@@ -71,7 +71,7 @@ abstract class UpdateCommandAlias extends AbstractParameterAwareCommand
         $this->processInput($input, $output, $extractedArguments);
         
 
-        $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
+        $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
         
         $filter = $this->config['filter'] ?: ($input->getOption('filter') ?: 'TRUE');

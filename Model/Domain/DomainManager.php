@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DAFBundle\Model\Schema;
+namespace Kachkaev\DAFBundle\Model\Domain;
 
 use Symfony\Component\Finder\Finder;
 
@@ -15,10 +15,10 @@ use Kachkaev\DAFBundle\Model\TemplateManaging\SQLTemplateManager;
 /**
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  *
- * @DI\Service("daf.schema_manager")
+ * @DI\Service("daf.domain_manager")
  */
 
-class SchemaManager implements ManagerInterface
+class DomainManager implements ManagerInterface
 {
 
     protected $systemSchemas = [
@@ -38,7 +38,7 @@ class SchemaManager implements ManagerInterface
     protected $sqlTemplateManager;
 
     /**
-     * @var SchemaNameValidator
+     * @var DomainNameValidator
      */
     protected $nameValidator;
 
@@ -51,7 +51,6 @@ class SchemaManager implements ManagerInterface
     {
         $this->container = $container;
         $this->sqlTemplateManager = $container->get('daf.sql_template_manager');
-        //$this->nameValidator = $this->getValidator('schema_name');
         $this->updateList();
     }
 
@@ -62,57 +61,57 @@ class SchemaManager implements ManagerInterface
 
     public function listNames()
     {
-        $allSchemas =  $this->sqlTemplateManager->runAndFetchAllAsList("dataset_abstraction#schemas/list");
-        $filteredSchemas = array_diff($allSchemas, $this->systemSchemas);
+        $allDomains =  $this->sqlTemplateManager->runAndFetchAllAsList("dataset_abstraction#domains/list");
+        $filteredDomains = array_diff($allDomains, $this->systemSchemas);
 
-        return $filteredSchemas;
+        return $filteredDomains;
     }
 
-    public function has($schemaName)
+    public function has($domainName)
     {
-        $schemas = $this->listNames();
+        $domains = $this->listNames();
 
-        return in_array($schemaName, $schemas);
+        return in_array($domainName, $domains);
     }
 
-    public function init($schemaName)
+    public function init($domainName)
     {
-        $this->sqlTemplateManager->run("dataset_abstraction#schemas/init", [
-                'schema' => $schemaName
+        $this->sqlTemplateManager->run("dataset_abstraction#domains/init", [
+                'domainName' => $domainName
             ]);
     }
 
-    public function delete($schemaName)
+    public function delete($domainName)
     {
-        if (in_array($schemaName, $this->systemSchemas)) {
-            throw new \InvalidArgumentException("You are not allowed to delete system schema $schemaName");
+        if (in_array($domainName, $this->systemSchemas)) {
+            throw new \InvalidArgumentException("You are not allowed to delete a domain $domainName which is a system schema");
         }
 
-        $this->sqlTemplateManager->run("dataset_abstraction#schemas/delete", [
-                'schema' => $schemaName
+        $this->sqlTemplateManager->run("dataset_abstraction#domains/delete", [
+                'domainName' => $domainName
             ]);
     }
 
-    public function get($schemaName)
+    public function get($domainName)
     {
-        throw new \LogicException('As schemas are not objects, it is not possible to extract an instance of it');
+        throw new \LogicException('As domains are not objects, it is not possible to extract an instance of it');
         // Method is empty because listNames is not using caching
     }
 
-    public function rename($oldSchemaName, $newSchemaName)
+    public function rename($oldDomainName, $newDomainName)
     {
-        throw new \LogicException('Schemas cannot be renamed');
+        throw new \LogicException('Domains cannot be renamed');
     }
 
     /**
-     * Updates all schema functions
-     * Function templates are stored in *Bundle/Resources/views/pgsql/schema/functions
+     * Updates all domain functions
+     * Function templates are stored in *Bundle/Resources/views/pgsql/domain/functions
      *
      * There are 3 categories of functions:
-     * 1) Standard - created only once in the schema
+     * 1) Standard - created only once in the domain
      *       myfunction.pgsql.twig
      *
-     * 2) Related to datasets - created as many times as many datasets there are in the schema
+     * 2) Related to datasets - created as many times as many datasets there are in the domain
      *       dataset__{my_function}.pgsql.twig
      *
      * 3) Related to datasets and dataset types - same as 2, but is applicable only to datasets having a certain type
@@ -125,9 +124,9 @@ class SchemaManager implements ManagerInterface
      *      dataset__{component_family_name}__instance__{my_function}.{dataset_type}.pgsql.twig
      *
      */
-    public function updateFunctions($schemaName)
+    public function updateFunctions($domainName)
     {
-        $directory = $this->container->getParameter('daf.query_templates_namespace_lookups')[$schemaName]['path'] . '/pgsql/schema/functions';
+        $directory = $this->container->getParameter('daf.query_templates_namespace_lookups')[$domainName]['path'] . '/pgsql/domain/functions';
         if (!is_dir($directory)) {
             return;
         }
@@ -160,17 +159,17 @@ class SchemaManager implements ManagerInterface
         }
 
         // Delete all functions
-        $this->sqlTemplateManager->run('dataset_abstraction#schemas/delete-all-functions', [
-                'schema' => $schemaName,
+        $this->sqlTemplateManager->run('dataset_abstraction#domains/delete-all-functions', [
+                'domainName' => $domainName,
                 ]);
 
         // Add standard functions (category 1)
         foreach ($functionsByCategory[0] as $function) {
-            $this->sqlTemplateManager->run($schemaName.'#schema/functions/'.$function);
+            $this->sqlTemplateManager->run($domainName.'#domain/functions/'.$function);
         };
 
         // Get corresponding DatasetManager
-        $serviceName = sprintf('daf.dataset_manager.%s', $schemaName);
+        $serviceName = sprintf('daf.dataset_manager.%s', $domainName);
         if ($this->container->has($serviceName)) {
             $datasetManager = $this->container->get($serviceName);
 
@@ -184,12 +183,12 @@ class SchemaManager implements ManagerInterface
                     $typeSpecificFunction = $function.'.'.$datasetType;
                     // Apply category 3 if type-specific function exists
                     if (false !== array_search($typeSpecificFunction, $functionsByCategory[2])) {
-                        $this->sqlTemplateManager->run($schemaName.'#schema/functions/'.$typeSpecificFunction, [
+                        $this->sqlTemplateManager->run($domainName.'#domain/functions/'.$typeSpecificFunction, [
                                 'datasetName'=>$datasetName,
                                 ]);
                         // Apply category 2 otherwise
                     } else {
-                        $this->sqlTemplateManager->run($schemaName.'#schema/functions/'.$function, [
+                        $this->sqlTemplateManager->run($domainName.'#domain/functions/'.$function, [
                                 'datasetName'=>$datasetName,
                                 ]);
                     }
@@ -199,7 +198,7 @@ class SchemaManager implements ManagerInterface
                 foreach ($functionsByCategory[2] as $typeSpecificFunction) {
                     list($function, $type) = explode('.', $typeSpecificFunction);
                     if (false === array_search($function, $functionsByCategory[1]) && $datasetType == $type) {
-                        $this->sqlTemplateManager->run($schemaName.'#schema/functions/'.$typeSpecificFunction, [
+                        $this->sqlTemplateManager->run($domainName.'#domain/functions/'.$typeSpecificFunction, [
                                 'datasetName'=>$datasetName,
                             ]);
                     }
@@ -210,7 +209,7 @@ class SchemaManager implements ManagerInterface
                     list($nothing1, $familyName, $nothing2, $functionName) = explode('__', $componentInstanceSpecificFunction);
                     $instanceNames = $dataset->getComponentManager()->listInstanceNames($familyName);
                     foreach($instanceNames as $instanceName) {
-                        $this->sqlTemplateManager->run($schemaName.'#schema/functions/'.$componentInstanceSpecificFunction, [
+                        $this->sqlTemplateManager->run($domainName.'#domain/functions/'.$componentInstanceSpecificFunction, [
                                 'datasetName'=>$datasetName,
                                 'componentInstanceName'=>$instanceName,
                                 ]);
@@ -221,12 +220,12 @@ class SchemaManager implements ManagerInterface
     }
 
     /**
-     * Updates all schema types
-     * Type templates are stored in *Bundle/Resources/views/pgsql/schema/types
+     * Updates all domain types
+     * Type templates are stored in *Bundle/Resources/views/pgsql/domain/types
      */
-    public function updateTypes($schemaName)
+    public function updateTypes($domainName)
     {
-        $directory = $this->container->getParameter('daf.query_templates_namespace_lookups')[$schemaName]['path'] . '/pgsql/schema/functions';
+        $directory = $this->container->getParameter('daf.query_templates_namespace_lookups')[$domainName]['path'] . '/pgsql/domain/functions';
         if (!is_dir($directory)) {
             return;
         }
@@ -242,7 +241,7 @@ class SchemaManager implements ManagerInterface
         // Execute all templates
         foreach ($finder as $file) {
             $templateName = $file->getBaseName('.pgsql.twig');
-            $this->sqlTemplateManager->run($schemaName.'#schema/types/'.$templateName);
+            $this->sqlTemplateManager->run($domainName.'#domain/types/'.$templateName);
         }
     }
 }

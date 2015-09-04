@@ -1,4 +1,4 @@
 SELECT column_name, data_type
     FROM information_schema.columns
-    WHERE table_schema = '{{ schema }}' AND table_name ='{{ datasetName }}__{{ componentName }}'
+    WHERE table_schema = '{{ domainName }}' AND table_name ='{{ datasetName }}__{{ componentName }}'
     ORDER BY ordinal_position;

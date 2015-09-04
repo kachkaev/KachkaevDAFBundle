@@ -15,7 +15,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
     protected $stub = false;
     protected $broken = false;
     protected $brokenFault = null;
-    protected $datasetSchema = null;
+    protected $datasetDomainName = null;
 
     protected function makeRecursiveAware($description = 'Execute the command recursively')
     {
@@ -33,17 +33,17 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
         return $this;
     }
 
-    protected function makeDatasetAware($datasetSchema = null)
+    protected function makeDatasetAware($datasetDomainName = null)
     {
-        $this->datasetSchema = $datasetSchema;
-        if (!$datasetSchema) {
+        $this->datasetDomainName = $datasetDomainName;
+        if (!$datasetDomainName) {
             $this
                 ->addArgument('dataset-full-name', InputArgument::REQUIRED,
-                        'Full name of the dataset to work with (e.g. schema.name)');
+                        'Full name of the dataset to work with (e.g. domain_name.dataset_name)');
         } else {
             $this
             ->addArgument('dataset-name', InputArgument::REQUIRED,
-                    sprintf('Full name of the dataset within schema %s to work with', $datasetSchema));
+                    sprintf('Full name of the dataset within domain %s to work with', $datasetDomainName));
         }
 
         return $this;
@@ -54,7 +54,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
      {
         $this->markAsBroken('makeDatasetsAware() is not implemented');
         //$this->addArgument('dataset-full-names', InputArgument::REQUIRED,
-        //       'Full names of the datasets to work with (e.g. schema.name,schema.name2,schema2.name3)');
+        //       'Full names of the datasets to work with (e.g. domain_name.dataset_name,domain_name.dataset_name2,domain_name2.dataset_name3)');
 
          return $this;
      }
@@ -64,10 +64,9 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
          $this->addArgument('dataset-type', $optional ? InputArgument::OPTIONAL : InputArgument::REQUIRED, 'Type of the new dataset');
      }
 
-     protected function makeSchemaAware()
+     protected function makeDomainAware()
      {
-         $this->addArgument('schema', InputArgument::REQUIRED,
-             'Schema name');
+         $this->addArgument('domain-name', InputArgument::REQUIRED, 'Domain name');
 
          return $this;
      }
@@ -144,27 +143,27 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
 
             $matches = null;
             if (!preg_match($fullnameRegexp, $fullName, $matches)) {
-                throw new \InvalidArgumentException(sprintf('Wrong value for dataset-full-name: %s. It must have the format schema.name (all lowercase).', var_export($fullName, true)));
+                throw new \InvalidArgumentException(sprintf('Wrong value for dataset-full-name: %s. It must have the format domain_name.dataset_name (all lowercase).', var_export($fullName, true)));
             }
 
-            $schema = $matches[1];
-            $name = $matches[3];
+            $domainName = $matches[1];
+            $datasetName = $matches[3];
 
-            $extractedArguments['dataset-full-name'] = $schema.'.'.$name;
-            $extractedArguments['dataset-schema'] = $schema;
-            $extractedArguments['dataset-name'] = $name;
+            $extractedArguments['dataset-full-name'] = $domainName.'.'.$datasetName;
+            $extractedArguments['domain-name'] = $domainName;
+            $extractedArguments['dataset-name'] = $datasetName;
         }
 
         // Parse argument 'dataset-name'
         if ($input->hasArgument('dataset-name') && !is_null($input->getArgument('dataset-name'))) {
-            $name = $input->getArgument('dataset-name');
-            $extractedArguments['dataset-full-name'] = $this->datasetSchema.'.'.$name;
-            $extractedArguments['dataset-schema'] = $this->datasetSchema;
-            $extractedArguments['dataset-name'] = $name;
+            $datasetName = $input->getArgument('dataset-name');
+            $extractedArguments['dataset-full-name'] = $this->datasetDomainName.'.'.$datasetName;
+            $extractedArguments['domain-name'] = $this->datasetDomainName;
+            $extractedArguments['dataset-name'] = $datasetName;
             $preg = preg_replace();
         }
 
-        // TODO Verify arguments 'dataset-name', 'dataset-schema'
+        // TODO Verify arguments 'dataset-name', 'domain-name'
 
         if ($this->isStub()) {
             $output->writeln('<error>This command is not implemented yet.</error>');
@@ -199,15 +198,15 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
     /**
      * @return DatasetManager
      */
-    public function getDatasetManager($schema) {
+    public function getDatasetManager($domainName) {
 
-        $this->getContainer()->get('daf.validator.schema_name')->assertValid($schema);
+        $this->getContainer()->get('daf.validator.domain_name')->assertValid($domainName);
 
-        $serviceName = sprintf('daf.dataset_manager.%s', $schema);
+        $serviceName = sprintf('daf.dataset_manager.%s', $domainName);
         if ($this->getContainer()->has($serviceName)) {
             return $this->getContainer()->get($serviceName);
         } else {
-            throw new \InvalidArgumentException(sprintf('Schema %s does not exist or does not have a dataset manager', $schema));
+            throw new \InvalidArgumentException(sprintf('Domain %s does not exist or does not have a dataset manager', $domainName));
         }
     }
 

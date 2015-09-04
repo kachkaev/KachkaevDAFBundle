@@ -55,7 +55,7 @@ class ComponentAttributeManager {
         }
 
         $this->sqlTemplateManager->run('dataset_abstraction#datasets/components/attributes/init', [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 'attributeNames'=>$attributeNamesAsArray,
@@ -80,7 +80,7 @@ class ComponentAttributeManager {
     public function listAttributeNamesAndTypes($componentName)
     {
         return $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/list", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 ], null, \PDO::FETCH_KEY_PAIR);
@@ -123,7 +123,7 @@ class ComponentAttributeManager {
         $recordIdsAsStr = "'".implode("','", $recordIds)."'";
 
         $plainResult = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/getByIds", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 'attributeNamesAsStr'=>$attributeNamesAsStr,
@@ -152,7 +152,7 @@ class ComponentAttributeManager {
         $attributeNamesAsStr = ''.implode(',', $attributeNames).'';
 
         $result = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/getWhere", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 'attributeNamesAsStr'=>$attributeNamesAsStr,
@@ -166,7 +166,7 @@ class ComponentAttributeManager {
     public function getIdsWhere($componentName, $where, $orderBy = null)
     {
         $result = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/getWhere", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 'attributeNamesAsStr'=>'id',
@@ -192,7 +192,7 @@ class ComponentAttributeManager {
             $attributeNamesAsArray = $attributeNames;
         }
         $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/reset", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 'attributeNames'=>$attributeNamesAsArray,
@@ -219,7 +219,7 @@ class ComponentAttributeManager {
         $recordIdsAsStr = "'".implode("','", $recordIds)."'";
 
         $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/set", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 'attributeNames'=>$attributeNamesAsArray,
@@ -255,7 +255,7 @@ class ComponentAttributeManager {
             }
 
             $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/set", [
-                    'schema'=>$this->dataset->getSchema(),
+                    'domainName'=>$this->dataset->getDomainName(),
                     'datasetName'=>$this->dataset->getName(),
                     'componentName'=>$componentName,
                     'attributeNames'=>$attributeNames,
@@ -377,7 +377,7 @@ class ComponentAttributeManager {
 
 
         $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/rename", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 'attributeName'=>$attributeName,
@@ -404,7 +404,7 @@ class ComponentAttributeManager {
         }
 
         $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/delete", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 'attributeNames'=>$attributeNamesAsArray,

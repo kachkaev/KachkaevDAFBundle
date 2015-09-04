@@ -30,7 +30,7 @@ class InitCommand extends AbstractParameterAwareCommand
         
         $this->processInput($input, $output, $extractedArguments);
         
-        $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
+        $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $dataset = $datasetManager->init($extractedArguments['dataset-name']);
         
         $output->writeln(' Done.');

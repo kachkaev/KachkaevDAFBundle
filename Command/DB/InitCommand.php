@@ -18,7 +18,7 @@ class InitCommand extends AbstractParameterAwareCommand
             ->setName('daf:db:init')
             ->setDescription('Initialises the database (can use given template)')
             ->addArgument('template-name', InputArgument::OPTIONAL, 'Name of the postgres template to use')
-            ->addArgument('default-schemas', InputArgument::OPTIONAL, 'Names of schemas to initialise by default (comma-separated, no spaces between)')
+            ->addArgument('default-domains', InputArgument::OPTIONAL, 'Names of domains to initialise by default (comma-separated, no spaces between)')
             ;
     }
 
@@ -35,10 +35,10 @@ class InitCommand extends AbstractParameterAwareCommand
             $templateName = null;
         }
 
-        // XXX validate default schemas
-        $defaultSchemas = $input->getArgument('default-schemas');
-        if ($defaultSchemas)
-            $defaultSchemas = explode(',', $defaultSchemas);
+        // XXX validate default domains
+        $defaultDomains = $input->getArgument('default-domains');
+        if ($defaultDomains)
+            $defaultDomains = explode(',', $defaultDomains);
 
 
         $params = $connection->getParams();
@@ -67,11 +67,11 @@ class InitCommand extends AbstractParameterAwareCommand
             throw $e;
         }
 
-        if ($defaultSchemas) {
-            $output->write(sprintf('Initialising default schema%s (<info>%s</info>)...', sizeof($defaultSchemas) > 1 ? 's':'', implode('</info>, <info>', $defaultSchemas)));
-            $schemaManager = $this->getContainer()->get('daf.schema_manager');
-            foreach ($defaultSchemas as $schemaName) {
-                $schemaManager->init($schemaName);
+        if ($defaultDomains) {
+            $output->write(sprintf('Initialising default domain%s (<info>%s</info>)...', sizeof($defaultDomains) > 1 ? 's':'', implode('</info>, <info>', $defaultDomains)));
+            $domainManager = $this->getContainer()->get('daf.domain_manager');
+            foreach ($defaultDomains as $domainName) {
+                $domainManager->init($domainName);
             }
             $output->writeln(" Done.");
         }

@@ -31,7 +31,7 @@ class CountCommand extends AbstractParameterAwareCommand
         $filter = $input->getOption('filter');
         $componentName = $input->getArgument('component-name');
     
-        $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
+        $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
         $componentRecordManager = $dataset->getComponentRecordManager();
     

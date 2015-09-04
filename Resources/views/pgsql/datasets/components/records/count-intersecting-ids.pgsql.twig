@@ -1,4 +1,4 @@
-SELECT count(*) FROM {{ schema }}.{{ dataset2Name }}__{{ componentName }} as d2
+SELECT count(*) FROM {{ domainName }}.{{ dataset2Name }}__{{ componentName }} as d2
 WHERE EXISTS
-(SELECT 1 FROM {{ schema }}.{{ datasetName }}__{{ componentName }} AS d1 WHERE d1.id = d2.id)
+(SELECT 1 FROM {{ domainName }}.{{ datasetName }}__{{ componentName }} AS d1 WHERE d1.id = d2.id)
 {% if filterForDataset2 %} AND {{ filterForDataset2 }} {% endif %}

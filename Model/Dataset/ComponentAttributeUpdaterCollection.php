@@ -2,7 +2,6 @@
 namespace Kachkaev\DAFBundle\Model\Dataset;
 
 use Kachkaev\DAFBundle\Model\Dataset\ComponentAttributeUpdater\AbstractComponentAttributeUpdater;
-use Kachkaev\DAFBundle\Model\Dataset\ComponentAttributeUpdater\ComponentAttributeUpdaterInterface;
 use Kachkaev\DAFBundle\Model\Dataset\Dataset;
 use JMS\DiExtraBundle\Annotation as DI;
 

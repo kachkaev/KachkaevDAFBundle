@@ -1,4 +1,4 @@
-CREATE TABLE {% block fullTableName %}{% block schema %}{{ schema }}{% endblock %}.{% block tableName %}{% endblock %}{% endblock %}
+CREATE TABLE {% block fullTableName %}{% block schemaName %}{{ domainName }}{% endblock %}.{% block tableName %}{% endblock %}{% endblock %}
 (
 {% block fields %}{% endblock %}
 {% block constraints %}{% endblock %}
@@ -11,7 +11,7 @@ WITH (
 {% endblock %}
 
 {% block owner %}
-ALTER TABLE {{ block('schema') }}.{{ block('tableName') }}
+ALTER TABLE {{ block('schemaName') }}.{{ block('tableName') }}
   OWNER TO {{ mainDBOwner }};
 {% endblock %}
 
@@ -26,16 +26,16 @@ ALTER TABLE {{ block('schema') }}.{{ block('tableName') }}
 {% endblock %}
 
 {% for geomtetryColumnName, geometryColumnType in getGlobalScopeVar('geometryColumns') %}
-SELECT AddGeometryColumn ('{{ block('schema') }}','{{ block('tableName') }}', '{{ geomtetryColumnName }}', 4326, '{{ geometryColumnType }}', 2);
+SELECT AddGeometryColumn ('{{ block('schemaName') }}','{{ block('tableName') }}', '{{ geomtetryColumnName }}', 4326, '{{ geometryColumnType }}', 2);
 {% endfor %}
 
 {% if (getGlobalScopeVar('tableComment')) %}
-COMMENT ON TABLE "{{ block('schema') }}"."{{ block('tableName') }}" IS '{{ getGlobalScopeVar('tableComment') }}';
+COMMENT ON TABLE "{{ block('schemaName') }}"."{{ block('tableName') }}" IS '{{ getGlobalScopeVar('tableComment') }}';
 {% endif %}
 
 {% if (getGlobalScopeVar('attributeComments')) %}
 {% for columnName, attributeComment in getGlobalScopeVar('attributeComments') %}
-COMMENT ON COLUMN "{{ block('schema') }}"."{{ block('tableName') }}"."{{ columnName }}" IS '{{ attributeComment }}';
+COMMENT ON COLUMN "{{ block('schemaName') }}"."{{ block('tableName') }}"."{{ columnName }}" IS '{{ attributeComment }}';
 {% endfor %}
 {% endif %}
 

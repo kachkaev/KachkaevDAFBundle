@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\DAFBundle\Command\Schemas;
+namespace Kachkaev\DAFBundle\Command\Domains;
 
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -11,19 +11,19 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class ListCommand extends AbstractParameterAwareCommand
 {
-    
+
     protected function configure()
     {
         $this
-            ->setName('daf:schemas:list')
-            ->setDescription('Lists existing database schemas')
+            ->setName('daf:domains:list')
+            ->setDescription('Lists existing data domains')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->processInput($input, $output);
-        
-        $output->writeln(implode("\n", $this->getContainer()->get('daf.schema_manager')->listNames()));
+
+        $output->writeln(implode("\n", $this->getContainer()->get('daf.domain_manager')->listNames()));
     }
 }

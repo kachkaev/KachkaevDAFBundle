@@ -17,7 +17,7 @@ use Kachkaev\DAFBundle\Model\TemplateManaging\SQLTemplateManager;
 abstract class AbstractComponentRecordPopulator
 {
     protected $types = [];
-    protected $schema = '';
+    protected $domainName = '';
     
     protected $maxThreadCount = 0;
     protected $defaultThreadCount = 0;
@@ -44,8 +44,8 @@ abstract class AbstractComponentRecordPopulator
     
     public function populate(Dataset $dataset, $componentName, array $options = null, OutputInterface $output = null)
     {
-        if (($this->schema != null && $dataset->getSchema() != $this->schema) || ($this->types !== null && array_search($dataset->getProperty('type'), $this->types) === false)) {
-            throw new \LogicException(sprintf("%s only populates datasets in schema ‘%s’ and type%s ‘%s’", get_class($this), $this->schema, count($this->types) != 1 ? 's' : '', implode('’ ‘', $this->types)));
+        if (($this->domainName != null && $dataset->getDomainName() != $this->domainName) || ($this->types !== null && array_search($dataset->getProperty('type'), $this->types) === false)) {
+            throw new \LogicException(sprintf("%s only populates datasets in domain ‘%s’ and type%s ‘%s’", get_class($this), $this->domainName, count($this->types) != 1 ? 's' : '', implode('’ ‘', $this->types)));
         }
         
         if ($output == null) {

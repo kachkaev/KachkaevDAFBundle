@@ -24,7 +24,7 @@ class DeleteCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output, $extractedArguments);
         
-        $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
+        $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $datasetName = $extractedArguments['dataset-name'];
         
         if ($datasetManager->has($datasetName)) {

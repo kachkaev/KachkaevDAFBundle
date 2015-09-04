@@ -16,13 +16,13 @@ use Kachkaev\DAFBundle\Model\TemplateManaging\SQLTemplateManager;
  */
 class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPopulator
 {
-    protected $schema = null;
+    protected $domainName = null;
     protected $types = null;
 
     public function getSearchableTemplateNames(Dataset $dataset, $componentName)
     {
         $datasetType = $dataset->getProperty('type');
-        $datasetSchemaName = $dataset->getSchema();
+        $domainName = $dataset->getDomainName();
 
         $parsedComponentName = $dataset->getComponentManager()->parse($componentName);
         if ($parsedComponentName['familyName'] !== null) {
@@ -32,9 +32,9 @@ class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPo
         }
         $templateNames = [];
         if ($datasetType) {
-            $templateNames []= sprintf('%s#%s/populate.%s', $datasetSchemaName, $componentDirectory, $datasetType);
+            $templateNames []= sprintf('%s#%s/populate.%s', $domainName, $componentDirectory, $datasetType);
         }
-        $templateNames []= sprintf('%s#%s/populate', $datasetSchemaName, $componentDirectory);
+        $templateNames []= sprintf('%s#%s/populate', $domainName, $componentDirectory);
 
         return $templateNames;
     }
@@ -72,7 +72,7 @@ class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPo
 
         // Desiding what variables to include
         $templateVars = [
-                'schema'=>$dataset->getSchema(),
+                'domainName'=>$dataset->getDomainName(),
                 'datasetName'=>$dataset->getName(),
                 'componentInstanceName'=>$parsedComponentName['instanceName'],
                 'componentProperties' => $dataset->listComponentProperties($componentName)

@@ -19,7 +19,7 @@ class CopyCommand extends AbstractParameterAwareCommand
             ->setDescription('Copies given attributes from the same component of another dataset')
             ->makeDatasetAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')
-            ->addArgument('origin-dataset-name', InputArgument::REQUIRED, 'Name of the dataset within the same schema to copy attributes from')
+            ->addArgument('origin-dataset-name', InputArgument::REQUIRED, 'Name of the dataset within the same domain to copy attributes from')
             ->addArgument('attribute-names', InputArgument::REQUIRED, 'Comma-separated names of the attributes to copy')
             ->addOption('ids', null, InputOption::VALUE_REQUIRED,
                     'ids of records to copy attributes for',
@@ -38,7 +38,7 @@ class CopyCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output, $extractedArguments);
         
-        $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
+        $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
         $sourceDataset = $datasetManager->get($input->getArgument('origin-dataset-name'));
         

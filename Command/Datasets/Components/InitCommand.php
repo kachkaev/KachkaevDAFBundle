@@ -25,7 +25,7 @@ class InitCommand extends AbstractParameterAwareCommand
         $this->processInput($input, $output, $extractedArguments);
         
         $componentName = $input->getArgument('component-name');
-        $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
+        $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
 
         $output->write(sprintf('Initialising component <info>%s</info> in dataset <info>%s</info>...', $componentName, $dataset->getFullName()));

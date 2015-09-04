@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\DAFBundle\Command\Schemas;
+namespace Kachkaev\DAFBundle\Command\Domains;
 
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -15,9 +15,9 @@ class InitCommand extends AbstractParameterAwareCommand
     protected function configure()
     {
         $this
-            ->setName('daf:schemas:init')
-            ->setDescription('Initialises given database schema in the main database')
-            ->addArgument('schema-name', InputArgument::REQUIRED, 'Name of the schema to initialise')
+            ->setName('daf:domains:init')
+            ->setDescription('Initialises given database domain in the main database')
+            ->addArgument('domain-name', InputArgument::REQUIRED, 'Name of the domain to initialise')
         ;
     }
 
@@ -25,10 +25,10 @@ class InitCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output);
         
-        $schemaName = $input->getArgument('schema-name');
+        $domainName = $input->getArgument('domain-name');
         
-        $output->write(sprintf('Initialising schema <info>%s</info>...', $schemaName));
-        $this->getContainer()->get('daf.schema_manager')->init($schemaName);
+        $output->write(sprintf('Initialising domain <info>%s</info>...', $domainName));
+        $this->getContainer()->get('daf.domain_manager')->init($domainName);
         $output->writeln(' Done.');
     }
 }

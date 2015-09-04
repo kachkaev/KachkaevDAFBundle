@@ -11,20 +11,20 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class ListCommand extends AbstractParameterAwareCommand
 {
-    
+
     protected function configure()
     {
         $this
             ->setName('daf:datasets:list')
-            ->setDescription('Lists existing datasets in a given schema')
-            ->makeSchemaAware()
+            ->setDescription('Lists existing datasets in a given domain')
+            ->makeDomainAware()
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->processInput($input, $output, $extractedArguments);
-        
-        $output->writeln(implode("\n", $this->getDatasetManager($input->getArgument('schema'))->listNames()));
+
+        $output->writeln(implode("\n", $this->getDatasetManager($input->getArgument('domain-name'))->listNames()));
     }
 }

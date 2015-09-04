@@ -11,14 +11,14 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class RenameCommand extends AbstractParameterAwareCommand
 {
-    
+
     protected function configure()
     {
         $this
             ->setName('daf:datasets:rename')
             ->setDescription('Renames given dataset')
             ->makeDatasetAware()
-            ->addArgument('dataset-new-name', InputArgument::REQUIRED, 'New name of the dataset (without schema)')
+            ->addArgument('dataset-new-name', InputArgument::REQUIRED, 'New name of the dataset (without domain)')
         ;
     }
 
@@ -26,9 +26,9 @@ class RenameCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output, $extractedArguments);
 
-        $output->write(sprintf('Renaming dataset <info>%s.%s</info> to <info>%s</info>...', $extractedArguments['dataset-schema'], $extractedArguments['dataset-name'], $input->getArgument("dataset-new-name")));
-        
-        $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
+        $output->write(sprintf('Renaming dataset <info>%s.%s</info> to <info>%s</info>...', $extractedArguments['domain-name'], $extractedArguments['dataset-name'], $input->getArgument("dataset-new-name")));
+
+        $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $datasetManager->rename($extractedArguments['dataset-name'], $input->getArgument("dataset-new-name"));
 
         $output->writeln(' Done.');

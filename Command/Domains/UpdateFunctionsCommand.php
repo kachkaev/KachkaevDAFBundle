@@ -1,6 +1,6 @@
 <?php
 
-namespace Kachkaev\DAFBundle\Command\Schemas;
+namespace Kachkaev\DAFBundle\Command\Domains;
 
 use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 
@@ -8,15 +8,15 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-class UpdateTypesCommand extends AbstractParameterAwareCommand
+class UpdateFunctionsCommand extends AbstractParameterAwareCommand
 {
-    
+
     protected function configure()
     {
         $this
-            ->setName('daf:schemas:update-types')
-            ->setDescription('Updates types in a given schema')
-            ->makeSchemaAware()
+            ->setName('daf:domains:update-functions')
+            ->setDescription('Updates functions in a given domain')
+            ->makeDomainAware()
         ;
     }
 
@@ -24,7 +24,7 @@ class UpdateTypesCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output, $extractedArguments);
 
-        $schemaManager = $this->getContainer()->get('daf.schema_manager');
-        $schemaManager->updateTypes($input->getArgument('schema'));
+        $domainManager = $this->getContainer()->get('daf.domain_manager');
+        $domainManager->updateFunctions($input->getArgument('domain-name'));
     }
 }

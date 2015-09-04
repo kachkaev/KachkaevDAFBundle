@@ -33,7 +33,7 @@ class PopulateCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output, $extractedArguments);
         
-        $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
+        $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
         $componentRecordManager = $dataset->getComponentRecordManager();
         $componentName = $input->getArgument('component-name');

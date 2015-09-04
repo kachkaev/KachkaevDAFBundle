@@ -1,2 +1,2 @@
-SELECT {{attributeNamesAsStr}} FROM {% block fullComponentName %}{{ schema }}.{{ datasetName }}__{{ componentName }}{% endblock %}
+SELECT {{attributeNamesAsStr}} FROM {% block fullComponentName %}{{ domainName }}.{{ datasetName }}__{{ componentName }}{% endblock %}
     WHERE id IN ({{recordIdsAsStr}});

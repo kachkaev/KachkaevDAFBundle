@@ -17,7 +17,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 
 class ComponentRecordManager {
-    
+
     /**
      * @var Dataset
      */
@@ -26,11 +26,11 @@ class ComponentRecordManager {
     /**
      *  @var DatasetManager */
     protected $datasetManager;
-    
+
     /**
      *  @var SQLTemplateManager */
     protected $sqlTemplateManager;
-    
+
     /**
      *  @var ContainerInterface */
     protected $container;
@@ -38,7 +38,7 @@ class ComponentRecordManager {
     const COPYMODE_ALL = 0;
     const COPYMODE_EXISTING_ONLY = 1;
     const COPYMODE_MISSING_ONLY = 2;
-    
+
     /**
      * @param Dataset $dataset
      */
@@ -53,23 +53,23 @@ class ComponentRecordManager {
     public function populate($componentName, array $options, OutputInterface $output = null)
     {
         $this->dataset->getComponentManager()->assertHaving($componentName, sprintf('The dataset is missing the ‘%s’ component', $componentName));
-        
+
         /** @var AbstractComponentRecordpopulator
          */
         $populator = null;
-        
+
         $parsedComponentName = $this->dataset->getComponentManager()->parse($componentName);
-        
+
         $populatorServiceNames = [];
         if ($this->dataset->getProperty('type') !== null) {
-            $populatorServiceNames []= sprintf('daf.dataset_component_record_populator.%s.%s.%s', $this->dataset->getSchema(), $componentName, $this->dataset->getProperty('type'));
+            $populatorServiceNames []= sprintf('daf.dataset_component_record_populator.%s.%s.%s', $this->dataset->getDomainName(), $componentName, $this->dataset->getProperty('type'));
         };
-        
+
         if ($parsedComponentName['instanceName']) {
-            $populatorServiceNames []= sprintf('daf.dataset_component_record_populator.%s.%s__', $this->dataset->getSchema(), $parsedComponentName['familyName']);
+            $populatorServiceNames []= sprintf('daf.dataset_component_record_populator.%s.%s__', $this->dataset->getDomainName(), $parsedComponentName['familyName']);
         }
-        
-        $populatorServiceNames []= sprintf('daf.dataset_component_record_populator.%s.%s', $this->dataset->getSchema(), $componentName);
+
+        $populatorServiceNames []= sprintf('daf.dataset_component_record_populator.%s.%s', $this->dataset->getDomainName(), $componentName);
 
         foreach ($populatorServiceNames as $populatorServiceName) {
             if ($this->container->has($populatorServiceName)) {
@@ -77,7 +77,7 @@ class ComponentRecordManager {
                 break;
             }
         }
-        
+
         if ($populator != null) {
             $populator->populate($this->dataset, $componentName, $options, $output);
         } else {
@@ -93,23 +93,23 @@ class ComponentRecordManager {
     }
 
     /**
-     * 
+     *
      * @param string $componentName
      * @param string $filter
      */
     public function count($componentName, $filter = '')
     {
         return $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/records/count", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 'filter'=>$filter,
                 ])[0]['count'];
     }
-    
+
     /**
      * Returns count of records that both exist in the same component of $dataset2 and the current dataset
-     * 
+     *
      * @param string $componentName
      * @param Dataset $dataset2
      * @param string $filterForDataset2
@@ -117,36 +117,36 @@ class ComponentRecordManager {
     public function countIntersectingIds($componentName, Dataset $dataset2, $filterForDataset2)
     {
         return $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/records/count-intersecting-ids", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'dataset2Name'=>$dataset2->getName(),
                 'componentName'=>$componentName,
                 'filterForDataset2'=>$filterForDataset2,
             ])[0]['count'];
     }
-    
+
     /**
      * Returns ids of records that both exist in the same component of $dataset2 (or its filtered version) and the current dataset
-     * 
+     *
      * @param string $componentName
      * @param Dataset $dataset2
      * @param string $filterForDataset2
-     * @return array 
+     * @return array
      */
     public function listIntersectingIds($componentName, Dataset $dataset2, $filterForDataset2)
     {
         return $this->sqlTemplateManager->runAndFetchAllAsList("dataset_abstraction#datasets/components/records/list-intersecting-ids", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'dataset2Name'=>$dataset2->getName(),
                 'componentName'=>$componentName,
                 'filterForDataset2'=>$filterForDataset2,
             ]);
     }
-    
+
     /**
      * Cleans (deletes) records in the component
-     * 
+     *
      * @param string $componentName
      * @param string|array $filterOrIds string (a=1 AND b=2) or an array of ids
      */
@@ -154,18 +154,18 @@ class ComponentRecordManager {
     {
         if (is_string($filterOrIds) || is_null($filterOrIds)) {
             $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/records/clean-by-filter", [
-                    'schema'=>$this->dataset->getSchema(),
+                    'domainName'=>$this->dataset->getDomainName(),
                     'datasetName'=>$this->dataset->getName(),
                     'componentName'=>$componentName,
                     'filter'=>$filterOrIds,
                     ]);
         } elseif (is_array($filterOrIds)) {
-            
+
             $idChunks = array_chunk($filterOrIds, 1000);
-            
+
             foreach ($idChunks as $idChunk) {
                 $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/records/clean-by-ids", [
-                        'schema'=>$this->dataset->getSchema(),
+                        'domainName'=>$this->dataset->getDomainName(),
                         'datasetName'=>$this->dataset->getName(),
                         'componentName'=>$componentName,
                         'idsAsStr'=>"'" . implode("','", $idChunk) . "'",
@@ -175,48 +175,48 @@ class ComponentRecordManager {
             throw new \InvalidArgumentException(sprintf('Wrong value for $filter: %s', var_export($filter, true)));
         }
     }
-    
+
     /**
      * Copies records from the given dataset component to the current dataset
-     *  
+     *
      * @param string $componentName
      * @param Dataset $sourceDataset
      * @param string $filter
      * @param int $copyMode COPYMODE_ALL, COPYMODE_EXISTING_ONLY, COPYMODE_MISSING_ONLY
      * @param boolean $ignoreAttributeMismatch
-     * @param array $attributeMappings associative array of attribute (column) names that need to be renamed / casted, e.g. myfield=>myfield_with_new_name or myfield::int=>myfield_of_new_type 
+     * @param array $attributeMappings associative array of attribute (column) names that need to be renamed / casted, e.g. myfield=>myfield_with_new_name or myfield::int=>myfield_of_new_type
      */
     public function copy($componentName, Dataset $sourceDataset, $filter, $copyMode, $ignoreAttributeMismatch, array $attributeMappings)
     {
         // Check if source is compatible with destination
-        if ($sourceDataset->getSchema() != $this->dataset->getSchema()) {
-            throw new \InvalidArgumentException(sprintf('Schema names mismatch: %s vs. %s', $this->dataset->getSchema(), $sourceDataset->getSchema()));
+        if ($sourceDataset->getDomainName() != $this->dataset->getDomainName()) {
+            throw new \InvalidArgumentException(sprintf('Domain names mismatch: %s vs. %s', $this->dataset->getDomainName(), $sourceDataset->getDomainName()));
         }
-        
+
         // List attributes
         // -- source
         $sourceAttributes = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/list", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$sourceDataset->getName(),
                 'componentName'=>$componentName,
                 ], null, \PDO::FETCH_KEY_PAIR);
-        
+
         // -- destination
         $destinationAttributes = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/list", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
                 ], null, \PDO::FETCH_KEY_PAIR);
-        
+
         $attributesSourceNotDestination = array_diff_assoc($sourceAttributes, $destinationAttributes);
         $attributesDestinationNotSource = array_diff_assoc($destinationAttributes, $sourceAttributes);
         $attributesInBoth = array_intersect_assoc($sourceAttributes, $destinationAttributes);
-        
+
         // Check mappings a::type->b or a|convert(a)->b
         $realAttributeMappings = [];
         foreach ($attributeMappings as $attributeAndTypeFrom => $attributeTo) {
             $attributeFrom = $attributeAndTypeFrom;
-            
+
             // a|convert(a)->b
             if (strpos($attributeAndTypeFrom, '|') !== false) {
                 $attributeFrom = substr($attributeFrom, 0, strpos($attributeFrom, '|'));
@@ -228,7 +228,7 @@ class ComponentRecordManager {
                     throw new \InvalidArgumentException(sprintf('Conversion expression %s is wrong: numbers of square brackets mismatch.', $conversionExpression));
                 }
                 $realAttributeMappings[$conversionExpression] = $attributeTo;
-            
+
             } else {
                 // a::type->b
                 if (strpos($attributeFrom, ':') !== false) {
@@ -236,7 +236,7 @@ class ComponentRecordManager {
                 }
                 $realAttributeMappings[$attributeAndTypeFrom] = $attributeTo;
             }
-            
+
             if ($attributeFrom && !array_key_exists($attributeFrom, $sourceAttributes)) {
                 throw new \InvalidArgumentException(sprintf('Cannot find attribute %s in the source component among %s', $attributeFrom, implode(', ', array_keys($sourceAttributes))));
             }
@@ -246,25 +246,25 @@ class ComponentRecordManager {
             unset ($attributesSourceNotDestination[$attributeFrom]);
             unset ($attributesDestinationNotSource[$attributeTo]);
         }
-        
+
         if ((count($attributesSourceNotDestination) || count($attributesDestinationNotSource)) && !$ignoreAttributeMismatch) {
             throw new \RuntimeException(sprintf("Attributes in source and destination mismatch!\nExist in source only: %s,\nExist in destination only: %s.", var_export($attributesSourceNotDestination, true), var_export($attributesDestinationNotSource, true)));
         }
-        
+
         $attributeNamesInSource = array_unique(array_merge(array_keys($attributesInBoth), array_keys($realAttributeMappings)));
         $attributeNamesInDestination = array_unique(array_merge(array_keys($attributesInBoth), array_values($realAttributeMappings)));
-        
+
         // List existing ids
         $existingIds = $this->listIntersectingIds($componentName, $sourceDataset, $filter);
-        
+
         // Clean existing ids
         if ($copyMode != self::COPYMODE_MISSING_ONLY) {
             $this->clean($componentName, $existingIds);
         }
-        
+
         // Copy all records that match the filter or only those that are among existingIds
         echo $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/records/copy", [
-                'schema'=>$this->dataset->getSchema(),
+                'domainName'=>$this->dataset->getDomainName(),
                 'sourceDatasetName'=>$sourceDataset->getName(),
                 'destinationDatasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,

@@ -7,16 +7,16 @@
 
 {% block body %}
     FOR item IN SELECT * FROM pg_tables
-    WHERE tablename LIKE '{{ datasetName }}\_\_%' AND schemaname = '{{ schema }}'
+    WHERE tablename LIKE '{{ datasetName }}\_\_%' AND schemaname = '{{ domainName }}'
     LOOP
         duplicateName = replace(item.tablename, '{{ datasetName }}__', '{{ duplicateDatasetName }}__');
         
         -- Duplicate structure
-        EXECUTE 'CREATE TABLE {{ schema }}.' || duplicateName
-                || ' (LIKE {{ schema }}.' || item.tablename || ' INCLUDING INDEXES);';
+        EXECUTE 'CREATE TABLE {{ domainName }}.' || duplicateName
+                || ' (LIKE {{ domainName }}.' || item.tablename || ' INCLUDING INDEXES);';
         -- Duplicate Content
-        EXECUTE 'INSERT INTO {{ schema }}.' || duplicateName
-                || ' SELECT * FROM {{ schema }}.' || item.tablename || ';';
+        EXECUTE 'INSERT INTO {{ domainName }}.' || duplicateName
+                || ' SELECT * FROM {{ domainName }}.' || item.tablename || ';';
         
     END LOOP;
     RETURN true;

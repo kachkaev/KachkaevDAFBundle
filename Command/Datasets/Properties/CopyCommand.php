@@ -22,7 +22,7 @@ class CopyCommand extends AbstractParameterAwareCommand
             ->setDescription('Copies properties from the origin dataset to the given dataset')
             ->makeDatasetAware()
             ->makeForceAware()
-            ->addArgument('origin-dataset-name', InputArgument::REQUIRED, 'Name of the dataset within the same schema to copy data from')
+            ->addArgument('origin-dataset-name', InputArgument::REQUIRED, 'Name of the dataset within the same domain to copy data from')
             ->addArgument('property-names', InputArgument::OPTIONAL, 'Names of properties separated by commas')
         ;
     }
@@ -31,7 +31,7 @@ class CopyCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output, $extractedArguments);
 
-        $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
+        $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $destinationDataset = $datasetManager->get($extractedArguments['dataset-name']);
         $sourceDataset = $datasetManager->get($input->getArgument('origin-dataset-name'));
         

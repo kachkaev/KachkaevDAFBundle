@@ -162,11 +162,11 @@ class AbstractTemplateManager
         return $result;
     }
 
-    public function getTemplateNamespacePath($schemaName) {
-        if (!array_key_exists($schemaName, $this->queryTemplatesNamespaceLookup)) {
-            throw new \InvalidArgumentException(sprintf('SQL template namespace %s not found, please add it to daf.query_templates_namespace_lookups parameter', $schemaName));
+    public function getTemplateNamespacePath($domainName) {
+        if (!array_key_exists($domainName, $this->queryTemplatesNamespaceLookup)) {
+            throw new \InvalidArgumentException(sprintf('SQL template namespace %s not found, please add it to daf.query_templates_namespace_lookups parameter', $domainName));
         }
-        return $this->queryTemplatesNamespaceLookup[$schemaName]['path'];
+        return $this->queryTemplatesNamespaceLookup[$domainName]['path'];
     }
 
     // See http://stackoverflow.com/questions/3835636/php-replace-last-occurence-of-a-string-in-a-string

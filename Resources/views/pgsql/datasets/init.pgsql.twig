@@ -1,4 +1,4 @@
-CREATE TABLE {{ schema }}.{{ datasetName }}__meta
+CREATE TABLE {{ domainName }}.{{ datasetName }}__meta
 (
   key character varying NOT NULL,
   value character varying,
@@ -7,5 +7,5 @@ CREATE TABLE {{ schema }}.{{ datasetName }}__meta
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE {{ schema }}.{{ datasetName }}__meta
+ALTER TABLE {{ domainName }}.{{ datasetName }}__meta
   OWNER TO {{ mainDBOwner }};

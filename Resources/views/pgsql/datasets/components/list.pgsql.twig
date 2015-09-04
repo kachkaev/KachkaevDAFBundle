@@ -4,7 +4,7 @@ WHERE
         tablename LIKE '{{ datasetName }}\_\_%'
     AND tablename NOT LIKE '{{ datasetName }}\_\_\_%'
     AND tablename != '{{ datasetName }}__meta'
-    AND schemaname = '{{ schema }}'
+    AND schemaname = '{{ domainName }}'
 
 UNION
 
@@ -12,7 +12,7 @@ UNION
 SELECT replace(viewname, '{{ datasetName }}__', '') as name FROM pg_views
 WHERE
         viewname LIKE '{{ datasetName }}\_\_%'
-    AND schemaname = '{{ schema }}'
+    AND schemaname = '{{ domainName }}'
 
 UNION
 
@@ -20,5 +20,5 @@ UNION
 (SELECT replace(matviewname, '{{ datasetName }}__', '') as name FROM pg_matviews
 WHERE
         matviewname LIKE '{{ datasetName }}\_\_%'
-    AND schemaname = '{{ schema }}')
+    AND schemaname = '{{ domainName }}')
 ORDER BY name

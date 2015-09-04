@@ -9,11 +9,11 @@
     -- Renaming tables
     FOR item IN SELECT * FROM pg_tables
     WHERE tablename LIKE '{{ datasetName }}\_\_%'
-      AND schemaname = '{{ schema }}'
+      AND schemaname = '{{ domainName }}'
     LOOP
         newName = replace(item.tablename, '{{ datasetName }}__', '{{ newDatasetName }}__');
         
-        EXECUTE 'ALTER TABLE {{ schema }}.' || item.tablename
+        EXECUTE 'ALTER TABLE {{ domainName }}.' || item.tablename
                 || ' RENAME TO ' || newName || ';';
         
     END LOOP;
@@ -21,11 +21,11 @@
     -- Renaming indexes
     FOR item IN SELECT * FROM pg_indexes
     WHERE indexname LIKE '{{ datasetName }}\_\_%'
-      AND schemaname = '{{ schema }}'
+      AND schemaname = '{{ domainName }}'
     LOOP
         newName = replace(item.indexname, '{{ datasetName }}__', '{{ newDatasetName }}__');
         
-        EXECUTE 'ALTER INDEX {{ schema }}.' || item.indexname
+        EXECUTE 'ALTER INDEX {{ domainName }}.' || item.indexname
                 || ' RENAME TO ' || newName || ';';
         
     END LOOP;

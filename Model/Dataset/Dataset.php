@@ -9,7 +9,7 @@ abstract class Dataset
 {
 
     protected $name;
-    protected $schema;
+    protected $domainName;
 
     protected $properties;
     protected $components;
@@ -39,7 +39,7 @@ abstract class Dataset
     {
         $this->datasetManager = $datasetManager;
         $this->sqlTemplateManager = $datasetManager->getSQLTemplatManager();
-        $this->schema = $datasetManager->getSchema();
+        $this->domainName = $datasetManager->getDomainName();
     }
 
     /**
@@ -51,7 +51,7 @@ abstract class Dataset
     public function assertExists()
     {
         if ($this->datasetManager->has($this->name))
-            throw new \RuntimeException(sprintf('Dataset %s.%s does not exist', $this->schema, $this->name));
+            throw new \RuntimeException(sprintf('Dataset %s.%s does not exist', $this->domainName, $this->name));
     }
     
     /**
@@ -72,21 +72,21 @@ abstract class Dataset
     }
     
     /**
-     * Return the schema of the dataset
+     * Return the domain of the dataset
      * @return string
      */
-    public function getSchema()
+    public function getDomainName()
     {
-        return $this->schema;        
+        return $this->domainName;        
     }
     
     /**
-     * Return the full name of the dataset as schema.name
+     * Return the full name of the dataset as domain_name.dataset_name
      * @return string
      */
     public function getFullName()
     {
-        return sprintf('%s.%s', $this->schema, $this->name);        
+        return sprintf('%s.%s', $this->domainName, $this->name);        
     }
     
     // ========================================================================
@@ -193,13 +193,13 @@ abstract class Dataset
         if (null !== $this->getProperty($propertyName)) {
             if (null === $propertyValue) {
                 $this->sqlTemplateManager->run('dataset_abstraction#datasets/properties/delete', [
-                        'schema'=>$this->schema,
+                        'domainName'=>$this->domainName,
                         'datasetName'=>$this->name,
                     ], [$propertyName]);
                 unset ($this->properties[$propertyName]);
             } else {
                 $this->sqlTemplateManager->run('dataset_abstraction#datasets/properties/update', [
-                        'schema'=>$this->schema,
+                        'domainName'=>$this->domainName,
                         'datasetName'=>$this->name,
                     ], [$propertyName, $propertyValue, $propertyName]);
                 $this->properties[$propertyName] = $propertyValue;
@@ -208,7 +208,7 @@ abstract class Dataset
             if (null === $propertyValue) {
             } else {
                 $this->sqlTemplateManager->run('dataset_abstraction#datasets/properties/init', [
-                        'schema'=>$this->schema,
+                        'domainName'=>$this->domainName,
                         'datasetName'=>$this->name,
                     ], [$propertyName, $propertyValue]);
                 $this->properties[$propertyName] = $propertyValue;
@@ -263,7 +263,7 @@ abstract class Dataset
     public function updateProperties()
     {
         $properties = $this->sqlTemplateManager->runAndFetchAll('dataset_abstraction#datasets/properties/list', [
-                'schema'=>$this->schema,
+                'domainName'=>$this->domainName,
                 'datasetName'=>$this->name,
                 ], null, \PDO::FETCH_KEY_PAIR);
         

@@ -32,7 +32,7 @@ class ResetCommand extends AbstractParameterAwareCommand
             $componentName = $this->componentName;
         }
 
-        $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
+        $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);
         $componentManager = $dataset->getComponentManager();
         

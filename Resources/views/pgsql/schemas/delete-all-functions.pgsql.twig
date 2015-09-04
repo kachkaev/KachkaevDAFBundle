@@ -8,7 +8,7 @@
 {% block body %}
     FOR stmt IN SELECT 'DROP FUNCTION ' || ns.nspname || '.' || proname || '(' || oidvectortypes(proargtypes) || ');'
         FROM pg_proc INNER JOIN pg_namespace ns ON (pg_proc.pronamespace = ns.oid)
-        WHERE ns.nspname = '{{ schema }}' order by proname
+        WHERE ns.nspname = '{{ domainName }}' order by proname
     LOOP
         EXECUTE stmt;
     END LOOP;

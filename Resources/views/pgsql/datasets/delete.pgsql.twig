@@ -6,9 +6,9 @@
 
 {% block body %}
     FOR item IN SELECT * FROM pg_tables
-    WHERE tablename LIKE '{{ datasetName }}\_\_%' AND schemaname = '{{ schema }}'
+    WHERE tablename LIKE '{{ datasetName }}\_\_%' AND schemaname = '{{ domainName }}'
     LOOP
-        EXECUTE 'DROP TABLE {{ schema }}.' || item.tablename || ';';
+        EXECUTE 'DROP TABLE {{ domainName }}.' || item.tablename || ';';
     END LOOP;
     RETURN true;
 {% endblock %}

@@ -1,7 +1,7 @@
 <?php
 namespace Kachkaev\DAFBundle\Model\Dataset;
 
-use Kachkaev\DAFBundle\Model\Schema\SchemaManager;
+use Kachkaev\DAFBundle\Model\Domain\DomainManager;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,7 +10,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Templating\EngineInterface;
 
 use Kachkaev\DAFBundle\Model\Validator\ValidatorInterface;
-use Kachkaev\DAFBundle\Model\Validator\NameValidator;
+use Kachkaev\DAFBundle\Model\Validator\DatasetNameValidator;
 use Kachkaev\DAFBundle\Model\ManagerInterface;
 use Kachkaev\DAFBundle\Model\TemplateManaging\SQLTemplateManager;
 
@@ -29,23 +29,23 @@ abstract class DatasetManager implements ManagerInterface
     /**
      *  @var SQLTemplateManager */
     protected $sqlTemplateManager;
-    
+
     /**
-     * @var SchemaManager
+     * @var DomainManager
      */
-    protected $schemaManager;
-    
+    protected $domainManager;
+
     /**
      * @var DatasetNameValidator
      */
-    protected $nameValidator;
-    
+    protected $datasetNameValidator;
+
     protected $componentAttributeUpdaters;
-    
-    protected $schema = 'public';
-    
+
+    protected $domainName = 'public';
+
     protected $class;
-    
+
     // List of objects handled by the manager as name=>object
     protected $list = [];
 
@@ -58,20 +58,20 @@ abstract class DatasetManager implements ManagerInterface
     {
         $this->container = $container;
         $this->sqlTemplateManager = $container->get('daf.sql_template_manager');
-        $this->schemaManager = $container->get('daf.schema_manager');
-        $this->nameValidator = $this->getValidator('dataset_name');
+        $this->domainManager = $container->get('daf.domain_manager');
+        $this->datasetNameValidator = $this->getValidator('dataset_name');
         $this->updateList();
     }
-    
+
     /**
      * Updates the list of known datasets
      */
     public function updateList()
     {
         $listOfExistingNames = $this->sqlTemplateManager->runAndFetchAllAsList('dataset_abstraction#datasets/list', [
-                'schema'=>$this->schema
+                'domainName'=>$this->domainName
                 ]);
-        
+
         $newList = [];
         $oldList = $this->list;
 
@@ -85,10 +85,10 @@ abstract class DatasetManager implements ManagerInterface
                 unset ($oldList[$name]);
             }
         };
-        
+
         $this->list = $newList;
     }
-    
+
     /**
      * Returns the name of an element by its reference in the dataset
      * @return string
@@ -97,16 +97,16 @@ abstract class DatasetManager implements ManagerInterface
     {
         return array_search($dataset, $this->list, true);
     }
-    
+
     /**
-     * Returns managed schema name
+     * Returns managed domain name
      * @return string
      */
-    public function getSchema()
+    public function getDomainName()
     {
-        return $this->schema;
+        return $this->domainName;
     }
-    
+
     /**
      * Returns names of datasets
      * @return array
@@ -122,10 +122,10 @@ abstract class DatasetManager implements ManagerInterface
      */
     public function has($datasetName)
     {
-        $this->nameValidator->assertValid($datasetName);
+        $this->datasetNameValidator->assertValid($datasetName);
         return array_key_exists($datasetName, $this->list);
     }
-    
+
     /**
      * Does nothing if given dataset exists, throws an exception otherwise
      * @throws \LogicException if given dataset does not exist
@@ -137,7 +137,7 @@ abstract class DatasetManager implements ManagerInterface
             throw new \LogicException($errorMessage);
         }
     }
-    
+
     /**
      * Does nothing if given dataset does not exist, throws an exception otherwise
      * @throws \LogicException if given dataset exist
@@ -149,31 +149,31 @@ abstract class DatasetManager implements ManagerInterface
             throw new \LogicException($errorMessage);
         }
     }
-    
+
     /**
      * Initialises given dataset
-     * 
+     *
      * @return Dataset
      */
     public function init($datasetName)
     {
-        $this->assertNotHaving($datasetName, sprintf('Cannot initialise dataset %s.%s as it already exists in the database', $this->schema, $datasetName));
-        
+        $this->assertNotHaving($datasetName, sprintf('Cannot initialise dataset %s.%s as it already exists in the database', $this->domainName, $datasetName));
+
         // Creating meta table
         $this->sqlTemplateManager->run('dataset_abstraction#datasets/init', [
-                'schema'=>$this->schema,
+                'domainName'=>$this->domainName,
                 'datasetName'=>$datasetName,
                 ]);
-        
+
         $dataset = new $this->class($this);
         $this->list[$datasetName] = $dataset;
         $dataset->updateName();
-        
+
         $this->updateFunctions();
-        
+
         return $dataset;
     }
-    
+
     /**
      * Renames given dataset
      */
@@ -181,10 +181,10 @@ abstract class DatasetManager implements ManagerInterface
     {
         $datasetToRename = $this->get($datasetName);
 
-        $this->assertNotHaving($newDatasetName, sprintf('Unable to rename dataset %s.%s to %s.%s as such dataset already exists', $this->schema, $datasetName, $this->schema, $newDatasetName));
-        
+        $this->assertNotHaving($newDatasetName, sprintf('Unable to rename dataset %s.%s to %s.%s as such dataset already exists', $this->domainName, $datasetName, $this->domainName, $newDatasetName));
+
         $this->sqlTemplateManager->run('dataset_abstraction#datasets/rename', [
-                'schema'=>$this->schema,
+                'domainName'=>$this->domainName,
                 'datasetName'=>$datasetName,
                 'newDatasetName'=>$newDatasetName,
                 ]);
@@ -193,10 +193,10 @@ abstract class DatasetManager implements ManagerInterface
         if ($this->list[$newDatasetName]) {
             $this->list[$newDatasetName]->updateName();
         }
-        
+
         $this->updateFunctions();
     }
-    
+
     /**
      * Duplicates given dataset
      */
@@ -205,47 +205,47 @@ abstract class DatasetManager implements ManagerInterface
         $datasetToRename = $this->get($datasetName);
 
         if ($this->has($newDatasetName)) {
-            throw new \InvalidArgumentException(sprintf('Unable to duplicate dataset %s.%s to %s.%s as such dataset already exists', $this->schema, $datasetName, $this->schema, $newDatasetName));
+            throw new \InvalidArgumentException(sprintf('Unable to duplicate dataset %s.%s to %s.%s as such dataset already exists', $this->domainName, $datasetName, $this->domainName, $newDatasetName));
         }
-        
+
         $this->sqlTemplateManager->run('dataset_abstraction#datasets/duplicate', [
-                'schema'=>$this->schema,
+                'domainName'=>$this->domainName,
                 'datasetName'=>$datasetName,
                 'duplicateDatasetName'=>$newDatasetName,
                 ]);
         $this->list[$newDatasetName] = null;
-        
+
         $this->updateFunctions();
     }
-    
+
     /**
      * Saves contents of dataset tables into a dump file
      * @return string name of the file that was created
      */
     public function backup($datasetName, $backupDirectory)
     {
-        $this->assertHaving($datasetName, sprintf('Unable to backup dataset %s.%s as such dataset does not exist', $this->schema, $datasetName));
-        
+        $this->assertHaving($datasetName, sprintf('Unable to backup dataset %s.%s as such dataset does not exist', $this->domainName, $datasetName));
+
         $connectionParams = $this->getDatabaseConnectionParams();
-        
+
         // Verify backup directory
-        $backupDirectory = rtrim($backupDirectory, '/'); 
+        $backupDirectory = rtrim($backupDirectory, '/');
         if (!is_dir($backupDirectory)) {
             throw new \InvalidArgumentException(sprintf('Backup directory %s does not exist, please create it before doing backup', var_export($backupDirectory, true)));
         }
         if (!is_writable($backupDirectory)) {
             throw new \InvalidArgumentException(sprintf('Backup directory %s is not writable, please fix it before doing backup', var_export($backupDirectory, true)));
         }
-        
-        $outputFilename = sprintf('%s.%s-%s.pgdump', $this->schema, $datasetName, date('Ymd-Hi'));
+
+        $outputFilename = sprintf('%s.%s-%s.pgdump', $this->domainName, $datasetName, date('Ymd-Hi'));
         $outputFilepath = sprintf('%s/%s', $backupDirectory, $outputFilename);
-        
+
         // Construct the command
         $command = sprintf('export PGUSER="%s" && export PGPASSWORD="%s" && pg_dump --host=localhost %s --table="%s.%s__*" --format=custom --file="%s" 2>&1 && unset PGPASSWORD && unset PGUSER',
                     $connectionParams['user'],
                     $connectionParams['password'],
                     $connectionParams['dbname'],
-                    $this->schema,
+                    $this->domainName,
                     $datasetName,
                     $outputFilepath
                 );
@@ -253,47 +253,47 @@ abstract class DatasetManager implements ManagerInterface
         // Execute the command
         exec($command, $commandOutputArray, $commandResult);
         $commandOutput = implode(PHP_EOL, $commandOutputArray);
-        
+
         // Handle failure
         if ($commandResult) {
             throw new \RuntimeException($commandOutput);
         }
-        
+
         return realpath($outputFilepath);
     }
-    
+
     /**
      * Restores dataset tables from a dump file
      */
     public function restore($backupFilename, $options = null, OutputInterface $output = null)
     {
         $connectionParams = $this->getDatabaseConnectionParams();
-        
+
         $oldListOfDatasets = $this->listNames();
 
         // Check backup file
         if (!file_exists($backupFilename)) {
             throw new \InvalidArgumentException(sprintf('Restoring file %s does not exist.', var_export($backupFilename, true)));
         }
-        
+
         // Construct the command
         $command = sprintf('export PGUSER="%s" && export PGPASSWORD="%s" && pg_restore --exit-on-error --host=localhost --dbname=%s --format=custom --schema=%s "%s" 2>&1 && unset PGPASSWORD && unset PGUSER',
                     $connectionParams['user'],
                     $connectionParams['password'],
                     $connectionParams['dbname'],
-                    $this->schema,
+                    $this->domainName,
                     $backupFilename
                 );
-        
+
         // Execute the command
         exec($command, $commandOutputArray, $commandResult);
         $commandOutput = implode(PHP_EOL, $commandOutputArray);
-        
+
         // Handle failure
         if ($commandResult) {
             if (preg_match('/relation "(.+)__(.+)" already exists/', $commandOutput, $matches)) {
-                throw new \LogicException(sprintf('Dataset %s.%s already exists in the database. Rename or delete it before restoring data from backup.', $this->schema, $matches[1]));
-            } else { 
+                throw new \LogicException(sprintf('Dataset %s.%s already exists in the database. Rename or delete it before restoring data from backup.', $this->domainName, $matches[1]));
+            } else {
                 throw new \RuntimeException($commandOutput);
             }
         }
@@ -301,19 +301,19 @@ abstract class DatasetManager implements ManagerInterface
         $this->updateList();
         $this->updateFunctions();
 
-        $datasetName = array_values(array_diff($this->listNames(), $oldListOfDatasets))[0]; 
+        $datasetName = array_values(array_diff($this->listNames(), $oldListOfDatasets))[0];
 
-        return $datasetName;  
+        return $datasetName;
     }
-    
+
     /**
      * Returns dataset object by name
      * @return Dataset
      */
     public function get($datasetName)
     {
-        $this->assertHaving($datasetName, sprintf('Cannot get dataset %s.%s as it does not exist in the database', $this->schema, $datasetName));
-        
+        $this->assertHaving($datasetName, sprintf('Cannot get dataset %s.%s as it does not exist in the database', $this->domainName, $datasetName));
+
         if (!$this->list[$datasetName]) {
             $dataset = new $this->class($this);
             $this->list[$datasetName] = $dataset;
@@ -322,39 +322,39 @@ abstract class DatasetManager implements ManagerInterface
 
         return $this->list[$datasetName];
     }
-    
+
     /**
      * Deletes given dataset by name
      */
     public function delete($datasetName)
     {
-        $this->assertHaving($datasetName, sprintf('Cannot delete dataset %s.%s as it does not exist in the database', $this->schema, $datasetName));
-        
+        $this->assertHaving($datasetName, sprintf('Cannot delete dataset %s.%s as it does not exist in the database', $this->domainName, $datasetName));
+
         $dataset = $this->get($datasetName);
-        
+
         // Deleting all tables starting with name__
         $this->sqlTemplateManager->run('dataset_abstraction#datasets/delete', [
-                'schema'=>$this->schema,
+                'domainName'=>$this->domainName,
                 'datasetName'=>$datasetName,
             ]);
-        
+
         $dataset->updateName();
-        
+
         unset ($this->list[$datasetName]);
     }
-    
+
     /**
      * Returns validator
      * @return ValidatorInterface
      */
     public function getValidator($validatorName)
     {
-        foreach ([$this->schema, 'dataset_abstraction'] as $schema) {
+        foreach ([$this->domainName, 'dataset_abstraction'] as $domain) {
             $serviceName = 'daf.validator.'.$validatorName;
             if ($this->container->has($serviceName))
                 return $this->container->get($serviceName);
         }
-        throw new \InvalidArgumentException(sprintf('Validator %s does not exist', $validatorName)); 
+        throw new \InvalidArgumentException(sprintf('Validator %s does not exist', $validatorName));
     }
 
     /**
@@ -365,7 +365,7 @@ abstract class DatasetManager implements ManagerInterface
     {
         return $this->sqlTemplateManager;
     }
-    
+
     /**
      * Returns service container
      * @return ContainerInterface
@@ -374,7 +374,7 @@ abstract class DatasetManager implements ManagerInterface
     {
         return $this->container;
     }
-    
+
     /**
      * Extracts the name of the database (needed to backup and restore)
      */
@@ -382,13 +382,13 @@ abstract class DatasetManager implements ManagerInterface
     {
         return $this->container->get('doctrine.dbal.main_connection')->getParams();
     }
-    
+
     public function updateFunctions()
     {
         $this->updateList();
-        $this->schemaManager->updateFunctions($this->schema);
+        $this->domainManager->updateFunctions($this->domainName);
     }
-    
+
     /**
      * Returns all registered component attribute updaters
      * (services tagged with daf.component_attribute_updater)
@@ -397,5 +397,5 @@ abstract class DatasetManager implements ManagerInterface
     {
         return $this->container->get('daf.component_attribute_updaters')->getAll();
     }
-    
+
 }

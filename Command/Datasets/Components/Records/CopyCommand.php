@@ -23,7 +23,7 @@ class CopyCommand extends AbstractParameterAwareCommand
             ->makeDatasetAware()
             ->makeForceAware()
             ->addArgument('component-name', InputArgument::REQUIRED, 'Name of the component')
-            ->addArgument('origin-dataset-name', InputArgument::REQUIRED, 'Name of the dataset within the same schema to copy data from')
+            ->addArgument('origin-dataset-name', InputArgument::REQUIRED, 'Name of the dataset within the same domain to copy data from')
             ->addOption('filter', null, InputOption::VALUE_REQUIRED, 'Filter (WHERE statement) to select what records to copy')
             ->addOption('existing-only', null, InputOption::VALUE_NONE, 'Only update attribute values of the records that already exist in the destination dataset component')
             ->addOption('missing-only', null, InputOption::VALUE_NONE, 'Only insert records that don’t exist in the destination dataset component')
@@ -36,7 +36,7 @@ class CopyCommand extends AbstractParameterAwareCommand
     {
         $this->processInput($input, $output, $extractedArguments);
         
-        $datasetManager = $this->getDatasetManager($extractedArguments['dataset-schema']);
+        $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $destinationDataset = $datasetManager->get($extractedArguments['dataset-name']);
         $sourceDataset = $datasetManager->get($input->getArgument('origin-dataset-name'));
         $componentName = $input->getArgument('component-name');

@@ -1,2 +1,2 @@
-SELECT COUNT(*) FROM {{ schema }}.{{ datasetName }}__{{ componentName }}
+SELECT COUNT(*) FROM {{ domainName }}.{{ datasetName }}__{{ componentName }}
 {% if filter %} WHERE {{ filter }} {% endif %}
