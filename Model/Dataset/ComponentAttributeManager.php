@@ -13,7 +13,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 
 class ComponentAttributeManager {
-    
+
     /**
      * @var Dataset
      */
@@ -22,12 +22,12 @@ class ComponentAttributeManager {
     /**
      *  @var DatasetManager */
     protected $datasetManager;
-    
+
     /**
      * @var ValidatorInterface
      */
     protected $nameValidator;
-    
+
     /**
      *  @var SQLTemplateManager */
     protected $sqlTemplateManager;
@@ -42,7 +42,7 @@ class ComponentAttributeManager {
         $this->sqlTemplateManager = $this->datasetManager->getSQLTemplatManager();
         $this->nameValidator = $this->datasetManager->getValidator('component_name');
     }
-        
+
     /**
      * Add one or several columns to the component table
      */
@@ -53,7 +53,7 @@ class ComponentAttributeManager {
         } else {
             $attributeNamesAsArray = $attributeNames;
         }
-        
+
         $this->sqlTemplateManager->run('dataset_abstraction#datasets/components/attributes/init', [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
@@ -63,7 +63,7 @@ class ComponentAttributeManager {
                 'attributeColumnComment'=>$attributeColumnComment,
                 ]);
     }
-    
+
     /**
      * Returns an array of attribute names [name1, name2, ...]
      * @param string $componentName
@@ -72,7 +72,7 @@ class ComponentAttributeManager {
     {
         return array_keys($this->listAttributeNamesAndTypes($componentName));
     }
-    
+
     /**
      * Returns an array of attribute name / type pairs [name1 => postgres type1, name2 => postgres type 2]
      * @param string $componentName
@@ -85,9 +85,9 @@ class ComponentAttributeManager {
                 'componentName'=>$componentName,
                 ], null, \PDO::FETCH_KEY_PAIR);
     }
-    
+
     /**
-     * 
+     *
      * @param string $componentName
      * @param array $attributeNames
      */
@@ -96,9 +96,9 @@ class ComponentAttributeManager {
         $missingAttributes = array_diff($attributeNames, $this->listAttributeNames($componentName));
         return !count($missingAttributes);
     }
-    
+
     /**
-     * 
+     *
      * @param array $attributeNames
      * @param string $errorMessage
      */
@@ -112,16 +112,16 @@ class ComponentAttributeManager {
             throw new \LogicException($errorMessage);
         }
     }
-    
+
     public function getAttributesByIds($componentName, array $attributeNames, array $recordIds)
     {
         // Qutes are removed tom make it possible to typecast attributes
         //$attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
         $attributeNames []= 'id';
         $attributeNamesAsStr = ''.implode(',', $attributeNames).'';
-        
+
         $recordIdsAsStr = "'".implode("','", $recordIds)."'";
-        
+
         $plainResult = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/getByIds", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
@@ -129,12 +129,12 @@ class ComponentAttributeManager {
                 'attributeNamesAsStr'=>$attributeNamesAsStr,
                 'recordIdsAsStr'=>$recordIdsAsStr,
                 ]);
-        
+
         $result = [];
         foreach ($plainResult as $record) {
             $result[$record['id']] = $record;
         }
-        
+
         return $result;
     }
 
@@ -150,7 +150,7 @@ class ComponentAttributeManager {
         // Quotes are removed tom make it possible to typecast attributes
         //$attributeNamesAsStr = '"'.implode('","', $attributeNames).'"';
         $attributeNamesAsStr = ''.implode(',', $attributeNames).'';
-        
+
         $result = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/getWhere", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
@@ -159,7 +159,7 @@ class ComponentAttributeManager {
                 'where'=>$where,
                 'orderBy'=>$orderBy,
                 ]);
-        
+
         return $result;
     }
 
@@ -173,13 +173,13 @@ class ComponentAttributeManager {
                 'where'=>$where,
                 'orderBy'=>$orderBy,
         ], null, \PDO::FETCH_COLUMN);
-        
+
         return $result;
     }
-    
+
     /**
      * Sets an attributes to a given value or null for all records
-     * 
+     *
      * @param string $componentName
      * @param string|array $attributeNames
      * @param any $value
@@ -215,9 +215,9 @@ class ComponentAttributeManager {
         } else {
             $attributeNamesAsArray = $attributeNames;
         }
-        
+
         $recordIdsAsStr = "'".implode("','", $recordIds)."'";
-    
+
         $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/set", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
@@ -226,10 +226,10 @@ class ComponentAttributeManager {
                 'recordIdsAsStr'=>$recordIdsAsStr,
                 ], [$value]);
     }
-    
+
     /**
      * Saves given data to the table
-     * 
+     *
      * @param Dataset $this->dataset
      * @param string $componentName
      * @param string $attributeNames
@@ -242,17 +242,17 @@ class ComponentAttributeManager {
         } else {
             $attributeNamesAsArray = $attributeNames;
         }
-        
+
         $attributeCount = count($attributeNames);
         foreach ($data as $id => $attributeValues) {
-            
+
             //Get rid of PDOException "Invalid text representation: 7 ERROR: invalid input syntax for type boolean"
             // (replacing false with "false"
             foreach ($attributeValues as $i => &$av) {
                 if ($av === false) {
                     $attributeValues[$i] = 'false';
                 }
-            } 
+            }
 
             $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/set", [
                     'schema'=>$this->dataset->getSchema(),
@@ -263,10 +263,10 @@ class ComponentAttributeManager {
                     ], $attributeValues);
         }
     }
-    
+
     /**
      * Updates attributes in the selected dataset component. Invokes corresponding attribute updaters
-     *  
+     *
      * @param string $componentName
      * @param string|array $attributeNames
      * @param array $recordIds
@@ -280,18 +280,18 @@ class ComponentAttributeManager {
         } else {
             $attributeNamesAsArray = $attributeNames;
         }
-        
+
         $attributeNamesToUpdate = $attributeNamesAsArray;
 
         $updateQueue = [];
-        
+
         $sourceAttributes = ['id'];
-        
+
         // Looking for appropriate attribute updaters
         // and adding them into the queue
         while (count($attributeNamesToUpdate)) {
             $prevNumAttributesToUpdate = count($attributeNamesToUpdate);
-            
+
             foreach($this->datasetManager->getComponentAttributeUpdaters() as $componentAttributeUpdater) {
                 $whatThisComponentAttributeUpdaterCanUpdate = $componentAttributeUpdater->listAttributesThatCanUpdate($this->dataset, $componentName, $attributeNamesToUpdate);
                 if ($whatThisComponentAttributeUpdaterCanUpdate) {
@@ -312,16 +312,16 @@ class ComponentAttributeManager {
                 throw new \RuntimeException(sprintf('Could not find an updater for %s', implode(', ', $attributeNamesToUpdate)));
             }
         }
-        
+
         $sourceAttributes = array_unique(array_merge($sourceAttributes, $attributeNames));
-        
+
         $data = $this->getAttributesByIds($componentName, $sourceAttributes, $recordIds);
-        
+
         // Actual updating using assigned updaters
         foreach ($updateQueue as $queueElement) {
             $queueElement['updater']->update($this->dataset, $componentName, $queueElement['updatableAttributes'], $data, $output);
         }
-        
+
         $dataToWrite = [];
         foreach ($data as $id => &$record) {
             $currentDataToWrite = [];
@@ -330,25 +330,25 @@ class ComponentAttributeManager {
             }
             $dataToWrite[$id] = $currentDataToWrite;
         }
-        
+
         $this->setData($componentName, $attributeNamesAsArray, $dataToWrite);
     }
-    
+
     /**
-     * 
-     * 
+     *
+     *
      * @param string $componentName
      * @param Dataset $sourceDataset
      * @param array $attributeNames
      * @param array $recordIds
      * @param unknown $breakOnError
-     * 
+     *
      * @return int number of records affected
      */
     public function copyAttributes($componentName, Dataset $sourceDataset, array $attributeNames, array $recordIds, $breakOnError = true)
     {
         $attributesByIds = $sourceDataset->getComponentAttributeManager()->getAttributesByIds($componentName, $attributeNames, $recordIds);
-        
+
         $data = [];
         foreach ($attributesByIds as $id => $attributes) {
             $currentData = [];
@@ -357,11 +357,9 @@ class ComponentAttributeManager {
             }
             $data[$id] = $currentData;
         }
-         //var_dump($data);
-//          die();
-        
+
         $this->setData($componentName, $attributeNames, $data);
-        
+
         return count($data);
     }
 
@@ -376,8 +374,8 @@ class ComponentAttributeManager {
         if ('id' === $attributeName) {
             throw new \InvalidArgumentException('Attribute id cannot be renamed');
         }
-        
-        
+
+
         $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/rename", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),
@@ -386,10 +384,10 @@ class ComponentAttributeManager {
                 'newAttributeName'=>$newAttributeName,
             ]);
     }
-    
+
     /**
-     * Deletes the given list of attributes (drops columns) 
-     * 
+     * Deletes the given list of attributes (drops columns)
+     *
      * @param string $componentName
      * @param array|string $attributeNames
      */
@@ -400,11 +398,11 @@ class ComponentAttributeManager {
         } else {
             $attributeNamesAsArray = $attributeNames;
         }
-        
+
         if (array_search('id', $attributeNames) !== false) {
             throw new \InvalidArgumentException('Attribute id cannot be deleted');
         }
-    
+
         $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/attributes/delete", [
                 'schema'=>$this->dataset->getSchema(),
                 'datasetName'=>$this->dataset->getName(),

@@ -64,7 +64,7 @@ class UpdateCommand extends AbstractParameterAwareCommand
         $progress->start($output, count($ids));
         
         // Update records by chunks
-        $chunkSize = $input->getOption('chunk-size') ? : $this->getContainer()->getParameter('daf.batch_chunk_size');
+        $chunkSize = $input->getOption('chunk-size') ? : $this->getContainer()->getParameter('daf.default_chunk_size');
         $idChunks = array_chunk($ids, $chunkSize);
         
         foreach ($idChunks as $idChunk) {

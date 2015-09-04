@@ -18,11 +18,31 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('kachkaev_dataset_abstraction');
+        $rootNode = $treeBuilder->root('daf');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+            ->children()
+            ->scalarNode('data_dir')
+                ->isRequired()
+                ->cannotBeEmpty()
+                ->end()
+            ->scalarNode('dataset_backup_dir')
+                ->isRequired()
+                ->cannotBeEmpty()
+                ->end()
+            ->integerNode('default_chunk_size')
+                ->defaultValue(50)
+                ->end()
+            ->arrayNode('query_templates_namespace_lookups')
+                ->prototype('array')
+                    ->children()
+                        ->scalarNode('bundle')->end()
+                        ->scalarNode('path')->end()
+                    ->end()
+                ->end()
+            ->end() // query_templates_namespace_lookups
+        ->end()
+        ;
 
         return $treeBuilder;
     }

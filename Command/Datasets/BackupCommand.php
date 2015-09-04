@@ -27,7 +27,7 @@ class BackupCommand extends AbstractParameterAwareCommand
         
         $backupDirectory = $input->getArgument('backup-directory');
         if (!$backupDirectory) {
-            $backupDirectory = $this->getContainer()->getParameter('daf.env.datasets_backup_dir');
+            $backupDirectory = $this->getContainer()->getParameter('daf.datasets_backup_dir');
         }
         
         $output->write(sprintf('Creating backup of <info>%s</info> (this may take a while)...', $extractedArguments['dataset-full-name']));

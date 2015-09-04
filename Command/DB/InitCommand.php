@@ -25,27 +25,29 @@ class InitCommand extends AbstractParameterAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->processInput($input, $output);
-        
+
         $connection = $this->getContainer()->get('doctrine.dbal.main_connection');
         $sqlTemplateManager = $this->getContainer()->get('daf.sql_template_manager');
-        
+
         // XXX validate template-name
-        $templateName = $input->getArgument('template-name'); 
+        $templateName = $input->getArgument('template-name');
         if ('null' == $templateName || !$templateName) {
             $templateName = null;
         }
-        
+
         // XXX validate default schemas
         $defaultSchemas = $input->getArgument('default-schemas');
         if ($defaultSchemas)
             $defaultSchemas = explode(',', $defaultSchemas);
-        
-        
+
+
         $params = $connection->getParams();
         $name = isset($params['path']) ? $params['path'] : $params['dbname'];
-        unset($params['dbname']);
-        
+        //unset($params['dbname']);
+        $params['dbname'] = 'postgres';
+
         $tmpConnection = DriverManager::getConnection($params);
+
         if ($templateName) {
             $output->write(sprintf('Cloning template <info>%s</info> into a new database <info>%s</info>...', $templateName, $name));
         } else {
@@ -55,7 +57,7 @@ class InitCommand extends AbstractParameterAwareCommand
         if (!isset($params['path'])) {
             $name = $tmpConnection->getDatabasePlatform()->quoteSingleIdentifier($name);
         }
-        
+
         try {
             $query = $sqlTemplateManager->render('dataset_abstraction#init-db', ['database' => $name, 'template' => $templateName]);
             $tmpConnection->getWrappedConnection()->exec($query);
@@ -64,7 +66,7 @@ class InitCommand extends AbstractParameterAwareCommand
             $tmpConnection->close();
             throw $e;
         }
-        
+
         if ($defaultSchemas) {
             $output->write(sprintf('Initialising default schema%s (<info>%s</info>)...', sizeof($defaultSchemas) > 1 ? 's':'', implode('</info>, <info>', $defaultSchemas)));
             $schemaManager = $this->getContainer()->get('daf.schema_manager');

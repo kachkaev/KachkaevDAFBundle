@@ -17,13 +17,26 @@ class KachkaevDAFExtension extends Extension
     /**
      * {@inheritDoc}
      */
+    public function getAlias()
+    {
+        return 'daf';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('parameters.yml');
         $loader->load('services.yml');
+
+        $container->setParameter('daf.data_dir', $config['data_dir']);
+        $container->setParameter('daf.dataset_backup_dir', $config['dataset_backup_dir']);
+        $container->setParameter('daf.query_templates_namespace_lookups', $config['query_templates_namespace_lookups']);
     }
 }

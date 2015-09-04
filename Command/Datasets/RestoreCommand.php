@@ -30,7 +30,7 @@ class RestoreCommand extends AbstractParameterAwareCommand
         // Add standard directory to filename if it is relative
         $pathToBackup = $backupFilename;
         if (substr($backupFilename, 0, 1) !== '/' || strpos(':', $backupFilename) !== false) {
-            $pathToBackup = realpath($this->getContainer()->getParameter('daf.env.datasets_backup_dir').'/'.$backupFilename);
+            $pathToBackup = realpath($this->getContainer()->getParameter('daf.datasets_backup_dir').'/'.$backupFilename);
         }
         // Extract schema name
         $schema = explode('.', basename($backupFilename))[0];

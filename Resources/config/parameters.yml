@@ -1,5 +1,4 @@
 parameters:
-    daf.env.data_dir: %kernel.root_dir%/../../../data
-    daf.env.datasets_backup_dir: %daf.env.data_dir%/backups/datasets/
-    daf.conventional_null: -2,147,483,642 # not -2,147,483,648
-    daf.batch_chunk_size: 50
+    daf.data_dir:                                       null #from config
+    daf.datasets_backup_dir:                            null #from config
+    daf.default_chunk_size:                             null #from config
