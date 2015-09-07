@@ -61,7 +61,7 @@ class DomainManager implements ManagerInterface
 
     public function listNames()
     {
-        $allDomains =  $this->sqlTemplateManager->runAndFetchAllAsList("dataset_abstraction#domains/list");
+        $allDomains =  $this->sqlTemplateManager->runAndFetchAllAsList("daf#domains/list");
         $filteredDomains = array_diff($allDomains, $this->systemSchemas);
 
         return $filteredDomains;
@@ -76,7 +76,7 @@ class DomainManager implements ManagerInterface
 
     public function init($domainName)
     {
-        $this->sqlTemplateManager->run("dataset_abstraction#domains/init", [
+        $this->sqlTemplateManager->run("daf#domains/init", [
                 'domainName' => $domainName
             ]);
     }
@@ -87,7 +87,7 @@ class DomainManager implements ManagerInterface
             throw new \InvalidArgumentException("You are not allowed to delete a domain $domainName which is a system schema");
         }
 
-        $this->sqlTemplateManager->run("dataset_abstraction#domains/delete", [
+        $this->sqlTemplateManager->run("daf#domains/delete", [
                 'domainName' => $domainName
             ]);
     }
@@ -154,12 +154,12 @@ class DomainManager implements ManagerInterface
             } else if (!$matches[6] && $matches[3]) { // Specific component instance, but not to type
                 $functionsByCategory[3] []= $functionName;
             } else {
-                throw new \LogicExcepton(sprintf("Cannot determine type of function template %s", $functionName));
+                throw new \LogicException(sprintf("Cannot determine type of function template %s", $functionName));
             }
         }
 
         // Delete all functions
-        $this->sqlTemplateManager->run('dataset_abstraction#domains/delete-all-functions', [
+        $this->sqlTemplateManager->run('daf#domains/delete-all-functions', [
                 'domainName' => $domainName,
                 ]);
 

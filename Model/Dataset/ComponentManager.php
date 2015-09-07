@@ -56,7 +56,7 @@ class ComponentManager implements ManagerInterface
      */
     public function updateList()
     {
-        $list = $this->sqlTemplateManager->runAndFetchAll('dataset_abstraction#datasets/components/list', [
+        $list = $this->sqlTemplateManager->runAndFetchAll('daf#datasets/components/list', [
                 'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
             ], null, \PDO::FETCH_COLUMN);
@@ -160,7 +160,7 @@ class ComponentManager implements ManagerInterface
         $templates = [
             "$domain#$componentName/$deleteMode.$type",
             "$domain#$componentName/$deleteMode",
-            "dataset_abstraction#datasets/components/$deleteMode"
+            "daf#datasets/components/$deleteMode"
         ];
 
         // TODO replace with a real query that deletes component table and functions

@@ -24,7 +24,7 @@ class ResetCommand extends AbstractParameterAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         
-        $this->processInput($input, $output, $extractedArguments);
+        $extractedArguments = $this->processInput($input, $output);
         
         if ($input->hasArgument('component-name')) {
             $componentName = $input->getArgument('component-name');

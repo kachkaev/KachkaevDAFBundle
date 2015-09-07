@@ -59,7 +59,7 @@ class InitCommand extends AbstractParameterAwareCommand
         }
 
         try {
-            $query = $sqlTemplateManager->render('dataset_abstraction#init-db', ['database' => $name, 'template' => $templateName]);
+            $query = $sqlTemplateManager->render('daf#init-db', ['database' => $name, 'template' => $templateName]);
             $tmpConnection->getWrappedConnection()->exec($query);
             $output->writeln(' Done.');
         } catch (\Exception $e) {

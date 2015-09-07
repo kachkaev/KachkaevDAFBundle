@@ -38,5 +38,7 @@ class KachkaevDAFExtension extends Extension
         $container->setParameter('daf.data_dir', $config['data_dir']);
         $container->setParameter('daf.dataset_backup_dir', $config['dataset_backup_dir']);
         $container->setParameter('daf.query_templates_namespace_lookups', $config['query_templates_namespace_lookups']);
+
+        $container->setParameter('daf.default_chunk_size', $config['default_chunk_size']);
     }
 }

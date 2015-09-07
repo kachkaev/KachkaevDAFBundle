@@ -28,7 +28,7 @@ class ResetCommand extends AbstractParameterAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->processInput($input, $output, $extractedArguments);
+        $extractedArguments = $this->processInput($input, $output);
         
         $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);

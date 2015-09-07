@@ -117,9 +117,9 @@ class AbstractTemplateManager
         }
 
         if (sizeof($templateNames) == 1) {
-            throw new \InvalidArgumentException(sprintf('Template %s was not found', $templateNames[0]));
+            throw new \InvalidArgumentException(sprintf('DAF Template %s was not found', $templateNames[0]));
         } else {
-            throw new \InvalidArgumentException(sprintf('None of the following query templates were found: %s', implode(', ', $templateNames)));
+            throw new \InvalidArgumentException(sprintf('None of the following query DAF templates were found: %s', implode(', ', $templateNames)));
         }
 
     }
@@ -137,7 +137,7 @@ class AbstractTemplateManager
      * Converts short address of sql template to twig-compatable format
      *
      * Example:
-     *     dataset_abstraction#a/b/c → KachkaevDAFBundle:$templateType/a/b:c.$templateType.twig
+     *     daf#a/b/c → KachkaevDAFBundle:$templateType/a/b:c.$templateType.twig
      */
     protected function getTemplatePath($templateName)
     {
@@ -148,7 +148,7 @@ class AbstractTemplateManager
         if (array_key_exists(1, $templateNameParts))
         $templateNameParts[1] = $this->templateType.'/'.$templateNameParts[1];
 
-        if ($templateNameParts[0] == 'dataset_abstraction') {
+        if ($templateNameParts[0] == 'daf') {
             $queryBundle = 'KachkaevDAFBundle';
         } else {
             if (!array_key_exists($templateNameParts[0], $this->queryTemplatesNamespaceLookup)) {
@@ -157,7 +157,7 @@ class AbstractTemplateManager
                 $queryBundle = $this->queryTemplatesNamespaceLookup[$templateNameParts[0]]['bundle'];
             }
         }
-        $result = sprintf('%s:%s.%s.twig',$queryBundle, $this->str_lreplace('/', ':', $templateNameParts[1]), $this->templateType);
+        $result = sprintf('%s:daf/%s.%s.twig',$queryBundle, $this->str_lreplace('/', ':', $templateNameParts[1]), $this->templateType);
 
         return $result;
     }

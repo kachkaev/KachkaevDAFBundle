@@ -27,16 +27,16 @@ class InitCommand extends AbstractParameterAwareCommand
         $output->write(sprintf('Initialising dataset <info>%s</info>...',
                 $input->getArgument('dataset-full-name')
             ));
-        
-        $this->processInput($input, $output, $extractedArguments);
-        
+
+        $extractedArguments = $this->processInput($input, $output);
+
         $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $dataset = $datasetManager->init($extractedArguments['dataset-name']);
-        
+
         $output->writeln(' Done.');
-        
-        if ($input->hasArgument('dataset-type')) {
-            
+
+        if ($input->hasArgument('dataset-type') && $input->getArgument('dataset-type')) {
+
             $command = $this->getApplication()->find('daf:datasets:properties:set');
             $arguments = [
                     'dataset-full-name' => $input->getArgument('dataset-full-name'),

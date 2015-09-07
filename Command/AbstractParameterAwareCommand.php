@@ -82,7 +82,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
     protected function makeSQLTemplateNameAware()
     {
         $this
-            ->addArgument('sql-template-name', InputArgument::REQUIRED, 'Name of an SQL template to render, e.g. dataset_abstraction#init-db');
+            ->addArgument('sql-template-name', InputArgument::REQUIRED, 'Name of an SQL template to render, e.g. daf#init-db');
 
         return $this;
     }
@@ -206,7 +206,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
         if ($this->getContainer()->has($serviceName)) {
             return $this->getContainer()->get($serviceName);
         } else {
-            throw new \InvalidArgumentException(sprintf('Domain %s does not exist or does not have a dataset manager', $domainName));
+            throw new \InvalidArgumentException(sprintf('Domain %s does not exist or does not have a dataset manager. Make sure that the corresponding bundle has got Model/XXXManager.php class, it is properly annotated and the budle is listed in "jms_di_extra" section of the config.', $domainName));
         }
     }
 

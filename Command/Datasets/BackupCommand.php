@@ -23,7 +23,7 @@ class BackupCommand extends AbstractParameterAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->processInput($input, $output, $extractedArguments);
+        $extractedArguments = $this->processInput($input, $output);
 
         $backupDirectory = $input->getArgument('backup-directory');
         if (!$backupDirectory) {

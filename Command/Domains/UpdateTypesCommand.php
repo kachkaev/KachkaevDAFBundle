@@ -22,7 +22,7 @@ class UpdateTypesCommand extends AbstractParameterAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->processInput($input, $output, $extractedArguments);
+        $extractedArguments = $this->processInput($input, $output);
 
         $domainManager = $this->getContainer()->get('daf.domain_manager');
         $domainManager->updateTypes($input->getArgument('domain-name'));

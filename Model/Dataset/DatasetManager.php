@@ -68,7 +68,7 @@ abstract class DatasetManager implements ManagerInterface
      */
     public function updateList()
     {
-        $listOfExistingNames = $this->sqlTemplateManager->runAndFetchAllAsList('dataset_abstraction#datasets/list', [
+        $listOfExistingNames = $this->sqlTemplateManager->runAndFetchAllAsList('daf#datasets/list', [
                 'domainName'=>$this->domainName
                 ]);
 
@@ -160,7 +160,7 @@ abstract class DatasetManager implements ManagerInterface
         $this->assertNotHaving($datasetName, sprintf('Cannot initialise dataset %s.%s as it already exists in the database', $this->domainName, $datasetName));
 
         // Creating meta table
-        $this->sqlTemplateManager->run('dataset_abstraction#datasets/init', [
+        $this->sqlTemplateManager->run('daf#datasets/init', [
                 'domainName'=>$this->domainName,
                 'datasetName'=>$datasetName,
                 ]);
@@ -183,7 +183,7 @@ abstract class DatasetManager implements ManagerInterface
 
         $this->assertNotHaving($newDatasetName, sprintf('Unable to rename dataset %s.%s to %s.%s as such dataset already exists', $this->domainName, $datasetName, $this->domainName, $newDatasetName));
 
-        $this->sqlTemplateManager->run('dataset_abstraction#datasets/rename', [
+        $this->sqlTemplateManager->run('daf#datasets/rename', [
                 'domainName'=>$this->domainName,
                 'datasetName'=>$datasetName,
                 'newDatasetName'=>$newDatasetName,
@@ -208,7 +208,7 @@ abstract class DatasetManager implements ManagerInterface
             throw new \InvalidArgumentException(sprintf('Unable to duplicate dataset %s.%s to %s.%s as such dataset already exists', $this->domainName, $datasetName, $this->domainName, $newDatasetName));
         }
 
-        $this->sqlTemplateManager->run('dataset_abstraction#datasets/duplicate', [
+        $this->sqlTemplateManager->run('daf#datasets/duplicate', [
                 'domainName'=>$this->domainName,
                 'datasetName'=>$datasetName,
                 'duplicateDatasetName'=>$newDatasetName,
@@ -333,7 +333,7 @@ abstract class DatasetManager implements ManagerInterface
         $dataset = $this->get($datasetName);
 
         // Deleting all tables starting with name__
-        $this->sqlTemplateManager->run('dataset_abstraction#datasets/delete', [
+        $this->sqlTemplateManager->run('daf#datasets/delete', [
                 'domainName'=>$this->domainName,
                 'datasetName'=>$datasetName,
             ]);
@@ -349,7 +349,7 @@ abstract class DatasetManager implements ManagerInterface
      */
     public function getValidator($validatorName)
     {
-        foreach ([$this->domainName, 'dataset_abstraction'] as $domain) {
+        foreach ([$this->domainName, 'daf'] as $domain) {
             $serviceName = 'daf.validator.'.$validatorName;
             if ($this->container->has($serviceName))
                 return $this->container->get($serviceName);

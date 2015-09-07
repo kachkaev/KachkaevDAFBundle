@@ -24,7 +24,7 @@ class RenameCommand extends AbstractParameterAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->processInput($input, $output, $extractedArguments);
+        $extractedArguments = $this->processInput($input, $output);
 
         $output->write(sprintf('Renaming dataset <info>%s.%s</info> to <info>%s</info>...', $extractedArguments['domain-name'], $extractedArguments['dataset-name'], $input->getArgument("dataset-new-name")));
 

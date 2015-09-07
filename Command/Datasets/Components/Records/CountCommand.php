@@ -26,7 +26,7 @@ class CountCommand extends AbstractParameterAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->processInput($input, $output, $extractedArguments);
+        $extractedArguments = $this->processInput($input, $output);
         
         $filter = $input->getOption('filter');
         $componentName = $input->getArgument('component-name');

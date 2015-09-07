@@ -22,7 +22,7 @@ class InitCommand extends AbstractParameterAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->processInput($input, $output, $extractedArguments);
+        $extractedArguments = $this->processInput($input, $output);
         
         $componentName = $input->getArgument('component-name');
         $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);

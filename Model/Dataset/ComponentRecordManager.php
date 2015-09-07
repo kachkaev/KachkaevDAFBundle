@@ -99,7 +99,7 @@ class ComponentRecordManager {
      */
     public function count($componentName, $filter = '')
     {
-        return $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/records/count", [
+        return $this->sqlTemplateManager->runAndFetchAll("daf#datasets/components/records/count", [
                 'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -116,7 +116,7 @@ class ComponentRecordManager {
      */
     public function countIntersectingIds($componentName, Dataset $dataset2, $filterForDataset2)
     {
-        return $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/records/count-intersecting-ids", [
+        return $this->sqlTemplateManager->runAndFetchAll("daf#datasets/components/records/count-intersecting-ids", [
                 'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'dataset2Name'=>$dataset2->getName(),
@@ -135,7 +135,7 @@ class ComponentRecordManager {
      */
     public function listIntersectingIds($componentName, Dataset $dataset2, $filterForDataset2)
     {
-        return $this->sqlTemplateManager->runAndFetchAllAsList("dataset_abstraction#datasets/components/records/list-intersecting-ids", [
+        return $this->sqlTemplateManager->runAndFetchAllAsList("daf#datasets/components/records/list-intersecting-ids", [
                 'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'dataset2Name'=>$dataset2->getName(),
@@ -153,7 +153,7 @@ class ComponentRecordManager {
     public function clean($componentName, $filterOrIds = null)
     {
         if (is_string($filterOrIds) || is_null($filterOrIds)) {
-            $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/records/clean-by-filter", [
+            $this->sqlTemplateManager->run("daf#datasets/components/records/clean-by-filter", [
                     'domainName'=>$this->dataset->getDomainName(),
                     'datasetName'=>$this->dataset->getName(),
                     'componentName'=>$componentName,
@@ -164,7 +164,7 @@ class ComponentRecordManager {
             $idChunks = array_chunk($filterOrIds, 1000);
 
             foreach ($idChunks as $idChunk) {
-                $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/records/clean-by-ids", [
+                $this->sqlTemplateManager->run("daf#datasets/components/records/clean-by-ids", [
                         'domainName'=>$this->dataset->getDomainName(),
                         'datasetName'=>$this->dataset->getName(),
                         'componentName'=>$componentName,
@@ -195,14 +195,14 @@ class ComponentRecordManager {
 
         // List attributes
         // -- source
-        $sourceAttributes = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/list", [
+        $sourceAttributes = $this->sqlTemplateManager->runAndFetchAll("daf#datasets/components/attributes/list", [
                 'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$sourceDataset->getName(),
                 'componentName'=>$componentName,
                 ], null, \PDO::FETCH_KEY_PAIR);
 
         // -- destination
-        $destinationAttributes = $this->sqlTemplateManager->runAndFetchAll("dataset_abstraction#datasets/components/attributes/list", [
+        $destinationAttributes = $this->sqlTemplateManager->runAndFetchAll("daf#datasets/components/attributes/list", [
                 'domainName'=>$this->dataset->getDomainName(),
                 'datasetName'=>$this->dataset->getName(),
                 'componentName'=>$componentName,
@@ -263,7 +263,7 @@ class ComponentRecordManager {
         }
 
         // Copy all records that match the filter or only those that are among existingIds
-        echo $this->sqlTemplateManager->run("dataset_abstraction#datasets/components/records/copy", [
+        echo $this->sqlTemplateManager->run("daf#datasets/components/records/copy", [
                 'domainName'=>$this->dataset->getDomainName(),
                 'sourceDatasetName'=>$sourceDataset->getName(),
                 'destinationDatasetName'=>$this->dataset->getName(),

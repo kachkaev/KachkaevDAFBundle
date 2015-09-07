@@ -23,7 +23,7 @@ class ListCommand extends AbstractParameterAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->processInput($input, $output, $extractedArguments);
+        $extractedArguments = $this->processInput($input, $output);
 
         $output->writeln(implode("\n", $this->getDatasetManager($input->getArgument('domain-name'))->listNames()));
     }

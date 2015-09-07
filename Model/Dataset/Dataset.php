@@ -192,13 +192,13 @@ abstract class Dataset
         // Create, update or delete the property
         if (null !== $this->getProperty($propertyName)) {
             if (null === $propertyValue) {
-                $this->sqlTemplateManager->run('dataset_abstraction#datasets/properties/delete', [
+                $this->sqlTemplateManager->run('daf#datasets/properties/delete', [
                         'domainName'=>$this->domainName,
                         'datasetName'=>$this->name,
                     ], [$propertyName]);
                 unset ($this->properties[$propertyName]);
             } else {
-                $this->sqlTemplateManager->run('dataset_abstraction#datasets/properties/update', [
+                $this->sqlTemplateManager->run('daf#datasets/properties/update', [
                         'domainName'=>$this->domainName,
                         'datasetName'=>$this->name,
                     ], [$propertyName, $propertyValue, $propertyName]);
@@ -207,7 +207,7 @@ abstract class Dataset
         } else {
             if (null === $propertyValue) {
             } else {
-                $this->sqlTemplateManager->run('dataset_abstraction#datasets/properties/init', [
+                $this->sqlTemplateManager->run('daf#datasets/properties/init', [
                         'domainName'=>$this->domainName,
                         'datasetName'=>$this->name,
                     ], [$propertyName, $propertyValue]);
@@ -262,7 +262,7 @@ abstract class Dataset
      */
     public function updateProperties()
     {
-        $properties = $this->sqlTemplateManager->runAndFetchAll('dataset_abstraction#datasets/properties/list', [
+        $properties = $this->sqlTemplateManager->runAndFetchAll('daf#datasets/properties/list', [
                 'domainName'=>$this->domainName,
                 'datasetName'=>$this->name,
                 ], null, \PDO::FETCH_KEY_PAIR);

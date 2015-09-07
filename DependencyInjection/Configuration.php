@@ -31,7 +31,7 @@ class Configuration implements ConfigurationInterface
                 ->cannotBeEmpty()
                 ->end()
             ->integerNode('default_chunk_size')
-                ->defaultValue(50)
+                ->defaultValue(100)
                 ->end()
             ->arrayNode('query_templates_namespace_lookups')
                 ->prototype('array')

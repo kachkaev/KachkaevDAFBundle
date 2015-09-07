@@ -30,7 +30,7 @@ class SetCommand extends AbstractParameterAwareCommand
                 $input->getArgument('dataset-full-name')
             ));
 
-        $this->processInput($input, $output, $extractedArguments);
+        $extractedArguments = $this->processInput($input, $output);
         
         $datasetManager = $this->getDatasetManager($extractedArguments['domain-name']);
         $dataset = $datasetManager->get($extractedArguments['dataset-name']);

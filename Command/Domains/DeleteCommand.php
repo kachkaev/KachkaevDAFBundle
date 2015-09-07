@@ -4,8 +4,6 @@ namespace Kachkaev\DAFBundle\Command\Domains;
 
 use Doctrine\DBAL\Portability\Connection;
 
-use Doctrine\DBAL\Schema\PostgreSqlDomainManager;
-
 use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
