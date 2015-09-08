@@ -105,7 +105,7 @@ class DomainManager implements ManagerInterface
 
     /**
      * Updates all domain functions
-     * Function templates are stored in *Bundle/Resources/views/pgsql/domain/functions
+     * Function templates are stored in *Bundle/Resources/views/daf/pgsql/domain/functions
      *
      * There are 3 categories of functions:
      * 1) Standard - created only once in the domain
@@ -126,7 +126,7 @@ class DomainManager implements ManagerInterface
      */
     public function updateFunctions($domainName)
     {
-        $directory = $this->container->getParameter('daf.query_templates_namespace_lookups')[$domainName]['path'] . '/pgsql/domain/functions';
+        $directory = $this->container->getParameter('daf.query_templates_namespace_lookups')[$domainName]['path'] . '/daf/pgsql/domain/functions';
         if (!is_dir($directory)) {
             return;
         }
@@ -134,10 +134,10 @@ class DomainManager implements ManagerInterface
         // Find all pgsql templates in the directory
         $finder = new Finder();
         $finder
-        ->files()
-        ->in($directory)
-        ->name('*.pgsql.twig')
-        ->depth(0);
+            ->files()
+            ->in($directory)
+            ->name('*.pgsql.twig')
+            ->depth(0);
 
         $functionsByCategory = [[], [], [], []];
 
@@ -221,11 +221,11 @@ class DomainManager implements ManagerInterface
 
     /**
      * Updates all domain types
-     * Type templates are stored in *Bundle/Resources/views/pgsql/domain/types
+     * Type templates are stored in *Bundle/Resources/views/daf/pgsql/domain/types
      */
     public function updateTypes($domainName)
     {
-        $directory = $this->container->getParameter('daf.query_templates_namespace_lookups')[$domainName]['path'] . '/pgsql/domain/functions';
+        $directory = $this->container->getParameter('daf.query_templates_namespace_lookups')[$domainName]['path'] . '/daf/pgsql/domain/types';
         if (!is_dir($directory)) {
             return;
         }

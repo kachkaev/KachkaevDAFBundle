@@ -206,7 +206,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
         if ($this->getContainer()->has($serviceName)) {
             return $this->getContainer()->get($serviceName);
         } else {
-            throw new \InvalidArgumentException(sprintf('Domain %s does not exist or does not have a dataset manager. Make sure that the corresponding bundle has got Model/XXXManager.php class, it is properly annotated and the budle is listed in "jms_di_extra" section of the config.', $domainName));
+            throw new \InvalidArgumentException(sprintf('Domain %s does not exist or does not have a dataset manager. Make sure that the corresponding bundle has got Domain/XXXManager.php class, it is annotated as service "daf.dataset_manager.%s" and the budle is listed in "jms_di_extra" section of the config.', $domainName, $domainName));
         }
     }
 

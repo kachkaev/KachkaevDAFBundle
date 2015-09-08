@@ -4,6 +4,7 @@ namespace Kachkaev\DAFBundle\Model\Dataset;
 use Kachkaev\DAFBundle\Model\TemplateManaging\SQLTemplateManager;
 use Doctrine\DBAL\Driver\Connection as DriverConnection;
 use Symfony\Component\Templating\EngineInterface;
+use Symfony\Component\Intl\Exception\NotImplementedException;
 
 abstract class Dataset
 {
@@ -145,7 +146,7 @@ abstract class Dataset
     public function getProperty($propertyName)
     {
         if (null === $this->properties) {
-            $this->updateProperties();
+            $this->fetchProperties();
         }
 
         if (!array_key_exists($propertyName, $this->properties)) {
@@ -235,7 +236,9 @@ abstract class Dataset
      */
     public function updateProperties($propertyNames)
     {
+        // TODO implement
         var_dump($propertyNames);
+        throw new NotImplementedException("updateProperties() method has not been implemented yet.");
     }
 
 
