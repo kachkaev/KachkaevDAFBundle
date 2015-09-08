@@ -158,8 +158,8 @@ class ComponentManager implements ManagerInterface
         $deleteMode = $componentName[0] == '_' ? 'deleteView' : 'delete';
 
         $templates = [
-            "$domain#$componentName/$deleteMode.$type",
-            "$domain#$componentName/$deleteMode",
+            "$domain#components/$componentName/$deleteMode.$type",
+            "$domain#components/$componentName/$deleteMode",
             "daf#datasets/components/$deleteMode"
         ];
 
@@ -197,7 +197,7 @@ class ComponentManager implements ManagerInterface
 
     /**
      * Runs a task-specific sql template (a shortcut)
-     * By default only domain- and type-specific templates are considered: {domainName}#{componentName}/{task}.{type}
+     * By default only domain- and type-specific templates are considered: {domainName}#components/{componentName}/{task}.{type}
      *
      * @param string $componentName
      * @param string $task
@@ -211,23 +211,18 @@ class ComponentManager implements ManagerInterface
 
         $parsedComponentName = $this->parse($componentName);
 
-        $templates = [sprintf('%s#%s/%s.%s', $domain, $componentName, $task, $type)];
+        $templates = [sprintf('%s#components/%s/%s.%s', $domain, $componentName, $task, $type)];
 
         if ($parsedComponentName['instanceName']) {
-            $templates []= sprintf('%s#%s__/%s.%s', $domain, $parsedComponentName['familyName'], $task, $type);
+            $templates []= sprintf('%s#components/%s__/%s.%s', $domain, $parsedComponentName['familyName'], $task, $type);
         }
 
         if ($considerDomainRelatedTemplate) {
-            $templates []= sprintf('%s#%s/%s', $domain, $componentName, $task);
+            $templates []= sprintf('%s#components/%s/%s', $domain, $componentName, $task);
             if ($parsedComponentName['familyName']) {
-                $templates []= sprintf('%s#%s__/%s', $domain, $parsedComponentName['familyName'], $task);
+                $templates []= sprintf('%s#components/%s__/%s', $domain, $parsedComponentName['familyName'], $task);
             }
         }
-
-
-//         if ($considerDatasetAbstractionTemplate) {
-//             $templates []= "$domain#$componentName/$task";
-//         }
 
         $this->sqlTemplateManager->run($templates, [
                 'domainName' => $this->dataset->getDomainName(),

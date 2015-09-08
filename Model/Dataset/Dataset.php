@@ -25,16 +25,16 @@ abstract class Dataset
     /**
      * @var ComponentAttributeManager */
     protected $componentAttributeManager;
-    
+
     /**
      * @var ComponentRecordManager */
     protected $componentRecordManager;
-    
-    
+
+
     /**
      * @var SQLTemplateManager */
     protected $sqlTemplateManager;
-    
+
     public function __construct(DatasetManager $datasetManager)
     {
         $this->datasetManager = $datasetManager;
@@ -45,7 +45,7 @@ abstract class Dataset
     /**
      * Checks whether the object is known by the dataset manager and throws an exception if not.
      * To be used in methods that require the dataset to exist in the database
-     * 
+     *
      * @throws \RuntimeException
      */
     public function assertExists()
@@ -53,7 +53,7 @@ abstract class Dataset
         if ($this->datasetManager->has($this->name))
             throw new \RuntimeException(sprintf('Dataset %s.%s does not exist', $this->domainName, $this->name));
     }
-    
+
     /**
      * Updates the name of the dataset from the datasetManager
      */
@@ -61,38 +61,38 @@ abstract class Dataset
     {
         $this->name = $this->datasetManager->getName($this);
     }
-    
+
     /**
      * Return the name of the dataset
      * @return string
      */
     public function getName()
     {
-        return $this->name;        
+        return $this->name;
     }
-    
+
     /**
      * Return the domain of the dataset
      * @return string
      */
     public function getDomainName()
     {
-        return $this->domainName;        
+        return $this->domainName;
     }
-    
+
     /**
      * Return the full name of the dataset as domain_name.dataset_name
      * @return string
      */
     public function getFullName()
     {
-        return sprintf('%s.%s', $this->domainName, $this->name);        
+        return sprintf('%s.%s', $this->domainName, $this->name);
     }
-    
+
     // ========================================================================
     // Properties
     // ========================================================================
-    
+
     /**
      * Checks if the dataset has a particular property (record in "meta" table)
      * @param string $componentName
@@ -100,12 +100,12 @@ abstract class Dataset
      */
     public function hasProperty($propertyName) {
         if (null === $this->properties) {
-            $this->updateProperties();
+            $this->fetchProperties();
         }
-        
+
         return array_key_exists($propertyName, $this->properties);
     }
-    
+
     /**
      * Does nothing if given property exists, throws an exception otherwise
      * @throws \LogicException if given property does not exist
@@ -115,12 +115,12 @@ abstract class Dataset
         if (!$errorMessage) {
             $errorMessage = sprintf('The dataset must have %s property defined', $propertyName);
         }
-        
+
         if (!$this->hasProperty($propertyName)) {
             throw new \LogicException($errorMessage);
         }
     }
-    
+
     /**
      * Does nothing if given property does not exist, throws an exception otherwise
      * @throws \LogicException if given property exists
@@ -130,12 +130,12 @@ abstract class Dataset
         if (!$errorMessage) {
             $errorMessage = sprintf('The dataset must not have %s property defined', $propertyName);
         }
-        
+
         if ($this->hasProperty($propertyName)) {
             throw new \LogicException($errorMessage);
         }
     }
-    
+
     /**
      * Gets the value of the given property.
      * If the property does not exist, null is returned
@@ -147,19 +147,19 @@ abstract class Dataset
         if (null === $this->properties) {
             $this->updateProperties();
         }
-        
+
         if (!array_key_exists($propertyName, $this->properties)) {
             return null;
         } else {
             return $this->properties[$propertyName];
-        }   
+        }
     }
-    
+
     public function getComponentProperty($componentName, $propertyName)
     {
-        return $this->getProperty(sprintf('.%s.%s', $componentName, $propertyName));
+        return $this->getProperty(sprintf('%s.%s', $componentName, $propertyName));
     }
-    
+
     /**
      * Sets the value of the given property.
      * If new value is null, the property gets removed from the table
@@ -173,22 +173,22 @@ abstract class Dataset
         if (!is_string($propertyName)) {
             throw new \InvalidArgumentException(sprintf('Dataset property name must be string, %s given', var_export($propertyName, true)));
         }
-        
+
         // TODO validate name string using by regexp
-        
+
         // Validation of value
         if (!is_null($propertyValue) && !is_string($propertyValue)) {
             throw new \InvalidArgumentException(sprintf('Dataset property value must be string or null, %s given', var_export($propertyValue, true)));
         }
 
-        
+
         // TODO validate value according to property name
 
         // Do nothing if the value is the same as it was
         if ($propertyValue === $this->getProperty($propertyName)) {
             return false;
         }
-        
+
         // Create, update or delete the property
         if (null !== $this->getProperty($propertyName)) {
             if (null === $propertyValue) {
@@ -214,19 +214,44 @@ abstract class Dataset
                 $this->properties[$propertyName] = $propertyValue;
             }
         }
-        
+
         // Update functions if type has changed
         if ($propertyName == 'type') {
             $this->getDatasetManager()->updateFunctions();
         }
     }
-    
+
     public function setComponentProperty($componentName, $propertyName, $propertyValue)
     {
         return $this->setProperty(sprintf('.%s.%s', $componentName, $propertyName, $propertyValue));
     }
-    
-    
+
+    /**
+     * Sets the value of the given property.
+     * If new value is null, the property gets removed from the table
+     * @param string $propertyName
+     * @param string|NULL $propertyValue
+     * @throws \InvalidArgumentException If the value is not string or null
+     */
+    public function updateProperties($propertyNames)
+    {
+        var_dump($propertyNames);
+    }
+
+
+    /**
+     * Actuates the list of properties from the database
+     */
+    public function fetchProperties()
+    {
+        $properties = $this->sqlTemplateManager->runAndFetchAll('daf#datasets/properties/list', [
+            'domainName'=>$this->domainName,
+            'datasetName'=>$this->name,
+        ], null, \PDO::FETCH_KEY_PAIR);
+
+        $this->properties = $properties;
+    }
+
     /**
      * Returns the list of all properties of the dataset (records in "meta" table)
      * @return array
@@ -234,19 +259,19 @@ abstract class Dataset
     public function listProperties()
     {
         if (null === $this->properties) {
-            $this->updateProperties();
+            $this->fetchProperties();
         }
-        
+
         return $this->properties;
     }
-    
+
     /**
      * Returns the list of all properties of the dataset component (filtered records in "meta" table)
      * @return array
      */
     public function listComponentProperties($componentName)
     {
-        $requiredPropertyPrefix = '.'.$componentName.'.'; 
+        $requiredPropertyPrefix = $componentName.'.';
         $componentProperties = [];
         foreach($this->listProperties() as $propertyName => $propertyValue) {
             if (strpos($propertyName, $requiredPropertyPrefix) === 0) {
@@ -255,25 +280,12 @@ abstract class Dataset
         }
         return $componentProperties;
     }
-    
-    
-    /**
-     * Actuates the list of properties from the database
-     */
-    public function updateProperties()
-    {
-        $properties = $this->sqlTemplateManager->runAndFetchAll('daf#datasets/properties/list', [
-                'domainName'=>$this->domainName,
-                'datasetName'=>$this->name,
-                ], null, \PDO::FETCH_KEY_PAIR);
-        
-        $this->properties = $properties;
-    }
-    
+
+
     // ========================================================================
     // Dependency Injection
     // ========================================================================
-    
+
     /**
      * @return DatasetManager
      */
@@ -281,28 +293,28 @@ abstract class Dataset
     {
         return $this->datasetManager;
     }
-    
+
     /**
-     * 
+     *
      * @return ComponentManager
      */
     public function getComponentManager()
     {
         if (!$this->componentManager)
             $this->componentManager = new ComponentManager($this);
-        
-        return $this->componentManager; 
+
+        return $this->componentManager;
     }
 
     /**
-     * 
+     *
      * @return ComponentAttributeManager
      */
     public function getComponentAttributeManager()
     {
         if (!$this->componentAttributeManager)
             $this->componentAttributeManager = new ComponentAttributeManager($this);
-    
+
         return $this->componentAttributeManager;
     }
 
@@ -313,8 +325,8 @@ abstract class Dataset
     {
         if (!$this->componentRecordManager)
             $this->componentRecordManager = new ComponentRecordManager($this);
-    
+
         return $this->componentRecordManager;
     }
-    
+
 }

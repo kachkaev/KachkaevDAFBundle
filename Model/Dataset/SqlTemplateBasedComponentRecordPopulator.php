@@ -32,9 +32,9 @@ class SqlTemplateBasedComponentRecordPopulator extends AbstractComponentRecordPo
         }
         $templateNames = [];
         if ($datasetType) {
-            $templateNames []= sprintf('%s#%s/populate.%s', $domainName, $componentDirectory, $datasetType);
+            $templateNames []= sprintf('%s#components/%s/populate.%s', $domainName, $componentDirectory, $datasetType);
         }
-        $templateNames []= sprintf('%s#%s/populate', $domainName, $componentDirectory);
+        $templateNames []= sprintf('%s#components/%s/populate', $domainName, $componentDirectory);
 
         return $templateNames;
     }

@@ -1,5 +1,5 @@
 <?php
-namespace Kachkaev\DAFBundle\Model\Dataset\ComponentAttributeUpdater;
+namespace Kachkaev\DAFBundle\Model\Dataset;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Kachkaev\DAFBundle\Model\TemplateManaging\SQLTemplateManager;
@@ -82,7 +82,7 @@ abstract class AbstractComponentAttributeUpdater
         $list = $this->listAttributesThatCanUpdate($dataset, $componentName, $attributeNames);
 
         if (count($list) != count($attributeNames)) {
-            throw new \InvalidArgumentException(sprintf('Component attribute updater cannot work with the given data: dataset - %s, component - , attributes - ', $dataset->getFullName(), $componentName, implode(' ', $attributeNames)));
+            throw new \InvalidArgumentException(sprintf('Component attribute updater cannot work with the given data: dataset - %s, component - %s, attributes - %s', $dataset->getFullName(), $componentName, implode(' ', $attributeNames)));
         }
     }
 }
