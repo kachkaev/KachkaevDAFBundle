@@ -43,7 +43,7 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
         } else {
             $this
             ->addArgument('dataset-name', InputArgument::REQUIRED,
-                    sprintf('Full name of the dataset within domain %s to work with', $datasetDomainName));
+                    sprintf('Name of the dataset within domain %s to work with', $datasetDomainName));
         }
 
         return $this;

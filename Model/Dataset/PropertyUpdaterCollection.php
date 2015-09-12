@@ -1,7 +1,7 @@
 <?php
 namespace Kachkaev\DAFBundle\Model\Dataset;
 
-use Kachkaev\DAFBundle\Model\Dataset\ComponentAttributeUpdater\AbstractComponentAttributeUpdater;
+use Kachkaev\DAFBundle\Model\Dataset\AbstractPropertyUpdater;
 use Kachkaev\DAFBundle\Model\Dataset\Dataset;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -15,7 +15,7 @@ class PropertyUpdaterCollection
 {
     protected $propertyUpdaters = [];
 
-    public function add(AbstractComponentAttributeUpdater $propertyUpdater)
+    public function add(AbstractPropertyUpdater $propertyUpdater)
     {
         array_push($this->propertyUpdaters, $propertyUpdater);
     }

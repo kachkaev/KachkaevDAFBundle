@@ -1,7 +1,7 @@
 <?php
 namespace Kachkaev\DAFBundle\Model\Dataset;
 
-use Kachkaev\DAFBundle\Model\Dataset\ComponentAttributeUpdater\AbstractComponentAttributeUpdater;
+use Kachkaev\DAFBundle\Model\Dataset\AbstractComponentAttributeUpdater;
 use Kachkaev\DAFBundle\Model\Dataset\Dataset;
 use JMS\DiExtraBundle\Annotation as DI;
 
