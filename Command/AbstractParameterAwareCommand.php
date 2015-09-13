@@ -160,7 +160,6 @@ abstract class AbstractParameterAwareCommand extends ContainerAwareCommand
             $extractedArguments['dataset-full-name'] = $this->datasetDomainName.'.'.$datasetName;
             $extractedArguments['domain-name'] = $this->datasetDomainName;
             $extractedArguments['dataset-name'] = $datasetName;
-            $preg = preg_replace();
         }
 
         // TODO Verify arguments 'dataset-name', 'domain-name'
