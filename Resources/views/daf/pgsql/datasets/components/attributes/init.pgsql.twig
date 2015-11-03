@@ -6,6 +6,6 @@ ALTER TABLE {{ domainName }}.{{ datasetName }}__{{ componentName }}
 
 {% if attributeColumnComment %}
 {% for attributeName in attributeNames %}
-    COMMENT ON COLUMN  {{ domainName }}.{{ datasetName }}__{{ componentName }}.{{ attributeName }} IS '{{ attributeColumnComment }}'
+    COMMENT ON COLUMN  {{ domainName }}.{{ datasetName }}__{{ componentName }}.{{ attributeName }} IS '{{ attributeColumnComment }}';
 {% endfor %}
 {% endif %}
