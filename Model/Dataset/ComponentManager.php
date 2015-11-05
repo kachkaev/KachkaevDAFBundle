@@ -240,27 +240,37 @@ class ComponentManager implements ManagerInterface
      * my_dataset -> my_component__two
      * my_dataset -> my_component__three
      *
+     * my_dataset -> my_component__something__something_else
+     *
      * This method extracts component family and component instance and returns values in array
      *
      * @param string $componentName
      * @return array
-     *         [] for a simple component
-     *         ['familyName' => 'my_component', 'instanceName' => 'one'] for multi-instance components
+     *         for a simple component:
+     *              ['familyName' => null, 'instanceName' => null, 'instanceParts' => null]
+     *         for multi-instance components:
+     *              ['familyName' => 'my_component', 'instanceName' => 'one', 'instanceParts' => ['one']]
+     *              ['familyName' => 'my_component', 'instanceName' => 'something__something_else', 'instanceParts' => ['something', 'something_else']]
      */
     public function parse($componentName)
     {
         $componentParts = explode('__', $componentName);
         if (count($componentParts) > 1) {
-            return [
+            $result = [
                 'familyName' => $componentParts[0],
                 'instanceName' => substr($componentName, strlen($componentParts[0]) + 2)
             ];
+            array_shift($componentParts);
+            $result['instanceParts'] = $componentParts;
         } else {
-            return [
+            $result = [
                 'familyName' => null,
                 'instanceName' => null,
+                'instanceParts' => null
             ];
         }
+
+        return $result;
     }
 
     /**
