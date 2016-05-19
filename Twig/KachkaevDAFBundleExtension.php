@@ -6,16 +6,14 @@ use Doctrine\DBAL\Portability\Connection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig_Extension;
-use Twig_Filter_Method;
-use Twig_Function_Method;
 
 /**
- * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
+ *) @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
  *
  * @DI\Service("daf.twig_extension")
  * @DI\Tag("twig.extension")
  */
-class KachkaevDAFBundleExtension extends Twig_Extension
+class KachkaevDAFBundleExtension extends Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
     protected $container;
 
@@ -41,13 +39,13 @@ class KachkaevDAFBundleExtension extends Twig_Extension
             );
 
         foreach ($mappings as $twigFunction => $method) {
-            $functions[$twigFunction] = new Twig_Function_Method($this, $method);
+            $functions[$twigFunction] = new \Twig_SimpleFunction($twigFunction, array($this, $method));
         }
 
         $safeMappings = array();
 
         foreach ($safeMappings as $twigFunction => $method) {
-            $functions[$twigFunction] = new Twig_Function_Method($this, $method, array('is_safe' => array('html')));
+            $functions[$twigFunction] = new \Twig_SimpleFunction($twigFunction, array($this, $method), array('is_safe' => array('html')));
         }
 
         return $functions;
@@ -55,8 +53,8 @@ class KachkaevDAFBundleExtension extends Twig_Extension
 
      public function getFilters() {
         return array(
-            'repeat'   => new \Twig_Filter_Function('str_repeat'),
-            'to_array'   => new \Twig_Filter_Method($this, 'toArray'),
+            'repeat'   => new \Twig_SimpleFilter('repeat', 'str_repeat'),
+            'to_array'   => new \Twig_SimpleFilter('to_array', array($this, 'toArray')),
         );
     }
 
