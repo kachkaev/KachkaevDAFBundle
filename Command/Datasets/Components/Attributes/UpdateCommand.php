@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Kachkaev\DAFBundle\Command\AbstractParameterAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 class UpdateCommand extends AbstractParameterAwareCommand
 {
@@ -60,8 +61,8 @@ class UpdateCommand extends AbstractParameterAwareCommand
         }
 
         $output->writeln(sprintf('Updating attributes for %s records...', number_format(count($ids))));
-        $progress = $this->getHelper('progress');
-        $progress->start($output, count($ids));
+        $progressBar = new ProgressBar($output);
+        $progressBar->start(count($ids));
 
         // Update records by chunks
         $chunkSize = $input->getOption('chunk-size') ? : $this->getContainer()->getParameter('daf.default_chunk_size');
@@ -70,7 +71,7 @@ class UpdateCommand extends AbstractParameterAwareCommand
         foreach ($idChunks as $idChunk) {
             try {
                 $attributeManager->updateAttributes($componentName, $attributeNames, $idChunk, $output);
-                $progress->advance(count($idChunk));
+                $progressBar->advance(count($idChunk));
             } catch (\Exception $e) {
                 $message = $e->getMessage();
 
@@ -87,7 +88,7 @@ class UpdateCommand extends AbstractParameterAwareCommand
                 }
             }
         }
-        $progress->finish();
+        $progressBar->finish();
 
         $output->writeln(' Done.');
     }
