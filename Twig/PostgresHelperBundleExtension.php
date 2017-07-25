@@ -5,9 +5,6 @@ use Doctrine\DBAL\Portability\Connection;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Twig_Extension;
-use Twig_Filter_Method;
-use Twig_Function_Method;
 
 /**
  * @author  "Alexander Kachkaev <alexander@kachkaev.ru>"
@@ -15,7 +12,7 @@ use Twig_Function_Method;
  * @DI\Service("pr.photosets.twig_extension")
  * @DI\Tag("twig.extension")
  */
-class PostgresHelperBundleExtension extends Twig_Extension
+class PostgresHelperBundleExtension extends \Twig_Extension
 {
     protected $container;
     
@@ -41,13 +38,13 @@ class PostgresHelperBundleExtension extends Twig_Extension
             );
 
         foreach ($mappings as $twigFunction => $method) {
-            $functions[$twigFunction] = new Twig_Function_Method($this, $method);
+            $functions[$twigFunction] = new \Twig_Function_Method($this, $method);
         }
 
         $safeMappings = array();
 
         foreach ($safeMappings as $twigFunction => $method) {
-            $functions[$twigFunction] = new Twig_Function_Method($this, $method, array('is_safe' => array('html')));
+            $functions[$twigFunction] = new \Twig_Function_Method($this, $method, array('is_safe' => array('html')));
         }
 
         return $functions;
