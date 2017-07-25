@@ -38,13 +38,13 @@ class PostgresHelperBundleExtension extends \Twig_Extension
             );
 
         foreach ($mappings as $twigFunction => $method) {
-            $functions[$twigFunction] = new \Twig_Function_Method($this, $method);
+            $functions[$twigFunction] = new \Twig_SimpleFunction($method, array($this, $method));
         }
 
         $safeMappings = array();
 
         foreach ($safeMappings as $twigFunction => $method) {
-            $functions[$twigFunction] = new \Twig_Function_Method($this, $method, array('is_safe' => array('html')));
+            $functions[$twigFunction] = new \Twig_SimpleFunction($method, array($this, $method), array('is_safe' => array('html')));
         }
 
         return $functions;
